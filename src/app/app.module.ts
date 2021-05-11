@@ -17,7 +17,6 @@ import {HeaderButtonComponent} from './elitefour/base/header-button/header-butto
 import {ListDetailComponent} from './elitefour/pages/list-detail/list-detail.component';
 import {ListOverviewComponent} from './elitefour/pages/list-overview/list-overview.component';
 import {ListFormModalComponent} from './elitefour/base/list-form-modal/list-form-modal.component';
-import {SettingsComponent} from './elitefour/pages/settings/settings.component';
 import {MenuComponent} from './elitefour/menu/menu.component';
 import {ItemFormModalComponent} from './elitefour/base/item-form-modal/item-form-modal.component';
 import {AreYouSureModalComponent} from './elitefour/base/are-you-sure-modal/are-you-sure-modal.component';
@@ -27,14 +26,15 @@ import {ExportModalComponent} from './elitefour/base/export-modal/export-modal.c
 import {ImportModalComponent} from './elitefour/base/import-modal/import-modal.component';
 import {ForbiddenListNameValidatorDirective} from './elitefour/base/list-form-modal/forbidden-list-name-validator.directive';
 import {CustomMinValidatorDirective} from './elitefour/base/list-form-modal/custom-min-validator.directive';
-import {KeyboardShortcutsModule} from "ng-keyboard-shortcuts";
+import {KeyboardShortcutsModule} from 'ng-keyboard-shortcuts';
 
 @NgModule({
-  declarations: [AppComponent, CardListComponent, HeaderComponent, HeaderButtonComponent, ListDetailComponent, ListOverviewComponent, ListFormModalComponent, SettingsComponent, MenuComponent, ItemFormModalComponent, AreYouSureModalComponent, AlgorithmComponent, HelpComponent, ExportModalComponent, ImportModalComponent, ForbiddenListNameValidatorDirective, CustomMinValidatorDirective],
+  declarations: [AppComponent, CardListComponent, HeaderComponent, HeaderButtonComponent, ListDetailComponent, ListOverviewComponent,
+    ListFormModalComponent, MenuComponent, ItemFormModalComponent, AreYouSureModalComponent, AlgorithmComponent, HelpComponent,
+    ExportModalComponent, ImportModalComponent, ForbiddenListNameValidatorDirective, CustomMinValidatorDirective],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule,
     CoreModule,
     SharedModule,
     AppRoutingModule,

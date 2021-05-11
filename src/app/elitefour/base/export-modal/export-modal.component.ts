@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FavoriteListApi} from "../../backend/favorite-list-api";
-import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
-import {FavoriteItem, FavoriteList} from "../../backend/favorite-list-interfaces";
+import {FavoriteListApi} from '../../backend/favorite-list-api';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {FavoriteItem, FavoriteList} from '../../backend/favorite-list-interfaces';
 
 @Component({
   selector: 'app-export-modal',
@@ -24,36 +24,12 @@ import {FavoriteItem, FavoriteList} from "../../backend/favorite-list-interfaces
   styles: []
 })
 export class ExportModalComponent implements OnInit {
-  @Input() listId: number;
-  private favoriteList: FavoriteList
-  private readonly FileSaver = require('file-saver');
-
 
   constructor(private favoriteListApi: FavoriteListApi,
               public activeModal: NgbActiveModal) {
   }
-
-  ngOnInit(): void {
-    this.favoriteListApi.getFavoriteListById(this.listId).subscribe((list) => this.favoriteList = list)
-  }
-
-  exportOnlyFavorites() {
-    const favoriteItems = this.favoriteList.items.filter((item) => !!item.favoritePosition)
-
-    let blob = new Blob([this.createItemsAsString(favoriteItems)], {type: "text/plain;charset=utf-8"});
-    this.FileSaver.saveAs(blob, "FavoriteItems.txt");
-  }
-
-  exportAll() {
-    let blob = new Blob([this.createItemsAsString(this.favoriteList.items)], {type: "text/plain;charset=utf-8"});
-    this.FileSaver.saveAs(blob, "AllItems.txt");
-  }
-
-  createItemsAsString(favoriteItems: FavoriteItem[]): string {
-    return ExportModalComponent.sortItems(favoriteItems)
-      .map((item) => item.name)
-      .join('\r\n')
-  }
+  @Input() listId: number;
+  private favoriteList: FavoriteList;
 
   public static sortItems(favoriteItems: FavoriteItem[]): FavoriteItem[] {
     return favoriteItems.sort((a, b) => {
@@ -70,7 +46,31 @@ export class ExportModalComponent implements OnInit {
       }
 
       // If neither is a favorite, sort by id.
-      return a.id - b.id
-    })
+      return a.id - b.id;
+    });
+  }
+
+  ngOnInit(): void {
+    this.favoriteListApi.getFavoriteListById(this.listId).subscribe((list) => this.favoriteList = list);
+  }
+
+  exportOnlyFavorites(): void {
+    const favoriteItems = this.favoriteList.items.filter((item) => !!item.favoritePosition);
+
+    const blob = new Blob([this.createItemsAsString(favoriteItems)], {type: 'text/plain;charset=utf-8'});
+    // TODO
+    // this.FileSaver.saveAs(blob, 'FavoriteItems.txt');
+  }
+
+  exportAll(): void {
+    const blob = new Blob([this.createItemsAsString(this.favoriteList.items)], {type: 'text/plain;charset=utf-8'});
+    // TODO
+    // this.FileSaver.saveAs(blob, 'AllItems.txt');
+  }
+
+  createItemsAsString(favoriteItems: FavoriteItem[]): string {
+    return ExportModalComponent.sortItems(favoriteItems)
+      .map((item) => item.name)
+      .join('\r\n');
   }
 }

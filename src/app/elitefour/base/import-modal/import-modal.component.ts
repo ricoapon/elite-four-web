@@ -1,8 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
-import {FavoriteListApi} from "../../backend/favorite-list-api";
-import {FavoriteList} from "../../backend/favorite-list-interfaces";
-import {ElectronService} from "../../../core/services";
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {FavoriteListApi} from '../../backend/favorite-list-api';
+import {FavoriteList} from '../../backend/favorite-list-interfaces';
 
 @Component({
   selector: 'app-import-form-modal',
@@ -34,48 +33,46 @@ import {ElectronService} from "../../../core/services";
 })
 export class ImportModalComponent implements OnInit {
   @Input() listId: number;
-  private favoriteList: FavoriteList
-  private fs: any;
+  private favoriteList: FavoriteList;
   itemsToUpload: string[] = [];
-  fileName: string = ''
+  fileName = '';
   error: string;
 
   constructor(public activeModal: NgbActiveModal,
-              private favoriteListApi: FavoriteListApi,
-              private electronService: ElectronService) {
-    this.fs = electronService.fs
+              private favoriteListApi: FavoriteListApi) {
   }
 
   ngOnInit(): void {
-    this.favoriteListApi.getFavoriteListById(this.listId).subscribe((list) => this.favoriteList = list)
+    this.favoriteListApi.getFavoriteListById(this.listId).subscribe((list) => this.favoriteList = list);
   }
 
-  handleFileInput(files: FileList) {
-    let fileToUpload = files.item(0);
-    this.fileName = fileToUpload.name
-    this.itemsToUpload = this.fs.readFileSync(fileToUpload.path).toString('utf8')
-      .replace('\r', '')
-      .split('\n')
-      .map((name) => name.trim())
-      .filter((name) => name.length > 0)
+  handleFileInput(files: FileList): void {
+    const fileToUpload = files.item(0);
+    this.fileName = fileToUpload.name;
+    // TODO
+    // this.itemsToUpload = this.storageService.readFileSync(fileToUpload.path).toString('utf8')
+    //   .replace('\r', '')
+    //   .split('\n')
+    //   .map((name) => name.trim())
+    //   .filter((name) => name.length > 0);
     this.checkImportFile();
   }
 
-  private checkImportFile() {
-    let errorMessages: string[] = []
+  private checkImportFile(): void {
+    const errorMessages: string[] = [];
     this.itemsToUpload.forEach((newItem) => {
-      if (!!this.favoriteList.items.find((item) => item.name == newItem)) {
-        errorMessages.push('"' + newItem + '" already exists')
+      if (!!this.favoriteList.items.find((item) => item.name === newItem)) {
+        errorMessages.push('"' + newItem + '" already exists');
       }
-    })
+    });
 
     this.error = errorMessages.join('\n');
   }
 
-  importFile() {
+  importFile(): void {
     this.itemsToUpload.forEach((newItem) => {
       this.favoriteListApi.addItemToFavoriteList(this.favoriteList.id, newItem);
-    })
-    this.activeModal.close()
+    });
+    this.activeModal.close();
   }
 }
