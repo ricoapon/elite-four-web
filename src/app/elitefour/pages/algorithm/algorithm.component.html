@@ -1,0 +1,29 @@
+<app-content-header title="{{favoriteList.name}}">
+  <app-content-header-button btnClass="btn-primary" (click)="router.navigate(['/list/' + favoriteList.id]);">Return to list</app-content-header-button>
+</app-content-header>
+
+
+<div id="accordion" class="mb-4">
+  <div class="card">
+    <div class="card-body" id="headingOne">
+        New favorites selected this round:
+    </div>
+    <div class="card-body pt-0 small" *ngIf="newFavorites.length > 0">
+      <p class="m-0 p-0" *ngFor="let newFavoriteItem of newFavorites">{{newFavoriteItem.favoritePosition}}: {{newFavoriteItem.name}}</p>
+    </div>
+  </div>
+</div>
+
+<app-content-header title="Items">
+  <app-content-header-button btnClass="btn btn-danger" (click)="skip()">Skip</app-content-header-button>
+  <app-content-header-button btnClass="btn btn-primary" (click)="select()">Select</app-content-header-button>
+</app-content-header>
+
+
+<div class="card" *ngFor="let item of toBeChosenItems">
+  <a class="selectable-item" [ngClass]="isItemSelected(item) ? 'selected' : ''" (click)="clickItem(item)">
+    <div class="card-body">
+      <p class="p-0 m-0">{{item.name}}</p>
+    </div>
+  </a>
+</div>

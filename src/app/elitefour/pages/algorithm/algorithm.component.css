@@ -1,0 +1,11 @@
+.selectable-item {
+  text-decoration: none !important;
+}
+
+.selectable-item:hover {
+  background-color: rgba(0, 123, 255, 0.10);
+}
+
+.selectable-item.selected {
+  background-color: rgba(0, 123, 255, 0.34);
+}
