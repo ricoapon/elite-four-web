@@ -23,9 +23,9 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
 
   favoriteList: FavoriteList = {id: 0, name: '', status: undefined, tsCreated: new Date(), items: [], nrOfItemsToBeShownOnScreen: 20};
 
-  showSearchTextbox = false;
+  showSearchTextBox = false;
   searchItemName = '';
-  @ViewChild('searchTextbox') searchTextbox: ElementRef;
+  @ViewChild('searchTextBox') searchTextBox: ElementRef;
 
   constructor(private route: ActivatedRoute,
               public router: Router,
@@ -48,7 +48,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
         key: ['shift + f'],
         label: 'Search list',
         description: 'Search list',
-        command: () => this.toggleSearchTextbox(),
+        command: () => this.toggleSearchTextBox(),
         preventDefault: true
       },
       {
@@ -62,17 +62,17 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
   }
 
   onPressEscape(): void {
-    this.showSearchTextbox = false;
+    this.showSearchTextBox = false;
     this.searchItemName = '';
   }
 
-  toggleSearchTextbox(): void {
-    this.showSearchTextbox = !this.showSearchTextbox;
-    if (!this.showSearchTextbox) {
+  toggleSearchTextBox(): void {
+    this.showSearchTextBox = !this.showSearchTextBox;
+    if (!this.showSearchTextBox) {
       this.searchItemName = '';
     } else {
       this.cdRef.detectChanges();
-      this.searchTextbox.nativeElement.focus();
+      this.searchTextBox.nativeElement.focus();
     }
   }
 
@@ -132,7 +132,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
   sortAndFilter(favoriteItems: FavoriteItem[]): FavoriteItem[] {
     const sortedItems = ExportModalComponent.sortItems(favoriteItems);
 
-    if (this.showSearchTextbox) {
+    if (this.showSearchTextBox) {
       return sortedItems.filter((item) => item.name.indexOf(this.searchItemName) >= 0);
     }
 

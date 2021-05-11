@@ -53,8 +53,8 @@
   <div class="form-inline">
     <!--suppress HtmlFormInputWithoutLabel -->
     <input type="text" class="form-control" style="display: inline!important; width: 200px;"
-           *ngIf="showSearchTextbox" [(ngModel)]="searchItemName"
-           (keydown.esc)="onPressEscape()" #searchTextbox>
+           *ngIf="showSearchTextBox" [(ngModel)]="searchItemName"
+           (keydown.esc)="onPressEscape()" #searchTextBox>
     <app-content-header-button *ngIf="favoriteList.status == CREATED" btnClass="btn-danger" (click)="removeAllItems()">Remove all items</app-content-header-button>
     <app-content-header-button *ngIf="favoriteList.status == CREATED" (click)="this.openItemModal(undefined)"><u>N</u>ew item</app-content-header-button>
     <app-content-header-button *ngIf="favoriteList.status == CREATED" (click)="openImportModal()">Import</app-content-header-button>

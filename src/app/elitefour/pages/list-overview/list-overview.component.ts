@@ -13,8 +13,8 @@ import {ShortcutInput} from 'ng-keyboard-shortcuts';
     <app-content-header title="Lists">
       <div class="form-inline">
         <input type="text" class="form-control" style="display: inline!important; width: 200px;"
-               *ngIf="showSearchTextbox" [(ngModel)]="searchListName"
-               (keydown.esc)="onPressEscape()" #searchTextbox>
+               *ngIf="showSearchTextBox" [(ngModel)]="searchListName"
+               (keydown.esc)="onPressEscape()" #searchTextBox>
         <app-content-header-button class="" (click)="openAddNewListModal()"><u>N</u>ew</app-content-header-button>
       </div>
     </app-content-header>
@@ -30,9 +30,9 @@ import {ShortcutInput} from 'ng-keyboard-shortcuts';
 })
 export class ListOverviewComponent implements OnInit, AfterViewInit {
   favoriteLists: FavoriteList[] = [];
-  showSearchTextbox = false;
+  showSearchTextBox = false;
   searchListName = '';
-  @ViewChild('searchTextbox') searchTextbox: ElementRef;
+  @ViewChild('searchTextBox') searchTextBox: ElementRef;
 
   constructor(private router: Router,
               private favoriteListApi: FavoriteListApi,
@@ -56,7 +56,7 @@ export class ListOverviewComponent implements OnInit, AfterViewInit {
         key: ['cmd + f'],
         label: 'Search list',
         description: 'Search list',
-        command: () => this.toggleSearchTextbox(),
+        command: () => this.toggleSearchTextBox(),
         preventDefault: true
       },
       {
@@ -70,17 +70,17 @@ export class ListOverviewComponent implements OnInit, AfterViewInit {
   }
 
   onPressEscape(): void {
-    this.showSearchTextbox = false;
+    this.showSearchTextBox = false;
     this.searchListName = '';
   }
 
-  toggleSearchTextbox(): void {
-    this.showSearchTextbox = !this.showSearchTextbox;
-    if (!this.showSearchTextbox) {
+  toggleSearchTextBox(): void {
+    this.showSearchTextBox = !this.showSearchTextBox;
+    if (!this.showSearchTextBox) {
       this.searchListName = '';
     } else {
       this.cdRef.detectChanges();
-      this.searchTextbox.nativeElement.focus();
+      this.searchTextBox.nativeElement.focus();
     }
   }
 
@@ -116,7 +116,7 @@ export class ListOverviewComponent implements OnInit, AfterViewInit {
     });
 
     // If we have our search enabled, filter the result.
-    if (this.showSearchTextbox) {
+    if (this.showSearchTextBox) {
       return sortedList.filter((list) => list.name.indexOf(this.searchListName) >= 0);
     }
 
