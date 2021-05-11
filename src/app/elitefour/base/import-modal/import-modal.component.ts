@@ -47,15 +47,20 @@ export class ImportModalComponent implements OnInit {
   }
 
   handleFileInput(files: FileList): void {
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      console.log(fileReader.result);
+      this.itemsToUpload = fileReader.result.toString()
+        .replace('\r', '')
+        .split('\n')
+        .map((name) => name.trim())
+        .filter((name) => name.length > 0);
+      this.checkImportFile();
+    };
+
     const fileToUpload = files.item(0);
     this.fileName = fileToUpload.name;
-    // TODO
-    // this.itemsToUpload = this.storageService.readFileSync(fileToUpload.path).toString('utf8')
-    //   .replace('\r', '')
-    //   .split('\n')
-    //   .map((name) => name.trim())
-    //   .filter((name) => name.length > 0);
-    this.checkImportFile();
+    fileReader.readAsText(fileToUpload);
   }
 
   private checkImportFile(): void {
