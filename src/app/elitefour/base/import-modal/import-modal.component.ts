@@ -14,6 +14,7 @@ import {FavoriteList} from '../../backend/favorite-list-interfaces';
     </div>
     <div class="modal-body">
       <div class="form-group mb-0">
+        <p>Import a file where each line will be parsed as an item.</p>
         <label class="btn btn-primary">
           <!--suppress TypeScriptUnresolvedVariable -->
           Browse <input type="file" hidden (change)="handleFileInput($event.target.files)">
@@ -26,6 +27,7 @@ import {FavoriteList} from '../../backend/favorite-list-interfaces';
       </div>
     </div>
     <div class="modal-footer">
+      <!--suppress HtmlUnknownAttribute -->
       <button ngbAutofocus type="button" class="btn btn-primary" (click)="importFile()" [disabled]="!!error || itemsToUpload.length == 0">Import</button>
     </div>
   `,
