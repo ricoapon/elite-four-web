@@ -1,7 +1,7 @@
 import {Directive, Input} from '@angular/core';
-import {FormGroup, NG_VALIDATORS, ValidationErrors, Validator} from "@angular/forms";
-import {FavoriteListApi} from "../../backend/favorite-list-api";
-import {FavoriteList} from "../../backend/favorite-list-interfaces";
+import {FormGroup, NG_VALIDATORS, ValidationErrors, Validator} from '@angular/forms';
+import {FavoriteListApi} from '../../backend/favorite-list-api';
+import {FavoriteList} from '../../backend/favorite-list-interfaces';
 
 @Directive({
   selector: '[appForbiddenListName]',
@@ -9,10 +9,10 @@ import {FavoriteList} from "../../backend/favorite-list-interfaces";
 })
 export class ForbiddenListNameValidatorDirective implements Validator {
   @Input('appForbiddenListName') forbiddenName: string[] = [];
-  favoriteLists: FavoriteList[]
+  favoriteLists: FavoriteList[];
 
   constructor(private favoriteListApi: FavoriteListApi) {
-    favoriteListApi.getFavoriteLists().subscribe((list) => this.favoriteLists = list)
+    favoriteListApi.getFavoriteLists().subscribe((list) => this.favoriteLists = list);
   }
 
   validate(formGroup: FormGroup): ValidationErrors | null {
@@ -20,6 +20,7 @@ export class ForbiddenListNameValidatorDirective implements Validator {
       : null;
   }
 
+  // tslint:disable-next-line:typedef
   private checkForbiddenName(inputListName: string, inputExceptionListName: string) {
     return (formGroup: FormGroup) => {
       const listNameControl = formGroup.controls[inputListName];
@@ -35,12 +36,12 @@ export class ForbiddenListNameValidatorDirective implements Validator {
 
       // Set error if the value is different than the exception and occurs in the list.
       if (listNameControl.value !== exceptionListNameControl.value &&
-        !!this.favoriteLists.find((list) => list.name == listNameControl.value)) {
+        !!this.favoriteLists.find((list) => list.name === listNameControl.value)) {
         listNameControl.setErrors({ forbiddenName: true });
-        return {forbiddenName: true}
+        return {forbiddenName: true};
       } else {
         listNameControl.setErrors(null);
       }
-    }
+    };
   }
 }

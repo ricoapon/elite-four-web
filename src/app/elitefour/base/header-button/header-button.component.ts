@@ -12,8 +12,8 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class HeaderButtonComponent implements OnInit {
   // Cannot be named 'class', since that would add the class to the component itself as well.
-  @Input() btnClass: string = 'btn-primary'
-  @Input() disabled: boolean
+  @Input() btnClass = 'btn-primary';
+  @Input() disabled: boolean;
 
   // Note that "click" callback can be used on any element, so we don't need to explicitly define it.
   constructor() { }

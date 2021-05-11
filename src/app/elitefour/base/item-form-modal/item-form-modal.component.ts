@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
-import {FavoriteListApi} from "../../backend/favorite-list-api";
-import {FavoriteItem, FavoriteList} from "../../backend/favorite-list-interfaces";
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {FavoriteListApi} from '../../backend/favorite-list-api';
+import {FavoriteItem, FavoriteList} from '../../backend/favorite-list-interfaces';
 
 @Component({
   selector: 'app-add-item-form-modal',
@@ -36,12 +36,12 @@ import {FavoriteItem, FavoriteList} from "../../backend/favorite-list-interfaces
   styles: []
 })
 export class ItemFormModalComponent implements OnInit {
-  @Input() listId: number
-  favoriteList: FavoriteList
-  @Input() favoriteItem: FavoriteItem
-  itemName: string = ''
-  initialItemName: string = ''
-  isEditMode: boolean
+  @Input() listId: number;
+  favoriteList: FavoriteList;
+  @Input() favoriteItem: FavoriteItem;
+  itemName = '';
+  initialItemName = '';
+  isEditMode: boolean;
 
   constructor(public activeModal: NgbActiveModal,
               private favoriteListApi: FavoriteListApi) {
@@ -50,29 +50,29 @@ export class ItemFormModalComponent implements OnInit {
   @ViewChild('itemNameModel') itemNameModel;
   checkValidation(): boolean {
     // Validation cannot happen the list is not initialized or if the itemName is empty.
-    if (!this.favoriteList || this.itemName == '') {
-      return false
+    if (!this.favoriteList || this.itemName === '') {
+      return false;
     }
 
     // If the name equals the initial name, it is valid.
-    if (this.initialItemName == this.itemName) {
-      this.itemNameModel.control.setErrors(null)
+    if (this.initialItemName === this.itemName) {
+      this.itemNameModel.control.setErrors(null);
       return true;
     }
 
     // If the name exists in the list of items, return false.
-    if (this.favoriteList.items.find((item) => item.name == this.itemName)) {
-      console.log(this.itemNameModel)
-      this.itemNameModel.control.setErrors({ forbiddenName: true })
+    if (this.favoriteList.items.find((item) => item.name === this.itemName)) {
+      console.log(this.itemNameModel);
+      this.itemNameModel.control.setErrors({ forbiddenName: true });
       return false;
     }
 
-    this.itemNameModel.control.setErrors(null)
+    this.itemNameModel.control.setErrors(null);
     return true;
   }
 
-  onSubmit() {
-    if (this.itemName.length == 0) {
+  onSubmit(): boolean {
+    if (this.itemName.length === 0) {
       return false;
     }
 
@@ -93,16 +93,16 @@ export class ItemFormModalComponent implements OnInit {
       // Do not close form if we could not submit properly.
       return false;
     }
-    this.activeModal.close("Submit");
+    this.activeModal.close('Submit');
   }
 
-  ngOnInit() {
-    this.favoriteListApi.getFavoriteListById(this.listId).subscribe((list) => this.favoriteList = list)
-    this.isEditMode = !!this.favoriteItem
+  ngOnInit(): void {
+    this.favoriteListApi.getFavoriteListById(this.listId).subscribe((list) => this.favoriteList = list);
+    this.isEditMode = !!this.favoriteItem;
 
     if (this.isEditMode) {
       this.itemName = this.favoriteItem.name;
-      this.initialItemName = this.itemName
+      this.initialItemName = this.itemName;
     }
   }
 

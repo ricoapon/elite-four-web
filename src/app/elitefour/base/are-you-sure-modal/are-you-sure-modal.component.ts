@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-are-you-sure-modal',
@@ -18,7 +18,7 @@ import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
   styles: []
 })
 export class AreYouSureModalComponent implements OnInit {
-  @Input() body?: string
+  @Input() body?: string;
 
   constructor(public activeModal: NgbActiveModal) {
   }

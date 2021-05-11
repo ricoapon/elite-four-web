@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
-import {FavoriteListApi} from "../../backend/favorite-list-api";
-import {FavoriteList, FavoriteListStatus} from "../../backend/favorite-list-interfaces";
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {FavoriteListApi} from '../../backend/favorite-list-api';
+import {FavoriteList, FavoriteListStatus} from '../../backend/favorite-list-interfaces';
 
 @Component({
   selector: 'app-add-list-form',
@@ -50,30 +50,30 @@ import {FavoriteList, FavoriteListStatus} from "../../backend/favorite-list-inte
   styles: []
 })
 export class ListFormModalComponent implements OnInit {
-  @Input() favoriteList: FavoriteList
-  listName: string = ''
-  initialListName: string = ''
-  nrOfItemsToBeShownOnScreen: number = 20
+  @Input() favoriteList: FavoriteList;
+  listName = '';
+  initialListName = '';
+  nrOfItemsToBeShownOnScreen = 20;
 
-  error: string
-  isEditMode: boolean
+  error: string;
+  isEditMode: boolean;
 
   constructor(public activeModal: NgbActiveModal,
               private favoriteListApi: FavoriteListApi) {
   }
 
-  isNrOfItemsToBeShownOnScreensDisabled() {
+  isNrOfItemsToBeShownOnScreensDisabled(): boolean {
     // If the list is ongoing, we cannot change the configuration.
     if (!!this.favoriteList) {
-      return this.favoriteList.status != FavoriteListStatus.CREATED
+      return this.favoriteList.status !== FavoriteListStatus.CREATED;
     }
 
     return false;
   }
 
-  onSubmit() {
-    if (this.listName.length == 0) {
-      this.error = 'You must set a name'
+  onSubmit(): boolean {
+    if (this.listName.length === 0) {
+      this.error = 'You must set a name';
       return false;
     }
 
@@ -87,7 +87,7 @@ export class ListFormModalComponent implements OnInit {
           status: this.favoriteList.status,
           tsCreated: this.favoriteList.tsCreated,
           nrOfItemsToBeShownOnScreen: this.nrOfItemsToBeShownOnScreen
-        })
+        });
       } else {
         this.favoriteListApi.addNewFavoriteList(this.listName, this.nrOfItemsToBeShownOnScreen);
       }
@@ -96,16 +96,16 @@ export class ListFormModalComponent implements OnInit {
       return false;
     }
 
-    this.activeModal.close("Submit");
+    this.activeModal.close('Submit');
   }
 
   ngOnInit(): void {
-    this.isEditMode = !!this.favoriteList
+    this.isEditMode = !!this.favoriteList;
 
     if (this.isEditMode) {
-      this.listName = this.favoriteList.name
-      this.initialListName = this.listName
-      this.nrOfItemsToBeShownOnScreen = this.favoriteList.nrOfItemsToBeShownOnScreen
+      this.listName = this.favoriteList.name;
+      this.initialListName = this.listName;
+      this.nrOfItemsToBeShownOnScreen = this.favoriteList.nrOfItemsToBeShownOnScreen;
     }
   }
 }

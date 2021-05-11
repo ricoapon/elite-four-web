@@ -1,11 +1,11 @@
 import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Router} from "@angular/router";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {ListFormModalComponent} from "../../base/list-form-modal/list-form-modal.component";
-import {FavoriteListApi} from "../../backend/favorite-list-api";
-import {FavoriteList} from "../../backend/favorite-list-interfaces";
-import {AreYouSureModalComponent} from "../../base/are-you-sure-modal/are-you-sure-modal.component";
-import {ShortcutInput} from "ng-keyboard-shortcuts";
+import {Router} from '@angular/router';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ListFormModalComponent} from '../../base/list-form-modal/list-form-modal.component';
+import {FavoriteListApi} from '../../backend/favorite-list-api';
+import {FavoriteList} from '../../backend/favorite-list-interfaces';
+import {AreYouSureModalComponent} from '../../base/are-you-sure-modal/are-you-sure-modal.component';
+import {ShortcutInput} from 'ng-keyboard-shortcuts';
 
 @Component({
   selector: 'app-list-overview',
@@ -23,16 +23,16 @@ import {ShortcutInput} from "ng-keyboard-shortcuts";
 
     <app-card-list *ngFor="let favoriteList of sortedAndFiltered(favoriteLists)"
                    [title]="favoriteList.name"
-                   (onDelete)="deleteList(favoriteList.id)"
-                   (onInfo)="navigateToList(favoriteList.id)">{{favoriteList.status}}</app-card-list>
+                   (delete)="deleteList(favoriteList.id)"
+                   (info)="navigateToList(favoriteList.id)">{{favoriteList.status}}</app-card-list>
   `,
   styles: []
 })
 export class ListOverviewComponent implements OnInit, AfterViewInit {
   favoriteLists: FavoriteList[];
-  showSearchTextbox: boolean = false;
-  searchListName: string = ''
-  @ViewChild('searchTextbox') searchTextbox: ElementRef
+  showSearchTextbox = false;
+  searchListName = '';
+  @ViewChild('searchTextbox') searchTextbox: ElementRef;
 
   constructor(private router: Router,
               private favoriteListApi: FavoriteListApi,
@@ -46,40 +46,40 @@ export class ListOverviewComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.shortcuts.push(
       {
-        key: ["n"],
-        label: "New item",
-        description: "New item",
+        key: ['n'],
+        label: 'New item',
+        description: 'New item',
         command: () => this.openAddNewListModal(),
         preventDefault: true
       },
       {
-        key: ["cmd + f"],
-        label: "Search list",
-        description: "Search list",
+        key: ['cmd + f'],
+        label: 'Search list',
+        description: 'Search list',
         command: () => this.toggleSearchTextbox(),
         preventDefault: true
       },
       {
-        key: ["esc"],
-        label: "Escape",
-        description: "Escape",
+        key: ['esc'],
+        label: 'Escape',
+        description: 'Escape',
         command: () => this.onPressEscape(),
         preventDefault: true
       },
     );
   }
 
-  onPressEscape() {
+  onPressEscape(): void {
     this.showSearchTextbox = false;
-    this.searchListName = ''
+    this.searchListName = '';
   }
 
-  toggleSearchTextbox() {
+  toggleSearchTextbox(): void {
     this.showSearchTextbox = !this.showSearchTextbox;
     if (!this.showSearchTextbox) {
-      this.searchListName = ''
+      this.searchListName = '';
     } else {
-      this.cdRef.detectChanges()
+      this.cdRef.detectChanges();
       this.searchTextbox.nativeElement.focus();
     }
   }
@@ -87,37 +87,37 @@ export class ListOverviewComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.favoriteListApi.getFavoriteLists().subscribe((favoriteLists) => {
       this.favoriteLists = favoriteLists;
-    })
+    });
   }
 
-  openAddNewListModal() {
+  openAddNewListModal(): void {
     this.modalService.open(ListFormModalComponent);
   }
 
-  deleteList(listId: number) {
-    const modalRef = this.modalService.open(AreYouSureModalComponent)
+  deleteList(listId: number): void {
+    const modalRef = this.modalService.open(AreYouSureModalComponent);
     modalRef.result.then((result) => {
       if (result) {
-        this.favoriteListApi.deleteFavoriteList(listId)
+        this.favoriteListApi.deleteFavoriteList(listId);
       }
     }, () => {
-    })
+    });
   }
 
-  navigateToList(listId: number) {
+  navigateToList(listId: number): void {
     // noinspection JSIgnoredPromiseFromCall
     this.router.navigate(['/list/' + listId]);
   }
 
-  sortedAndFiltered(favoriteLists: FavoriteList[]) {
+  sortedAndFiltered(favoriteLists: FavoriteList[]): FavoriteList[] {
     // Newest lists must be on top.
     const sortedList = favoriteLists.sort((a, b) => {
-      return new Date(b.tsCreated).getTime() - new Date(a.tsCreated).getTime()
-    })
+      return new Date(b.tsCreated).getTime() - new Date(a.tsCreated).getTime();
+    });
 
     // If we have our search enabled, filter the result.
     if (this.showSearchTextbox) {
-      return sortedList.filter((list) => list.name.indexOf(this.searchListName) >= 0)
+      return sortedList.filter((list) => list.name.indexOf(this.searchListName) >= 0);
     }
 
     return sortedList;

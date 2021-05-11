@@ -1,7 +1,7 @@
-import {FavoriteItem, FavoriteList, FavoriteListStatus} from "./favorite-list-interfaces";
-import {FavoriteListApi} from "./favorite-list-api";
-import {Injectable} from "@angular/core";
-import {Observable, ReplaySubject} from "rxjs";
+import {FavoriteItem, FavoriteList, FavoriteListStatus} from './favorite-list-interfaces';
+import {FavoriteListApi} from './favorite-list-api';
+import {Injectable} from '@angular/core';
+import {Observable, ReplaySubject} from 'rxjs';
 
 // This class shouldn't actually be a singleton. It should be a dependency that is created using a listId.
 // I don't know how to do this, so I just rewritten this as a singleton where the initialize method overwrites the whole content.
@@ -10,7 +10,7 @@ import {Observable, ReplaySubject} from "rxjs";
   providedIn: 'root'
 })
 export class FavoriteItemApi {
-  private favoriteList: FavoriteList
+  private favoriteList: FavoriteList;
   private favoriteListSubject: ReplaySubject<FavoriteList>;
 
   constructor(private favoriteListApi: FavoriteListApi) {
@@ -20,53 +20,53 @@ export class FavoriteItemApi {
    * Initialize the api for a certain list.
    * @param listId The id of the list.
    */
-  initialize(listId: number) {
-    this.favoriteListApi.getFavoriteListById(listId).subscribe(list => this.favoriteList = list)
-    this.favoriteListSubject = new ReplaySubject<FavoriteList>(1)
-    this.favoriteListSubject.next(this.favoriteList)
+  initialize(listId: number): void {
+    this.favoriteListApi.getFavoriteListById(listId).subscribe(list => this.favoriteList = list);
+    this.favoriteListSubject = new ReplaySubject<FavoriteList>(1);
+    this.favoriteListSubject.next(this.favoriteList);
   }
 
   private getItemsThatCanBeChosen(nrOfItemsToBeShownOnScreen: number): FavoriteItem[] {
     // Any item that is not eliminated or already a favorite can be chosen.
-    const possibleItemSelection = this.favoriteList.items.filter((item) => item.eliminatedBy.length == 0 && !item.favoritePosition)
+    const possibleItemSelection = this.favoriteList.items.filter((item) => item.eliminatedBy.length === 0 && !item.favoritePosition);
 
     // To sort properly, we need to count the number of items that the item eliminated.
     // To make the amount of calculations predictable, we don't do this inside the sort, but create a map in memory.
-    const nrOfEliminated = new Map<number, number>()
+    const nrOfEliminated = new Map<number, number>();
     possibleItemSelection.forEach((item) => nrOfEliminated.set(item.id,
-      this.favoriteList.items.filter((eliminatedItem) => eliminatedItem.eliminatedBy.includes(item.id)).length))
+      this.favoriteList.items.filter((eliminatedItem) => eliminatedItem.eliminatedBy.includes(item.id)).length));
 
     return possibleItemSelection
       // Sort all items in blocks based on the number of eliminated items.
       // However, also randomize all the elements inside the blocks.
       .sort((a, b) => {
-        const aNrOfEliminatedItems = nrOfEliminated.get(a.id)
-        const bNrOfEliminatedItems = nrOfEliminated.get(b.id)
-        if (aNrOfEliminatedItems == bNrOfEliminatedItems) {
+        const aNrOfEliminatedItems = nrOfEliminated.get(a.id);
+        const bNrOfEliminatedItems = nrOfEliminated.get(b.id);
+        if (aNrOfEliminatedItems === bNrOfEliminatedItems) {
           return 0.5 - Math.random();
         } else {
-          return aNrOfEliminatedItems - bNrOfEliminatedItems
+          return aNrOfEliminatedItems - bNrOfEliminatedItems;
         }
       })
       // Now pick the total amount of needed items.
-      .slice(0, nrOfItemsToBeShownOnScreen)
+      .slice(0, nrOfItemsToBeShownOnScreen);
   }
 
   private getToBeChosenItems(): FavoriteItem[] {
-    return this.favoriteList.items.filter((item) => item.toBeChosen)
+    return this.favoriteList.items.filter((item) => item.toBeChosen);
   }
 
   private getNumberOfFavoritesPicked(): number {
-    return this.favoriteList.items.filter((item) => !!item.favoritePosition).length
+    return this.favoriteList.items.filter((item) => !!item.favoritePosition).length;
   }
 
-  private save() {
+  private save(): void {
     this.favoriteListApi.updateList(this.favoriteList);
     this.favoriteListSubject.next(this.favoriteList);
   }
 
   getFavoriteList(): Observable<FavoriteList> {
-    return this.favoriteListSubject.asObservable()
+    return this.favoriteListSubject.asObservable();
   }
 
   getNextItems(): FavoriteItem[] {
@@ -77,13 +77,13 @@ export class FavoriteItemApi {
     }
 
     // If the list was not yet started, we start it now.
-    if (this.favoriteList.status == FavoriteListStatus.CREATED) {
-      this.favoriteList.status = FavoriteListStatus.ONGOING
+    if (this.favoriteList.status === FavoriteListStatus.CREATED) {
+      this.favoriteList.status = FavoriteListStatus.ONGOING;
     }
 
     // If the list was finished already, we cannot start.
-    if (this.favoriteList.status == FavoriteListStatus.FINISHED) {
-      throw new Error('Cannot execute algorithm for a finished list.')
+    if (this.favoriteList.status === FavoriteListStatus.FINISHED) {
+      throw new Error('Cannot execute algorithm for a finished list.');
     }
 
     // Pick n items of this list (or less if there are not that many items left).
@@ -91,52 +91,51 @@ export class FavoriteItemApi {
 
     // Mark all items in the list.
     toBeChosenItems.forEach((item) => {
-      item.toBeChosen = true
-    })
+      item.toBeChosen = true;
+    });
 
     this.save();
-    return toBeChosenItems
+    return toBeChosenItems;
   }
 
   /**
    * Executes the algorithm for picking items.
    *
    * Returns items that are picked as favorite in the previous step.
-   * @param selectedFavoriteItems
    */
   selectItems(selectedFavoriteItems: FavoriteItem[]): FavoriteItem[] {
     // Retrieve all the chosen items
-    const toBeChosenItems = this.getToBeChosenItems()
+    const toBeChosenItems = this.getToBeChosenItems();
 
     // Create a list of id's from the selected favorite items.
-    const selectedFavoriteItemIds = selectedFavoriteItems.map((item) => item.id)
+    const selectedFavoriteItemIds = selectedFavoriteItems.map((item) => item.id);
 
     toBeChosenItems.forEach((item) => {
       // If the item was not selected
-      if (!selectedFavoriteItems.find((selectedItem) => selectedItem.id == item.id)) {
+      if (!selectedFavoriteItems.find((selectedItem) => selectedItem.id === item.id)) {
         // Mark it as eliminated by all the selected items.
         item.eliminatedBy.push(...selectedFavoriteItemIds);
       }
 
       // Unmark all items, so a new list of chosen items can be picked.
-      toBeChosenItems.forEach((item) => item.toBeChosen = false)
-    })
+      toBeChosenItems.forEach(x => x.toBeChosen = false);
+    });
 
     // Create a list of all favorites that can be picked this round.
-    let pickedFavorites: FavoriteItem[] = []
-    let favoriteIsPicked: boolean = true;
+    const pickedFavorites: FavoriteItem[] = [];
+    let favoriteIsPicked = true;
     do {
-      const newFavoriteItem = this.pickFavoritesIfPossible()
+      const newFavoriteItem = this.pickFavoritesIfPossible();
       if (!!newFavoriteItem) {
         // If a favorite was picked, store it in a list that we will return.
-        pickedFavorites.push(newFavoriteItem)
+        pickedFavorites.push(newFavoriteItem);
       } else {
         // If not, end checking for favorites.
         favoriteIsPicked = false;
       }
-    } while (favoriteIsPicked)
+    } while (favoriteIsPicked);
 
-    this.save()
+    this.save();
     return pickedFavorites;
   }
 
@@ -151,24 +150,24 @@ export class FavoriteItemApi {
     // If more than one element is still available, we just continue.
     if (toBeChosenItemsNextTime.length > 1) {
       return undefined;
-    } else if (toBeChosenItemsNextTime.length == 0) {
+    } else if (toBeChosenItemsNextTime.length === 0) {
       // We must pick at least one element. If no elements can be picked anymore, then we are finished.
-      this.favoriteList.status = FavoriteListStatus.FINISHED
+      this.favoriteList.status = FavoriteListStatus.FINISHED;
       return undefined;
     }
 
     // A single element is left for the next choice, hence we mark it as the next favorite.
-    const newFavoriteItem = toBeChosenItemsNextTime[0]
-    newFavoriteItem.favoritePosition = this.getNumberOfFavoritesPicked() + 1
+    const newFavoriteItem = toBeChosenItemsNextTime[0];
+    newFavoriteItem.favoritePosition = this.getNumberOfFavoritesPicked() + 1;
 
     // Remove the item from all the eliminatedBy lists.
     this.favoriteList.items.forEach((item) => {
-      const indexOfFavoriteItem = item.eliminatedBy.indexOf(newFavoriteItem.id)
+      const indexOfFavoriteItem = item.eliminatedBy.indexOf(newFavoriteItem.id);
       if (indexOfFavoriteItem >= 0) {
-        item.eliminatedBy.splice(indexOfFavoriteItem, 1)
+        item.eliminatedBy.splice(indexOfFavoriteItem, 1);
       }
-    })
+    });
 
-    return newFavoriteItem
+    return newFavoriteItem;
   }
 }

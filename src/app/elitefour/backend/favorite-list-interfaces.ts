@@ -5,7 +5,7 @@ export type FavoriteList = {
   status: FavoriteListStatus,
   items: FavoriteItem[],
   nrOfItemsToBeShownOnScreen: number
-}
+};
 
 export type FavoriteItem = {
   id: number,
@@ -13,10 +13,10 @@ export type FavoriteItem = {
   favoritePosition?: number,
   eliminatedBy: number[],
   toBeChosen: boolean
-}
+};
 
 export enum FavoriteListStatus {
-  CREATED = "Created",
-  ONGOING = "Ongoing",
-  FINISHED = "Finished"
+  CREATED = 'Created',
+  ONGOING = 'Ongoing',
+  FINISHED = 'Finished'
 }

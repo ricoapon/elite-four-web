@@ -1,7 +1,7 @@
-import {FavoriteItem, FavoriteList, FavoriteListStatus} from "./favorite-list-interfaces";
-import {FavoriteListDatabase} from "./favorite-list-database";
-import {Observable, ReplaySubject} from "rxjs";
-import {Injectable} from "@angular/core";
+import {FavoriteItem, FavoriteList, FavoriteListStatus} from './favorite-list-interfaces';
+import {FavoriteListDatabase} from './favorite-list-database';
+import {Observable, ReplaySubject} from 'rxjs';
+import {Injectable} from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -12,32 +12,32 @@ export class FavoriteListApi {
   private readonly favoriteListsSubject: ReplaySubject<FavoriteList[]>;
 
   constructor(private favoriteListDatabase: FavoriteListDatabase) {
-    this.favoriteLists = favoriteListDatabase.getLists()
-    this.favoriteListsSubject = new ReplaySubject<FavoriteList[]>(1)
-    this.favoriteListsSubject.next(this.favoriteLists)
+    this.favoriteLists = favoriteListDatabase.getLists();
+    this.favoriteListsSubject = new ReplaySubject<FavoriteList[]>(1);
+    this.favoriteListsSubject.next(this.favoriteLists);
   }
 
-  private save() {
+  private save(): void {
     this.favoriteListDatabase.saveLists(this.favoriteLists);
     this.favoriteListsSubject.next(this.favoriteLists);
   }
 
   private findListById(listId: number): FavoriteList {
-    return this.favoriteLists.find(favoriteList => favoriteList.id == listId);
+    return this.favoriteLists.find(favoriteList => favoriteList.id === listId);
   }
 
-  private findItemById(listId: number, itemId: number) {
-    return this.findListById(listId).items.find(item => item.id == itemId);
+  private findItemById(listId: number, itemId: number): FavoriteItem {
+    return this.findListById(listId).items.find(item => item.id === itemId);
   }
 
 
 
 
-  updateList(favoriteList: FavoriteList) {
-    const favoriteListInlist: FavoriteList = this.favoriteLists.find(list => list.id == favoriteList.id)
+  updateList(favoriteList: FavoriteList): void {
+    const favoriteListInlist: FavoriteList = this.favoriteLists.find(list => list.id === favoriteList.id);
 
-    if(!favoriteListInlist) {
-      throw new Error('List ' + favoriteList.id + ' does not exist. Contact administrator.')
+    if (!favoriteListInlist) {
+      throw new Error('List ' + favoriteList.id + ' does not exist. Contact administrator.');
     }
 
     const listIndex = this.favoriteLists.indexOf(favoriteListInlist);
@@ -52,14 +52,14 @@ export class FavoriteListApi {
   getFavoriteListById(listId: number): Observable<FavoriteList> {
     return new Observable<FavoriteList>((observer) => {
       this.getFavoriteLists().subscribe((favoriteLists) => {
-          observer.next(favoriteLists.find(favoriteList => favoriteList.id == listId))
+          observer.next(favoriteLists.find(favoriteList => favoriteList.id === listId));
       }
-      )
-    })
+      );
+    });
   }
 
-  addNewFavoriteList(listName: string, nrOfItemsToBeShownOnScreen: number) {
-    const nameExists: boolean = !!this.favoriteLists.find(favoriteList => favoriteList.name == listName);
+  addNewFavoriteList(listName: string, nrOfItemsToBeShownOnScreen: number): void {
+    const nameExists: boolean = !!this.favoriteLists.find(x => x.name === listName);
 
     if (nameExists) {
       throw new Error('List with the same name already exists');
@@ -67,34 +67,34 @@ export class FavoriteListApi {
 
     const favoriteList: FavoriteList = this.favoriteListDatabase.createNewList(listName, nrOfItemsToBeShownOnScreen);
 
-    this.favoriteLists.push(favoriteList)
+    this.favoriteLists.push(favoriteList);
     this.save();
   }
 
-  deleteFavoriteList(listId: number) {
+  deleteFavoriteList(listId: number): void {
     const favoriteList = this.findListById(listId);
-    this.favoriteLists.splice(this.favoriteLists.indexOf(favoriteList), 1)
-    this.save()
+    this.favoriteLists.splice(this.favoriteLists.indexOf(favoriteList), 1);
+    this.save();
   }
 
-  addItemToFavoriteList(listId: number, itemName: string) {
+  addItemToFavoriteList(listId: number, itemName: string): void {
     const favoriteList: FavoriteList = this.findListById(listId);
-    const itemExists: boolean = !!favoriteList.items.find(item => item.name == itemName)
+    const itemExists: boolean = !!favoriteList.items.find(item => item.name === itemName);
 
-    if(itemExists) {
-      throw new Error('Item with the same name already exists')
+    if (itemExists) {
+      throw new Error('Item with the same name already exists');
     }
 
-    favoriteList.items.push(this.favoriteListDatabase.createNewItem(favoriteList, itemName))
+    favoriteList.items.push(this.favoriteListDatabase.createNewItem(favoriteList, itemName));
     this.save();
   }
 
-  updateItemForFavoriteList(listId: number, updatedItem: FavoriteItem) {
+  updateItemForFavoriteList(listId: number, updatedItem: FavoriteItem): void {
     const favoriteList: FavoriteList = this.findListById(listId);
-    const itemInList: FavoriteItem = favoriteList.items.find(item => item.id == updatedItem.id)
+    const itemInList: FavoriteItem = favoriteList.items.find(item => item.id === updatedItem.id);
 
-    if(!itemInList) {
-      throw new Error('Item ' + updatedItem.id + ' does not exist. Contact administrator.')
+    if (!itemInList) {
+      throw new Error('Item ' + updatedItem.id + ' does not exist. Contact administrator.');
     }
 
     const itemIndex = favoriteList.items.indexOf(itemInList);
@@ -102,29 +102,29 @@ export class FavoriteListApi {
     this.save();
   }
 
-  deleteItemFromFavoriteList(listId: number, itemId: number) {
+  deleteItemFromFavoriteList(listId: number, itemId: number): void {
     const items = this.findListById(listId).items;
     const favoriteItem: FavoriteItem = this.findItemById(listId, itemId);
-    items.splice(items.indexOf(favoriteItem), 1)
-    this.save()
+    items.splice(items.indexOf(favoriteItem), 1);
+    this.save();
   }
 
-  resetAlgorithm(listId: number) {
+  resetAlgorithm(listId: number): void {
     const favoriteList: FavoriteList = this.findListById(listId);
     favoriteList.status = FavoriteListStatus.CREATED;
     favoriteList.items.forEach((item) => {
-      item.favoritePosition = undefined
-      item.eliminatedBy = []
-      item.toBeChosen = false
-    })
+      item.favoritePosition = undefined;
+      item.eliminatedBy = [];
+      item.toBeChosen = false;
+    });
 
-    this.save()
+    this.save();
   }
 
-  removeAllItems(listId: number) {
+  removeAllItems(listId: number): void {
     const favoriteList: FavoriteList = this.findListById(listId);
-    favoriteList.items = []
-    this.save()
+    favoriteList.items = [];
+    this.save();
   }
 }
 
