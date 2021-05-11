@@ -45,7 +45,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
         preventDefault: true
       },
       {
-        key: ['cmd + f'],
+        key: ['shift + f'],
         label: 'Search list',
         description: 'Search list',
         command: () => this.toggleSearchTextbox(),
