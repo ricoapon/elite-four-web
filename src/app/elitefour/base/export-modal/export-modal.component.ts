@@ -17,6 +17,7 @@ import {FavoriteItem, FavoriteList} from '../../backend/favorite-list-interfaces
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-primary" (click)="exportAll()">Export all items</button>
+      <!--suppress HtmlUnknownAttribute -->
       <button ngbAutofocus type="button" class="btn btn-primary" (click)="exportOnlyFavorites()">Export only favorites
       </button>
     </div>
@@ -28,8 +29,11 @@ export class ExportModalComponent implements OnInit {
   constructor(private favoriteListApi: FavoriteListApi,
               public activeModal: NgbActiveModal) {
   }
+
   @Input() listId: number;
   private favoriteList: FavoriteList;
+  // @ts-ignore
+  private readonly FileSaver = require('file-saver');
 
   public static sortItems(favoriteItems: FavoriteItem[]): FavoriteItem[] {
     return favoriteItems.sort((a, b) => {
@@ -58,14 +62,12 @@ export class ExportModalComponent implements OnInit {
     const favoriteItems = this.favoriteList.items.filter((item) => !!item.favoritePosition);
 
     const blob = new Blob([this.createItemsAsString(favoriteItems)], {type: 'text/plain;charset=utf-8'});
-    // TODO
-    // this.FileSaver.saveAs(blob, 'FavoriteItems.txt');
+    this.FileSaver.saveAs(blob, 'FavoriteItems.txt');
   }
 
   exportAll(): void {
     const blob = new Blob([this.createItemsAsString(this.favoriteList.items)], {type: 'text/plain;charset=utf-8'});
-    // TODO
-    // this.FileSaver.saveAs(blob, 'AllItems.txt');
+    this.FileSaver.saveAs(blob, 'AllItems.txt');
   }
 
   createItemsAsString(favoriteItems: FavoriteItem[]): string {
