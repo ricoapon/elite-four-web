@@ -29,7 +29,7 @@ import {ShortcutInput} from 'ng-keyboard-shortcuts';
   styles: []
 })
 export class ListOverviewComponent implements OnInit, AfterViewInit {
-  favoriteLists: FavoriteList[];
+  favoriteLists: FavoriteList[] = [];
   showSearchTextbox = false;
   searchListName = '';
   @ViewChild('searchTextbox') searchTextbox: ElementRef;

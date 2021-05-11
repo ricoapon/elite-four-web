@@ -1,28 +1,19 @@
 import {Injectable} from '@angular/core';
 import {FavoriteItem, FavoriteList, FavoriteListStatus} from './favorite-list-interfaces';
-import {Store} from './store';
+import {FavoriteListStore} from './favorite-list-store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FavoriteListDatabase {
-  private readonly store: Store;
+  private readonly store: FavoriteListStore;
 
   constructor() {
-    this.store = new Store();
-    // Make sure the store exists.
-    if (!this.store.has('favoriteLists')) {
-      this.save([]);
-    }
-  }
-
-  private save(favoriteLists: FavoriteList[]): void {
-    console.log('Going to save', favoriteLists);
-    this.store.set('favoriteLists', favoriteLists);
+    this.store = new FavoriteListStore();
   }
 
   private generateListId(): number {
-    return Math.max(...this.store.get('favoriteLists').map(list => list.id), 0) + 1;
+    return Math.max(...this.store.get().map(list => list.id), 0) + 1;
   }
 
   // noinspection JSMethodCanBeStatic
@@ -31,7 +22,7 @@ export class FavoriteListDatabase {
   }
 
   getLists(): FavoriteList[] {
-    return this.store.get('favoriteLists');
+    return this.store.get();
   }
 
   createNewList(listName: string, nrOfItemsToBeShownOnScreen: number): FavoriteList {
@@ -46,7 +37,6 @@ export class FavoriteListDatabase {
   }
 
   saveLists(favoriteLists: FavoriteList[]): void {
-    this.store.set('favoriteLists', favoriteLists);
+    this.store.save(favoriteLists);
   }
-
 }
