@@ -7,8 +7,7 @@ import {AlgorithmComponent} from './elitefour/pages/algorithm/algorithm.componen
 import {HelpComponent} from './elitefour/pages/help/help.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/list', pathMatch: 'full'},
-  { path: 'list', component: ListOverviewComponent },
+  { path: '', component: ListOverviewComponent},
   { path: 'list/:id', component: ListDetailComponent },
   { path: 'list/:id/algorithm', component: AlgorithmComponent },
   { path: 'help', component: HelpComponent },
