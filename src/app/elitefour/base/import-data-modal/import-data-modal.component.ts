@@ -22,6 +22,8 @@ import {Router} from '@angular/router';
       <label class="pl-2">
         {{fileName}}
       </label>
+
+      <div class="alert alert-danger" *ngIf="!!error" style="white-space: pre-line">{{error}}</div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" (click)="activeModal.close()">Cancel</button>
@@ -33,6 +35,7 @@ import {Router} from '@angular/router';
 export class ImportDataModalComponent implements OnInit {
   fileName = '';
   importedData: string | undefined;
+  error: string;
 
   constructor(public activeModal: NgbActiveModal,
               private favoriteListApi: FavoriteListApi,
@@ -42,7 +45,10 @@ export class ImportDataModalComponent implements OnInit {
   }
 
   import(): void {
-    this.favoriteListApi.importFromString(this.importedData);
+    if (!this.favoriteListApi.importFromString(this.importedData)) {
+      this.error = 'Could not import data. If you are sure the file is correct, contact the administrator.';
+      return;
+    }
     this.activeModal.close();
     this.router.navigate(['/']);
   }

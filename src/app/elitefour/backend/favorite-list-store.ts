@@ -37,9 +37,16 @@ export class FavoriteListStore {
     this.saveDataToDisk();
   }
 
-  saveFromString(favoriteLists: string): void {
-    this.favoriteLists = JSON.parse(favoriteLists);
+  saveFromString(favoriteLists: string): boolean {
+    try {
+      this.favoriteLists = JSON.parse(favoriteLists);
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+
     this.saveDataToDisk();
+    return true;
   }
 
   createNewList(listName: string, nrOfItemsToBeShownOnScreen: number): FavoriteList {

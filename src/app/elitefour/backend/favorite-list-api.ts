@@ -116,7 +116,7 @@ export class FavoriteListApi {
     return this.favoriteListsStorage.getAsString();
   }
 
-  importFromString(data: string): void {
-    this.favoriteListsStorage.saveFromString(data);
+  importFromString(data: string): boolean {
+    return this.favoriteListsStorage.saveFromString(data);
   }
 }
