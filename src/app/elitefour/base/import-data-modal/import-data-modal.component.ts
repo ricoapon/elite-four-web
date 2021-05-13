@@ -25,14 +25,14 @@ import {Router} from '@angular/router';
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" (click)="activeModal.close()">Cancel</button>
-      <button class="btn btn-primary" (click)="import()">Import</button>
+      <button class="btn btn-primary" (click)="import()" [disabled]="importedData === undefined">Import</button>
     </div>
   `,
   styles: []
 })
 export class ImportDataModalComponent implements OnInit {
   fileName = '';
-  importedData: string;
+  importedData: string | undefined;
 
   constructor(public activeModal: NgbActiveModal,
               private favoriteListApi: FavoriteListApi,
