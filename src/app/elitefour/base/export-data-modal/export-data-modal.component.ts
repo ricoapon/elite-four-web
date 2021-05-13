@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {FavoriteListDatabase} from '../../backend/favorite-list-database';
+import {FavoriteListApi} from '../../backend/favorite-list-api';
 
 @Component({
   selector: 'app-export-data-modal',
@@ -26,13 +26,13 @@ export class ExportDataModalComponent implements OnInit {
   private readonly FileSaver = require('file-saver');
 
   constructor(public activeModal: NgbActiveModal,
-              private favoriteListDatabase: FavoriteListDatabase) { }
+              private favoriteListApi: FavoriteListApi) { }
 
   ngOnInit(): void {
   }
 
   export(): void {
-    const blob = new Blob([this.favoriteListDatabase.getExportAsString()], {type: 'text/plain;charset=utf-8'});
+    const blob = new Blob([this.favoriteListApi.getAsString()], {type: 'text/plain;charset=utf-8'});
     this.FileSaver.saveAs(blob, 'EliteFour.json');
     this.activeModal.close();
   }

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {FavoriteListDatabase} from '../../backend/favorite-list-database';
+import {FavoriteListApi} from '../../backend/favorite-list-api';
 
 @Component({
   selector: 'app-import-data-modal',
@@ -34,13 +34,13 @@ export class ImportDataModalComponent implements OnInit {
   importedData: string;
 
   constructor(public activeModal: NgbActiveModal,
-              private favoriteListDatabase: FavoriteListDatabase) { }
+              private favoriteListApi: FavoriteListApi) { }
 
   ngOnInit(): void {
   }
 
   import(): void {
-    this.favoriteListDatabase.importDataAsString(this.importedData);
+    this.favoriteListApi.importFromString(this.importedData);
     this.activeModal.close();
   }
 

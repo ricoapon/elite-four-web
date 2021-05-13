@@ -1,29 +1,22 @@
 import {FavoriteItem, FavoriteList, FavoriteListStatus} from './favorite-list-interfaces';
-import {FavoriteListDatabase} from './favorite-list-database';
 import {Observable, ReplaySubject} from 'rxjs';
 import {Injectable} from '@angular/core';
+import {FavoriteListStore} from './favorite-list-store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FavoriteListApi {
-  // Whenever this list is modified, it should be updated on disk.
-  private readonly favoriteLists: FavoriteList[];
+  private readonly favoriteListsStorage: FavoriteListStore;
   private readonly favoriteListsSubject: ReplaySubject<FavoriteList[]>;
 
-  constructor(private favoriteListDatabase: FavoriteListDatabase) {
-    this.favoriteLists = favoriteListDatabase.getLists();
+  constructor() {
     this.favoriteListsSubject = new ReplaySubject<FavoriteList[]>(1);
-    this.favoriteListsSubject.next(this.favoriteLists);
-  }
-
-  private save(): void {
-    this.favoriteListDatabase.saveLists(this.favoriteLists);
-    this.favoriteListsSubject.next(this.favoriteLists);
+    this.favoriteListsStorage = new FavoriteListStore(this.favoriteListsSubject);
   }
 
   private findListById(listId: number): FavoriteList {
-    return this.favoriteLists.find(favoriteList => favoriteList.id === listId);
+    return this.favoriteListsStorage.get().find(favoriteList => favoriteList.id === listId);
   }
 
   private findItemById(listId: number, itemId: number): FavoriteItem {
@@ -32,17 +25,15 @@ export class FavoriteListApi {
 
 
 
-
   updateList(favoriteList: FavoriteList): void {
-    const favoriteListInlist: FavoriteList = this.favoriteLists.find(list => list.id === favoriteList.id);
+    const favoriteListInlist: FavoriteList = this.favoriteListsStorage.get().find(list => list.id === favoriteList.id);
 
     if (!favoriteListInlist) {
       throw new Error('List ' + favoriteList.id + ' does not exist. Contact administrator.');
     }
 
-    const listIndex = this.favoriteLists.indexOf(favoriteListInlist);
-    this.favoriteLists[listIndex] = favoriteList;
-    this.save();
+    const listIndex = this.favoriteListsStorage.get().indexOf(favoriteListInlist);
+    this.favoriteListsStorage.modify(favoriteLists => favoriteLists[listIndex] = favoriteList);
   }
 
   getFavoriteLists(): Observable<FavoriteList[]> {
@@ -59,22 +50,20 @@ export class FavoriteListApi {
   }
 
   addNewFavoriteList(listName: string, nrOfItemsToBeShownOnScreen: number): void {
-    const nameExists: boolean = !!this.favoriteLists.find(x => x.name === listName);
+    const nameExists: boolean = !!this.favoriteListsStorage.get().find(x => x.name === listName);
 
     if (nameExists) {
       throw new Error('List with the same name already exists');
     }
 
-    const favoriteList: FavoriteList = this.favoriteListDatabase.createNewList(listName, nrOfItemsToBeShownOnScreen);
+    const favoriteList: FavoriteList = this.favoriteListsStorage.createNewList(listName, nrOfItemsToBeShownOnScreen);
 
-    this.favoriteLists.push(favoriteList);
-    this.save();
+    this.favoriteListsStorage.modify(favoriteLists => favoriteLists.push(favoriteList));
   }
 
   deleteFavoriteList(listId: number): void {
     const favoriteList = this.findListById(listId);
-    this.favoriteLists.splice(this.favoriteLists.indexOf(favoriteList), 1);
-    this.save();
+    this.favoriteListsStorage.modify(favoriteLists => favoriteLists.splice(favoriteLists.indexOf(favoriteList), 1));
   }
 
   addItemToFavoriteList(listId: number, itemName: string): void {
@@ -85,8 +74,7 @@ export class FavoriteListApi {
       throw new Error('Item with the same name already exists');
     }
 
-    favoriteList.items.push(this.favoriteListDatabase.createNewItem(favoriteList, itemName));
-    this.save();
+    this.favoriteListsStorage.modify(() => favoriteList.items.push(this.favoriteListsStorage.createNewItem(favoriteList, itemName)));
   }
 
   updateItemForFavoriteList(listId: number, updatedItem: FavoriteItem): void {
@@ -98,33 +86,37 @@ export class FavoriteListApi {
     }
 
     const itemIndex = favoriteList.items.indexOf(itemInList);
-    favoriteList.items[itemIndex] = updatedItem;
-    this.save();
+    this.favoriteListsStorage.modify(() => favoriteList.items[itemIndex] = updatedItem);
   }
 
   deleteItemFromFavoriteList(listId: number, itemId: number): void {
     const items = this.findListById(listId).items;
     const favoriteItem: FavoriteItem = this.findItemById(listId, itemId);
-    items.splice(items.indexOf(favoriteItem), 1);
-    this.save();
+    this.favoriteListsStorage.modify(() => items.splice(items.indexOf(favoriteItem), 1));
   }
 
   resetAlgorithm(listId: number): void {
     const favoriteList: FavoriteList = this.findListById(listId);
     favoriteList.status = FavoriteListStatus.CREATED;
-    favoriteList.items.forEach((item) => {
+    this.favoriteListsStorage.modify(() => favoriteList.items.forEach((item) => {
       item.favoritePosition = undefined;
       item.eliminatedBy = [];
       item.toBeChosen = false;
-    });
-
-    this.save();
+    }));
   }
 
   removeAllItems(listId: number): void {
     const favoriteList: FavoriteList = this.findListById(listId);
-    favoriteList.items = [];
-    this.save();
+    this.favoriteListsStorage.modify(() => favoriteList.items = []);
+  }
+
+
+
+  getAsString(): string {
+    return this.favoriteListsStorage.getAsString();
+  }
+
+  importFromString(data: string): void {
+    this.favoriteListsStorage.saveFromString(data);
   }
 }
-
