@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-menu',
@@ -6,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
+  public version = environment.version;
 
   constructor() { }
 

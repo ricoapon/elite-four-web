@@ -25,3 +25,9 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+### TODO
+https://angular.io/guide/deployment#deploy-to-github-pages
+
+GitHub Pages: you can't directly configure the GitHub Pages server, but you can add a 404 page. Copy index.html into 404.html.
+It will still be served as the 404 response, but the browser will process that page and load the application properly.
