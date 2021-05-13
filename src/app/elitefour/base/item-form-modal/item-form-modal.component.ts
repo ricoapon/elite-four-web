@@ -88,7 +88,7 @@ export class ItemFormModalComponent implements OnInit {
         this.favoriteListApi.addItemToFavoriteList(this.listId, this.itemName);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       // Do not close form if we could not submit properly.
       return false;
     }
