@@ -13,6 +13,16 @@
           <i class="fas fa-question"></i>
         </div>
       </a>
+      <a class="list-group-item list-group-item-action" (click)="export()">
+        <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+          <i class="fas fa-download"></i>
+        </div>
+      </a>
+      <a class="list-group-item list-group-item-action" (click)="import()">
+        <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+          <i class="fas fa-upload"></i>
+        </div>
+      </a>
     </div>
     <div class="list-group text-right">
       <span class="text-right version">Version {{version}}</span>
