@@ -117,7 +117,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
     modalRef.result.then((result) => {
       if (result) {
         this.favoriteListApi.deleteFavoriteList(this.favoriteList.id);
-        this.router.navigate(['/list']);
+        this.router.navigate(['/']);
       }}, () => {});
   }
 
