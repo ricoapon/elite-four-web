@@ -1,0 +1,21 @@
+name: Publish to website
+on:
+  release:
+    types: [released]
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.1
+
+      - name: Install and Build
+        run: |
+          npm install
+          npm run build:github-pages
+
+      - name: Publish
+        uses: JamesIves/github-pages-deploy-action@4.1.3
+        with:
+          branch: gh-pages
+          folder: dist/elite-four-web
