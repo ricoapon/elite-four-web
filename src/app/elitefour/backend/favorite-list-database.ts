@@ -39,4 +39,12 @@ export class FavoriteListDatabase {
   saveLists(favoriteLists: FavoriteList[]): void {
     this.store.save(favoriteLists);
   }
+
+  getExportAsString(): string {
+    return this.store.getAsString();
+  }
+
+  importDataAsString(favoriteLists: string): void {
+    this.store.importString(favoriteLists);
+  }
 }

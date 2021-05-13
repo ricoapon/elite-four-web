@@ -24,6 +24,15 @@ export class FavoriteListStore {
     return this.favoriteLists;
   }
 
+  getAsString(): string {
+    return JSON.stringify(this.favoriteLists);
+  }
+
+  importString(favoriteLists: string): void {
+    this.favoriteLists = JSON.parse(favoriteLists);
+    this.saveStore();
+  }
+
   private saveStore(): void {
     localStorage.setItem(FavoriteListStore.LOCALSTORAGE_KEY, JSON.stringify(this.favoriteLists));
   }
