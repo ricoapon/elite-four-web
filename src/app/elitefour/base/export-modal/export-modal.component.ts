@@ -32,7 +32,6 @@ export class ExportModalComponent implements OnInit {
 
   @Input() listId: number;
   private favoriteList: FavoriteList;
-  // @ts-ignore
   private readonly FileSaver = require('file-saver');
 
   public static sortItems(favoriteItems: FavoriteItem[]): FavoriteItem[] {
