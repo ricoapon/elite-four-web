@@ -62,7 +62,6 @@ export class ItemFormModalComponent implements OnInit {
 
     // If the name exists in the list of items, return false.
     if (this.favoriteList.items.find((item) => item.name === this.itemName)) {
-      console.log(this.itemNameModel);
       this.itemNameModel.control.setErrors({ forbiddenName: true });
       return false;
     }

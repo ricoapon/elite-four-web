@@ -51,7 +51,6 @@ export class ImportModalComponent implements OnInit {
   handleFileInput(files: FileList): void {
     const fileReader = new FileReader();
     fileReader.onload = () => {
-      console.log(fileReader.result);
       this.itemsToUpload = fileReader.result.toString()
         .replace('\r', '')
         .split('\n')
