@@ -27,11 +27,13 @@ import {ForbiddenListNameValidatorDirective} from './elitefour/base/list-form-mo
 import {CustomMinValidatorDirective} from './elitefour/base/list-form-modal/custom-min-validator.directive';
 import {KeyboardShortcutsModule} from 'ng-keyboard-shortcuts';
 import { ExportDataModalComponent } from './elitefour/base/export-data-modal/export-data-modal.component';
+import { ImportDataModalComponent } from './elitefour/base/import-data-modal/import-data-modal.component';
 
 @NgModule({
   declarations: [AppComponent, CardListComponent, HeaderComponent, HeaderButtonComponent, ListDetailComponent, ListOverviewComponent,
     ListFormModalComponent, MenuComponent, ItemFormModalComponent, AreYouSureModalComponent, AlgorithmComponent, HelpComponent,
-    ExportModalComponent, ImportModalComponent, ForbiddenListNameValidatorDirective, CustomMinValidatorDirective, ExportDataModalComponent],
+    ExportModalComponent, ImportModalComponent, ForbiddenListNameValidatorDirective, CustomMinValidatorDirective, ExportDataModalComponent,
+    ImportDataModalComponent],
   imports: [
     BrowserModule,
     FormsModule,
