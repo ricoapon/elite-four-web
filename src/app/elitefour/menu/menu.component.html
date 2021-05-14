@@ -1,31 +1,43 @@
 <nav class="navbar navbar-expand navbar-dark m-0 p-0">
   <div class="collapse navbar-collapse content mx-auto">
-    <div class="list-group text-left">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-         class="list-group-item list-group-item-action">
-        <div style="height: 40px;" class="w-100 d-flex align-items-center justify-content-center">
-          <i class="fas fa-list"></i>
+    <ul class="navbar-nav">
+      <li>
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+           class="list-group-item list-group-item-action">
+          <div style="height: 40px;" class="w-100 d-flex align-items-center justify-content-center">
+            <i class="fas fa-list"></i>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a routerLink="help" routerLinkActive="active"
+           class="list-group-item list-group-item-action">
+          <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+            <i class="fas fa-question"></i>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="list-group-item list-group-item-action" (click)="export()">
+          <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+            <i class="fas fa-download"></i>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="list-group-item list-group-item-action" (click)="import()">
+          <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+            <i class="fas fa-upload"></i>
+          </div>
+        </a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li>
+        <div class="list-group navbar-nav ml-auto text-right">
+          <span class="text-right version">v{{version}}</span>
         </div>
-      </a>
-      <a routerLink="help" routerLinkActive="active"
-         class="list-group-item list-group-item-action">
-        <div class="w-100 h-100 d-flex align-items-center justify-content-center">
-          <i class="fas fa-question"></i>
-        </div>
-      </a>
-      <a class="list-group-item list-group-item-action" (click)="export()">
-        <div class="w-100 h-100 d-flex align-items-center justify-content-center">
-          <i class="fas fa-download"></i>
-        </div>
-      </a>
-      <a class="list-group-item list-group-item-action" (click)="import()">
-        <div class="w-100 h-100 d-flex align-items-center justify-content-center">
-          <i class="fas fa-upload"></i>
-        </div>
-      </a>
-    </div>
-    <div class="list-group text-right">
-      <span class="text-right version">Version {{version}}</span>
-    </div>
+      </li>
+    </ul>
   </div>
 </nav>
