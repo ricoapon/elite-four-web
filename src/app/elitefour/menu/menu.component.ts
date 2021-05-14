@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {environment} from '../../../environments/environment';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ExportDataModalComponent} from '../base/export-data-modal/export-data-modal.component';
 import {ImportDataModalComponent} from '../base/import-data-modal/import-data-modal.component';
+import {VERSION} from '../../../environments/version';
 
 @Component({
   selector: 'app-menu',
@@ -10,7 +10,7 @@ import {ImportDataModalComponent} from '../base/import-data-modal/import-data-mo
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-  public version = environment.version;
+  public version = VERSION;
 
   constructor(private modalService: NgbModal) { }
 
