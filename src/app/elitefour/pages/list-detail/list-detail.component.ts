@@ -6,7 +6,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ItemFormModalComponent} from '../../base/item-form-modal/item-form-modal.component';
 import {AreYouSureModalComponent} from '../../modals';
 import {ListFormModalComponent} from '../../base/list-form-modal/list-form-modal.component';
-import {ExportModalComponent} from '../../base/export-modal/export-modal.component';
+import {ExportModalComponent} from '../../modals';
 import {ImportModalComponent} from '../../base/import-modal/import-modal.component';
 import {ShortcutInput} from 'ng-keyboard-shortcuts';
 
