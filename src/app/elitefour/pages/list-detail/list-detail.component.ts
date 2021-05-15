@@ -3,8 +3,13 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FavoriteItem, FavoriteList, FavoriteListStatus} from '../../backend/favorite-list-interfaces';
 import {FavoriteListApi} from '../../backend/favorite-list-api';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {AreYouSureModalComponent, ExportModalComponent, ImportModalComponent, ItemFormModalComponent} from '../../modals';
-import {ListFormModalComponent} from '../../base/list-form-modal/list-form-modal.component';
+import {
+  AreYouSureModalComponent,
+  ExportModalComponent,
+  ImportModalComponent,
+  ItemFormModalComponent,
+  ListFormModalComponent
+} from '../../modals';
 import {ShortcutInput} from 'ng-keyboard-shortcuts';
 
 @Component({

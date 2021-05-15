@@ -1,10 +1,9 @@
 import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ListFormModalComponent} from '../../base/list-form-modal/list-form-modal.component';
+import {AreYouSureModalComponent, ListFormModalComponent} from '../../modals';
 import {FavoriteListApi} from '../../backend/favorite-list-api';
 import {FavoriteList} from '../../backend/favorite-list-interfaces';
-import {AreYouSureModalComponent} from '../../modals';
 import {ShortcutInput} from 'ng-keyboard-shortcuts';
 
 @Component({
