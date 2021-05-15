@@ -9,9 +9,6 @@ import {SharedModule} from './shared/shared.module';
 import {AppRoutingModule} from './app-routing.module';
 
 import {AppComponent} from './app.component';
-import {CardListComponent} from './elitefour/base/card-list/card-list.component';
-import {HeaderComponent} from './elitefour/base/header/header.component';
-import {HeaderButtonComponent} from './elitefour/base/header-button/header-button.component';
 import {ListDetailComponent} from './elitefour/pages/list-detail/list-detail.component';
 import {ListOverviewComponent} from './elitefour/pages/list-overview/list-overview.component';
 import {MenuComponent} from './elitefour/menu/menu.component';
@@ -19,9 +16,10 @@ import {AlgorithmComponent} from './elitefour/pages/algorithm/algorithm.componen
 import {HelpComponent} from './elitefour/pages/help/help.component';
 import {KeyboardShortcutsModule} from 'ng-keyboard-shortcuts';
 import {ModalModule} from './elitefour/modals/modal.module';
+import {ComponentsModule} from './elitefour/components/components.module';
 
 @NgModule({
-  declarations: [AppComponent, CardListComponent, HeaderComponent, HeaderButtonComponent, ListDetailComponent, ListOverviewComponent,
+  declarations: [AppComponent, ListDetailComponent, ListOverviewComponent,
     MenuComponent, AlgorithmComponent, HelpComponent],
   imports: [
     BrowserModule,
@@ -29,7 +27,8 @@ import {ModalModule} from './elitefour/modals/modal.module';
     SharedModule,
     AppRoutingModule,
     KeyboardShortcutsModule.forRoot(),
-    ModalModule
+    ModalModule,
+    ComponentsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
