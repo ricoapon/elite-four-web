@@ -4,7 +4,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ListFormModalComponent} from '../../base/list-form-modal/list-form-modal.component';
 import {FavoriteListApi} from '../../backend/favorite-list-api';
 import {FavoriteList} from '../../backend/favorite-list-interfaces';
-import {AreYouSureModalComponent} from '../../base/are-you-sure-modal/are-you-sure-modal.component';
+import {AreYouSureModalComponent} from '../../modals';
 import {ShortcutInput} from 'ng-keyboard-shortcuts';
 
 @Component({

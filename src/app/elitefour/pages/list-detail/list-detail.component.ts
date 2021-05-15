@@ -4,7 +4,7 @@ import {FavoriteItem, FavoriteList, FavoriteListStatus} from '../../backend/favo
 import {FavoriteListApi} from '../../backend/favorite-list-api';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ItemFormModalComponent} from '../../base/item-form-modal/item-form-modal.component';
-import {AreYouSureModalComponent} from '../../base/are-you-sure-modal/are-you-sure-modal.component';
+import {AreYouSureModalComponent} from '../../modals';
 import {ListFormModalComponent} from '../../base/list-form-modal/list-form-modal.component';
 import {ExportModalComponent} from '../../base/export-modal/export-modal.component';
 import {ImportModalComponent} from '../../base/import-modal/import-modal.component';

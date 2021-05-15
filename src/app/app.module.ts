@@ -17,7 +17,6 @@ import {ListOverviewComponent} from './elitefour/pages/list-overview/list-overvi
 import {ListFormModalComponent} from './elitefour/base/list-form-modal/list-form-modal.component';
 import {MenuComponent} from './elitefour/menu/menu.component';
 import {ItemFormModalComponent} from './elitefour/base/item-form-modal/item-form-modal.component';
-import {AreYouSureModalComponent} from './elitefour/base/are-you-sure-modal/are-you-sure-modal.component';
 import {AlgorithmComponent} from './elitefour/pages/algorithm/algorithm.component';
 import {HelpComponent} from './elitefour/pages/help/help.component';
 import {ExportModalComponent} from './elitefour/base/export-modal/export-modal.component';
@@ -27,10 +26,11 @@ import {CustomMinValidatorDirective} from './elitefour/base/list-form-modal/cust
 import {KeyboardShortcutsModule} from 'ng-keyboard-shortcuts';
 import { ExportDataModalComponent } from './elitefour/base/export-data-modal/export-data-modal.component';
 import { ImportDataModalComponent } from './elitefour/base/import-data-modal/import-data-modal.component';
+import {ModalModule} from './elitefour/modals/modal.module';
 
 @NgModule({
   declarations: [AppComponent, CardListComponent, HeaderComponent, HeaderButtonComponent, ListDetailComponent, ListOverviewComponent,
-    ListFormModalComponent, MenuComponent, ItemFormModalComponent, AreYouSureModalComponent, AlgorithmComponent, HelpComponent,
+    ListFormModalComponent, MenuComponent, ItemFormModalComponent, AlgorithmComponent, HelpComponent,
     ExportModalComponent, ImportModalComponent, ForbiddenListNameValidatorDirective, CustomMinValidatorDirective, ExportDataModalComponent,
     ImportDataModalComponent],
   imports: [
@@ -38,7 +38,8 @@ import { ImportDataModalComponent } from './elitefour/base/import-data-modal/imp
     FormsModule,
     SharedModule,
     AppRoutingModule,
-    KeyboardShortcutsModule.forRoot()
+    KeyboardShortcutsModule.forRoot(),
+    ModalModule
   ],
   providers: [],
   bootstrap: [AppComponent]
