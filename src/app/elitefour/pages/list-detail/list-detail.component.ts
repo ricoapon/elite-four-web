@@ -3,11 +3,13 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FavoriteItem, FavoriteList, FavoriteListStatus} from '../../backend/favorite-list-interfaces';
 import {FavoriteListApi} from '../../backend/favorite-list-api';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ItemFormModalComponent} from '../../base/item-form-modal/item-form-modal.component';
-import {AreYouSureModalComponent} from '../../base/are-you-sure-modal/are-you-sure-modal.component';
-import {ListFormModalComponent} from '../../base/list-form-modal/list-form-modal.component';
-import {ExportModalComponent} from '../../base/export-modal/export-modal.component';
-import {ImportModalComponent} from '../../base/import-modal/import-modal.component';
+import {
+  AreYouSureModalComponent,
+  ExportModalComponent,
+  ImportModalComponent,
+  ItemFormModalComponent,
+  ListFormModalComponent
+} from '../../modals';
 import {ShortcutInput} from 'ng-keyboard-shortcuts';
 
 @Component({
@@ -35,6 +37,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
   }
 
   shortcuts: ShortcutInput[] = [];
+
   ngAfterViewInit(): void {
     this.shortcuts.push(
       {
@@ -118,7 +121,9 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
       if (result) {
         this.favoriteListApi.deleteFavoriteList(this.favoriteList.id);
         this.router.navigate(['/']);
-      }}, () => {});
+      }
+    }, () => {
+    });
   }
 
   deleteItem(itemId: number): void {
@@ -126,7 +131,9 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
     modalRef.result.then((result) => {
       if (result) {
         this.favoriteListApi.deleteItemFromFavoriteList(this.favoriteList.id, itemId);
-      }}, () => {});
+      }
+    }, () => {
+    });
   }
 
   sortAndFilter(favoriteItems: FavoriteItem[]): FavoriteItem[] {
@@ -147,7 +154,9 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
     modalRef.result.then((result) => {
       if (result) {
         this.favoriteListApi.resetAlgorithm(this.favoriteList.id);
-      }}, () => {});
+      }
+    }, () => {
+    });
   }
 
   removeAllItems(): void {
@@ -155,7 +164,9 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
     modalRef.result.then((result) => {
       if (result) {
         this.favoriteListApi.removeAllItems(this.favoriteList.id);
-      }}, () => {});
+      }
+    }, () => {
+    });
   }
 }
 
