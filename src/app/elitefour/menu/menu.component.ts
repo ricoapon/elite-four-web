@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ExportDataModalComponent} from '../base/export-data-modal/export-data-modal.component';
+import {ExportDataModalComponent} from '../modals';
 import {ImportDataModalComponent} from '../base/import-data-modal/import-data-modal.component';
 import {VERSION} from '../../../environments/version';
 
