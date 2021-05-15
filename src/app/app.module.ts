@@ -11,7 +11,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {ListDetailComponent} from './elitefour/pages/list-detail/list-detail.component';
 import {ListOverviewComponent} from './elitefour/pages/list-overview/list-overview.component';
-import {MenuComponent} from './elitefour/menu/menu.component';
+import {MenuComponent} from './elitefour/pages/menu/menu.component';
 import {AlgorithmComponent} from './elitefour/pages/algorithm/algorithm.component';
 import {HelpComponent} from './elitefour/pages/help/help.component';
 import {KeyboardShortcutsModule} from 'ng-keyboard-shortcuts';
