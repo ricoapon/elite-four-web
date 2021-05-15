@@ -19,7 +19,6 @@ import {MenuComponent} from './elitefour/menu/menu.component';
 import {ItemFormModalComponent} from './elitefour/base/item-form-modal/item-form-modal.component';
 import {AlgorithmComponent} from './elitefour/pages/algorithm/algorithm.component';
 import {HelpComponent} from './elitefour/pages/help/help.component';
-import {ImportModalComponent} from './elitefour/base/import-modal/import-modal.component';
 import {ForbiddenListNameValidatorDirective} from './elitefour/base/list-form-modal/forbidden-list-name-validator.directive';
 import {CustomMinValidatorDirective} from './elitefour/base/list-form-modal/custom-min-validator.directive';
 import {KeyboardShortcutsModule} from 'ng-keyboard-shortcuts';
@@ -28,7 +27,7 @@ import {ModalModule} from './elitefour/modals/modal.module';
 @NgModule({
   declarations: [AppComponent, CardListComponent, HeaderComponent, HeaderButtonComponent, ListDetailComponent, ListOverviewComponent,
     ListFormModalComponent, MenuComponent, ItemFormModalComponent, AlgorithmComponent, HelpComponent,
-    ImportModalComponent, ForbiddenListNameValidatorDirective, CustomMinValidatorDirective],
+    ForbiddenListNameValidatorDirective, CustomMinValidatorDirective],
   imports: [
     BrowserModule,
     FormsModule,

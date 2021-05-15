@@ -4,9 +4,12 @@ import {AreYouSureModalComponent} from './are-you-sure-modal/are-you-sure-modal.
 import {ExportDataModalComponent} from './export-data-modal/export-data-modal.component';
 import {ExportModalComponent} from './export-modal/export-modal.component';
 import {ImportDataModalComponent} from './import-data-modal/import-data-modal.component';
+import {ImportModalComponent} from './import-modal/import-modal.component';
 
 @NgModule({
-  declarations: [AreYouSureModalComponent, ExportDataModalComponent, ExportModalComponent, ImportDataModalComponent],
+  declarations: [AreYouSureModalComponent,
+    ExportDataModalComponent, ExportModalComponent,
+    ImportDataModalComponent, ImportModalComponent],
   imports: [CommonModule],
   exports: []
 })

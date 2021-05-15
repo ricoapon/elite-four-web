@@ -7,7 +7,7 @@ import {ItemFormModalComponent} from '../../base/item-form-modal/item-form-modal
 import {AreYouSureModalComponent} from '../../modals';
 import {ListFormModalComponent} from '../../base/list-form-modal/list-form-modal.component';
 import {ExportModalComponent} from '../../modals';
-import {ImportModalComponent} from '../../base/import-modal/import-modal.component';
+import {ImportModalComponent} from '../../modals';
 import {ShortcutInput} from 'ng-keyboard-shortcuts';
 
 @Component({
