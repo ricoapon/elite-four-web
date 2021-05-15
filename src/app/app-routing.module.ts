@@ -1,17 +1,13 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {PageNotFoundComponent} from './shared/components';
-import {ListOverviewComponent} from './elitefour/pages/list-overview/list-overview.component';
-import {ListDetailComponent} from './elitefour/pages/list-detail/list-detail.component';
-import {AlgorithmComponent} from './elitefour/pages/algorithm/algorithm.component';
-import {HelpComponent} from './elitefour/pages/help/help.component';
+import {AlgorithmComponent, HelpComponent, ListDetailComponent, ListOverviewComponent, PageNotFoundComponent} from './elitefour/pages';
 
 const routes: Routes = [
-  { path: '', component: ListOverviewComponent},
-  { path: 'list/:id', component: ListDetailComponent },
-  { path: 'list/:id/algorithm', component: AlgorithmComponent },
-  { path: 'help', component: HelpComponent },
-  { path: '**', component: PageNotFoundComponent }
+  {path: '', component: ListOverviewComponent},
+  {path: 'list/:id', component: ListDetailComponent},
+  {path: 'list/:id/algorithm', component: AlgorithmComponent},
+  {path: 'help', component: HelpComponent},
+  {path: '**', component: PageNotFoundComponent}
 ];
 
 @NgModule({
