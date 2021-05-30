@@ -1,11 +1,10 @@
+:root {
+  --primary-rgb: 0, 123, 255;
+}
+
 html, body {
   margin: 0;
   padding: 0;
-  background-color: rgba(211, 211, 211, 0.28);
-}
-
-h1, h2, h3, h4, h5, h6, p {
-  color: #0D1B3E;
 }
 
 .card-body {

@@ -1,7 +1,3 @@
-nav {
-  background-color: #0D1B3E
-}
-
 @media (min-width: 1220px) {
   nav {
     padding-left: calc(100vw - 100%) !important;
@@ -31,19 +27,19 @@ nav {
 }
 
 .list-group-item-action:hover {
-  background-color: rgba(0, 123, 255, 0.34) !important;
+  background-color: rgba(var(--primary-rgb), 0.34) !important;
 }
 
 .list-group-item.active {
-  background-color: #007bff !important;
+  background-color: var(--primary) !important;
 }
 
 a {
-  color: white !important;
+  color: var(--white) !important;
   text-align: center;
   padding: 0;
 }
 
 .version {
-  color: white !important;
+  color: var(--white) !important;
 }

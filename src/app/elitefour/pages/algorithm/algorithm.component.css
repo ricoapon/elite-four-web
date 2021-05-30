@@ -3,9 +3,9 @@
 }
 
 .selectable-item:hover {
-  background-color: rgba(0, 123, 255, 0.10);
+  background-color: rgba(var(--primary-rgb), 0.10);
 }
 
 .selectable-item.selected {
-  background-color: rgba(0, 123, 255, 0.34);
+  background-color: rgba(var(--primary-rgb), 0.34);
 }
