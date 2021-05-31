@@ -25,7 +25,7 @@ export class FavoriteListsRepositoryImpl {
 
 
 
-  updateList(favoriteList: FavoriteList): void {
+  updateFavoriteList(favoriteList: FavoriteList): void {
     const favoriteListInlist: FavoriteList = this.favoriteListsStorage.get().find(list => list.id === favoriteList.id);
 
     if (!favoriteListInlist) {
@@ -49,7 +49,7 @@ export class FavoriteListsRepositoryImpl {
     });
   }
 
-  addNewFavoriteList(listName: string, nrOfItemsToBeShownOnScreen: number): void {
+  addFavoriteList(listName: string, nrOfItemsToBeShownOnScreen: number): void {
     const nameExists: boolean = !!this.favoriteListsStorage.get().find(x => x.name === listName);
 
     if (nameExists) {

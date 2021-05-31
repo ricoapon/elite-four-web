@@ -61,7 +61,7 @@ export class FavoriteItemApi {
   }
 
   private save(): void {
-    this.favoriteListApi.updateList(this.favoriteList);
+    this.favoriteListApi.updateFavoriteList(this.favoriteList);
     this.favoriteListSubject.next(this.favoriteList);
   }
 

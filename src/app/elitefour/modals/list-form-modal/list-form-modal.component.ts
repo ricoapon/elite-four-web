@@ -80,7 +80,7 @@ export class ListFormModalComponent implements OnInit {
     try {
       if (this.isEditMode) {
         // Create a new list so that in case the update goes wrong we didn't update the incoming list (which is shown on the screen).
-        this.favoriteListApi.updateList({
+        this.favoriteListApi.updateFavoriteList({
           id: this.favoriteList.id,
           name: this.listName,
           items: this.favoriteList.items,
@@ -89,7 +89,7 @@ export class ListFormModalComponent implements OnInit {
           nrOfItemsToBeShownOnScreen: this.nrOfItemsToBeShownOnScreen
         });
       } else {
-        this.favoriteListApi.addNewFavoriteList(this.listName, this.nrOfItemsToBeShownOnScreen);
+        this.favoriteListApi.addFavoriteList(this.listName, this.nrOfItemsToBeShownOnScreen);
       }
     } catch (error) {
       this.error = error.message;
