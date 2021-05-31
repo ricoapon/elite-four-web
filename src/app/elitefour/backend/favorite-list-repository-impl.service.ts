@@ -6,7 +6,7 @@ import {FavoriteListStore} from './favorite-list-store';
 @Injectable({
   providedIn: 'root'
 })
-export class FavoriteListApi {
+export class FavoriteListsRepositoryImpl {
   private readonly favoriteListsStorage: FavoriteListStore;
   private readonly favoriteListsSubject: ReplaySubject<FavoriteList[]>;
 

@@ -1,5 +1,5 @@
 import {FavoriteItem, FavoriteList, FavoriteListStatus} from './favorite-list-interfaces';
-import {FavoriteListApi} from './favorite-list-api';
+import {FavoriteListsRepositoryImpl} from './favorite-list-repository-impl.service';
 import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject} from 'rxjs';
 
@@ -13,7 +13,7 @@ export class FavoriteItemApi {
   private favoriteList: FavoriteList;
   private favoriteListSubject: ReplaySubject<FavoriteList>;
 
-  constructor(private favoriteListApi: FavoriteListApi) {
+  constructor(private favoriteListApi: FavoriteListsRepositoryImpl) {
   }
 
   /**

@@ -2,7 +2,7 @@ import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChi
 import {Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {AreYouSureModalComponent, ListFormModalComponent} from '../../modals';
-import {FavoriteListApi} from '../../backend/favorite-list-api';
+import {FavoriteListsRepositoryImpl} from '../../backend/favorite-list-repository-impl.service';
 import {FavoriteList} from '../../backend/favorite-list-interfaces';
 import {ShortcutInput} from 'ng-keyboard-shortcuts';
 
@@ -34,7 +34,7 @@ export class ListOverviewComponent implements OnInit, AfterViewInit {
   @ViewChild('searchTextBox') searchTextBox: ElementRef;
 
   constructor(private router: Router,
-              private favoriteListApi: FavoriteListApi,
+              private favoriteListApi: FavoriteListsRepositoryImpl,
               private modalService: NgbModal,
               private cdRef: ChangeDetectorRef) {
     this.navigateToList = this.navigateToList.bind(this);

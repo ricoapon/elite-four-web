@@ -1,7 +1,7 @@
 import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FavoriteItem, FavoriteList, FavoriteListStatus} from '../../backend/favorite-list-interfaces';
-import {FavoriteListApi} from '../../backend/favorite-list-api';
+import {FavoriteListsRepositoryImpl} from '../../backend/favorite-list-repository-impl.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {
   AreYouSureModalComponent,
@@ -31,7 +31,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
 
   constructor(private route: ActivatedRoute,
               public router: Router,
-              private favoriteListApi: FavoriteListApi,
+              private favoriteListApi: FavoriteListsRepositoryImpl,
               private modalService: NgbModal,
               private cdRef: ChangeDetectorRef) {
   }
