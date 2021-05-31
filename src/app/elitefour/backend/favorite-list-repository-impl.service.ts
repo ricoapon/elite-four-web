@@ -1,6 +1,7 @@
 import {FavoriteList, FavoriteListsRepository} from './favorite-list-interfaces';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {Injectable} from '@angular/core';
+import {FavoriteListCloner} from './favorite-list-cloner';
 
 /**
  * Implementation of {@link FavoriteListsRepository} that uses localStorage to store the object.
@@ -25,7 +26,7 @@ export class FavoriteListsRepositoryImpl extends FavoriteListsRepository {
       this.saveDataToLocalStorage();
     }
 
-    this.favoriteListsSubject = new BehaviorSubject<FavoriteList[]>(this.favoriteLists);
+    this.favoriteListsSubject = new BehaviorSubject<FavoriteList[]>(FavoriteListCloner.cloneFavoriteLists(this.favoriteLists));
   }
 
   getFavoriteLists(): Observable<FavoriteList[]> {
@@ -35,13 +36,13 @@ export class FavoriteListsRepositoryImpl extends FavoriteListsRepository {
   modify(modifier: (favoriteLists: FavoriteList[]) => void): void {
     modifier(this.favoriteLists);
     this.saveDataToLocalStorage();
-    this.favoriteListsSubject.next(this.favoriteLists);
+    this.favoriteListsSubject.next(FavoriteListCloner.cloneFavoriteLists(this.favoriteLists));
   }
 
   protected _overrideAndSaveAndEmit(favoriteLists: FavoriteList[]): void {
     this.favoriteLists = favoriteLists;
     this.saveDataToLocalStorage();
-    this.favoriteListsSubject.next(this.favoriteLists);
+    this.favoriteListsSubject.next(FavoriteListCloner.cloneFavoriteLists(this.favoriteLists));
   }
 
   private saveDataToLocalStorage(): void {
