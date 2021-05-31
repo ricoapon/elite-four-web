@@ -54,10 +54,13 @@ export abstract class FavoriteListsRepository {
   abstract getFavoriteLists(): Observable<FavoriteList[]>;
 
   /**
-   * Modify the content and save it.
+   * Modifies the content, saves it and emits a new value to the observable from {@link FavoriteListsRepository#getFavoriteLists}.
    * @param modifier The method that modifies the content.
    */
   abstract modify(modifier: (favoriteLists: FavoriteList[]) => void): void;
+
+  /** Overrides the data completely, which is not possible with the modify method. Also save and emit the value. Only for internal use. */
+  protected abstract _overrideAndSaveAndEmit(favoriteLists: FavoriteList[]): void;
 
   /**
    * Returns an observable that pushes the latest {@link FavoriteList} with a specific id if any changes have been made. The object that is
@@ -145,5 +148,17 @@ export abstract class FavoriteListsRepository {
       const favoriteList: FavoriteList = FavoriteListsRepository.findListById(listId, favoriteLists);
       favoriteList.items = [];
     });
+  }
+
+
+  importFromString(data: string): boolean {
+    try {
+      this._overrideAndSaveAndEmit(JSON.parse(data));
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+
+    return true;
   }
 }

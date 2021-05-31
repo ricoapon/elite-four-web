@@ -153,7 +153,16 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
       'No items will be deleted.';
     modalRef.result.then((result) => {
       if (result) {
-        this.favoriteListApi.resetAlgorithm(this.favoriteList.id);
+        // Reset algorithm by clearing fields on all items.
+        this.favoriteListApi.modify((favoriteLists: FavoriteList[]) => {
+          const favoriteList: FavoriteList = favoriteLists.find(x => x.id === this.favoriteList.id);
+          favoriteList.status = FavoriteListStatus.CREATED;
+          favoriteList.items.forEach((item) => {
+            item.favoritePosition = undefined;
+            item.eliminatedBy = [];
+            item.toBeChosen = false;
+          });
+        });
       }
     }, () => {
     });

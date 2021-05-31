@@ -1,4 +1,4 @@
-import {FavoriteList, FavoriteListsRepository, FavoriteListStatus} from './favorite-list-interfaces';
+import {FavoriteList, FavoriteListsRepository} from './favorite-list-interfaces';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {Injectable} from '@angular/core';
 
@@ -38,35 +38,13 @@ export class FavoriteListsRepositoryImpl extends FavoriteListsRepository {
     this.favoriteListsSubject.next(this.favoriteLists);
   }
 
+  protected _overrideAndSaveAndEmit(favoriteLists: FavoriteList[]): void {
+    this.favoriteLists = favoriteLists;
+    this.saveDataToLocalStorage();
+    this.favoriteListsSubject.next(this.favoriteLists);
+  }
+
   private saveDataToLocalStorage(): void {
     localStorage.setItem(FavoriteListsRepositoryImpl.LOCALSTORAGE_KEY, JSON.stringify(this.favoriteLists));
-  }
-
-  resetAlgorithm(listId: number): void {
-    this.modify((favoriteLists: FavoriteList[]) => {
-      const favoriteList: FavoriteList = favoriteLists.find(x => x.id === listId);
-      favoriteList.status = FavoriteListStatus.CREATED;
-      favoriteList.items.forEach((item) => {
-        item.favoritePosition = undefined;
-        item.eliminatedBy = [];
-        item.toBeChosen = false;
-      });
-    });
-  }
-
-  getAsString(): string {
-    return JSON.stringify(this.favoriteLists);
-  }
-
-  importFromString(data: string): boolean {
-    try {
-      this.favoriteLists = JSON.parse(data);
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
-
-    this.saveDataToLocalStorage();
-    return true;
   }
 }
