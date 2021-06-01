@@ -1,7 +1,6 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {FavoriteListsRepositoryImpl} from '../../backend/favorite-list-repository-impl.service';
-import {FavoriteItem, FavoriteList} from '../../backend/favorite-list-interfaces';
+import {FavoriteItem, FavoriteList, FavoriteListsRepository} from '../../backend/favorite-list-interfaces';
 
 @Component({
   selector: 'app-add-item-form-modal',
@@ -44,7 +43,7 @@ export class ItemFormModalComponent implements OnInit {
   isEditMode: boolean;
 
   constructor(public activeModal: NgbActiveModal,
-              private favoriteListApi: FavoriteListsRepositoryImpl) {
+              private favoriteListsRepository: FavoriteListsRepository) {
   }
 
   @ViewChild('itemNameModel') itemNameModel;
@@ -78,14 +77,14 @@ export class ItemFormModalComponent implements OnInit {
     try {
       if (this.isEditMode) {
         // Create a new item so that in case the update goes wrong we didn't update the incoming item (which is shown on the screen).
-        this.favoriteListApi.updateItemForFavoriteList(this.listId, {
+        this.favoriteListsRepository.updateItemForFavoriteList(this.listId, {
           id: this.favoriteItem.id,
           name: this.itemName,
           eliminatedBy: [],
           toBeChosen: false
         });
       } else {
-        this.favoriteListApi.addItemToFavoriteList(this.listId, this.itemName);
+        this.favoriteListsRepository.addItemToFavoriteList(this.listId, this.itemName);
       }
     } catch (error) {
       console.error(error);
@@ -96,7 +95,7 @@ export class ItemFormModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.favoriteListApi.getFavoriteListById(this.listId).subscribe((list) => this.favoriteList = list);
+    this.favoriteListsRepository.getFavoriteListById(this.listId).subscribe((list) => this.favoriteList = list);
     this.isEditMode = !!this.favoriteItem;
 
     if (this.isEditMode) {

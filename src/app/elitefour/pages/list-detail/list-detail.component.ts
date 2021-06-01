@@ -1,7 +1,6 @@
 import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FavoriteItem, FavoriteList, FavoriteListStatus} from '../../backend/favorite-list-interfaces';
-import {FavoriteListsRepositoryImpl} from '../../backend/favorite-list-repository-impl.service';
+import {FavoriteItem, FavoriteList, FavoriteListsRepository, FavoriteListStatus} from '../../backend/favorite-list-interfaces';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {
   AreYouSureModalComponent,
@@ -31,7 +30,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
 
   constructor(private route: ActivatedRoute,
               public router: Router,
-              private favoriteListApi: FavoriteListsRepositoryImpl,
+              private favoriteListsRepository: FavoriteListsRepository,
               private modalService: NgbModal,
               private cdRef: ChangeDetectorRef) {
   }
@@ -81,7 +80,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     const listId = +this.route.snapshot.paramMap.get('id');
-    this.favoriteListApi.getFavoriteListById(listId)
+    this.favoriteListsRepository.getFavoriteListById(listId)
       .subscribe((favoriteList) => {
         this.favoriteList = favoriteList;
       });
@@ -119,7 +118,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
     const modalRef = this.modalService.open(AreYouSureModalComponent);
     modalRef.result.then((result) => {
       if (result) {
-        this.favoriteListApi.deleteFavoriteList(this.favoriteList.id);
+        this.favoriteListsRepository.deleteFavoriteList(this.favoriteList.id);
         this.router.navigate(['/']);
       }
     }, () => {
@@ -130,7 +129,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
     const modalRef = this.modalService.open(AreYouSureModalComponent);
     modalRef.result.then((result) => {
       if (result) {
-        this.favoriteListApi.deleteItemFromFavoriteList(this.favoriteList.id, itemId);
+        this.favoriteListsRepository.deleteItemFromFavoriteList(this.favoriteList.id, itemId);
       }
     }, () => {
     });
@@ -154,7 +153,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
     modalRef.result.then((result) => {
       if (result) {
         // Reset algorithm by clearing fields on all items.
-        this.favoriteListApi.modify((favoriteLists: FavoriteList[]) => {
+        this.favoriteListsRepository.modify((favoriteLists: FavoriteList[]) => {
           const favoriteList: FavoriteList = favoriteLists.find(x => x.id === this.favoriteList.id);
           favoriteList.status = FavoriteListStatus.CREATED;
           favoriteList.items.forEach((item) => {
@@ -172,7 +171,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
     const modalRef = this.modalService.open(AreYouSureModalComponent);
     modalRef.result.then((result) => {
       if (result) {
-        this.favoriteListApi.removeAllItems(this.favoriteList.id);
+        this.favoriteListsRepository.removeAllItems(this.favoriteList.id);
       }
     }, () => {
     });

@@ -1,5 +1,4 @@
-import {FavoriteItem, FavoriteList, FavoriteListStatus} from './favorite-list-interfaces';
-import {FavoriteListsRepositoryImpl} from './favorite-list-repository-impl.service';
+import {FavoriteItem, FavoriteList, FavoriteListsRepository, FavoriteListStatus} from './favorite-list-interfaces';
 import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject} from 'rxjs';
 
@@ -13,7 +12,7 @@ export class FavoriteItemApi {
   private favoriteList: FavoriteList;
   private favoriteListSubject: ReplaySubject<FavoriteList>;
 
-  constructor(private favoriteListApi: FavoriteListsRepositoryImpl) {
+  constructor(private favoriteListsRepository: FavoriteListsRepository) {
   }
 
   /**
@@ -21,7 +20,7 @@ export class FavoriteItemApi {
    * @param listId The id of the list.
    */
   initialize(listId: number): void {
-    this.favoriteListApi.getFavoriteListById(listId).subscribe(list => this.favoriteList = list);
+    this.favoriteListsRepository.getFavoriteListById(listId).subscribe(list => this.favoriteList = list);
     this.favoriteListSubject = new ReplaySubject<FavoriteList>(1);
     this.favoriteListSubject.next(this.favoriteList);
   }
@@ -61,7 +60,7 @@ export class FavoriteItemApi {
   }
 
   private save(): void {
-    this.favoriteListApi.updateFavoriteList(this.favoriteList);
+    this.favoriteListsRepository.updateFavoriteList(this.favoriteList);
     this.favoriteListSubject.next(this.favoriteList);
   }
 

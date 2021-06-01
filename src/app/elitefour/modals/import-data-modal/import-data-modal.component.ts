@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {FavoriteListsRepositoryImpl} from '../../backend/favorite-list-repository-impl.service';
 import {Router} from '@angular/router';
+import {FavoriteListsRepository} from '../../backend/favorite-list-interfaces';
 
 @Component({
   selector: 'app-import-data-modal',
@@ -38,14 +38,14 @@ export class ImportDataModalComponent implements OnInit {
   error: string;
 
   constructor(public activeModal: NgbActiveModal,
-              private favoriteListApi: FavoriteListsRepositoryImpl,
+              private favoriteListsRepository: FavoriteListsRepository,
               private router: Router) { }
 
   ngOnInit(): void {
   }
 
   import(): void {
-    if (!this.favoriteListApi.importFromString(this.importedData)) {
+    if (!this.favoriteListsRepository.importFromString(this.importedData)) {
       this.error = 'Could not import data. If you are sure the file is correct, contact the administrator.';
       return;
     }

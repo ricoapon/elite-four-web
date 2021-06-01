@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {FavoriteListsRepositoryImpl} from '../../backend/favorite-list-repository-impl.service';
-import {FavoriteList, FavoriteListStatus} from '../../backend/favorite-list-interfaces';
+import {FavoriteList, FavoriteListsRepository, FavoriteListStatus} from '../../backend/favorite-list-interfaces';
 
 @Component({
   selector: 'app-add-list-form',
@@ -59,7 +58,7 @@ export class ListFormModalComponent implements OnInit {
   isEditMode: boolean;
 
   constructor(public activeModal: NgbActiveModal,
-              private favoriteListApi: FavoriteListsRepositoryImpl) {
+              private favoriteListsRepository: FavoriteListsRepository) {
   }
 
   isNrOfItemsToBeShownOnScreensDisabled(): boolean {
@@ -80,7 +79,7 @@ export class ListFormModalComponent implements OnInit {
     try {
       if (this.isEditMode) {
         // Create a new list so that in case the update goes wrong we didn't update the incoming list (which is shown on the screen).
-        this.favoriteListApi.updateFavoriteList({
+        this.favoriteListsRepository.updateFavoriteList({
           id: this.favoriteList.id,
           name: this.listName,
           items: this.favoriteList.items,
@@ -89,7 +88,7 @@ export class ListFormModalComponent implements OnInit {
           nrOfItemsToBeShownOnScreen: this.nrOfItemsToBeShownOnScreen
         });
       } else {
-        this.favoriteListApi.addFavoriteList(this.listName, this.nrOfItemsToBeShownOnScreen);
+        this.favoriteListsRepository.addFavoriteList(this.listName, this.nrOfItemsToBeShownOnScreen);
       }
     } catch (error) {
       this.error = error.message;
