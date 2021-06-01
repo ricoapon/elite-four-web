@@ -82,6 +82,10 @@ export abstract class FavoriteListsRepository {
   deleteFavoriteList(listId: number): void {
     this.modify((favoriteLists: FavoriteList[]) => {
       const favoriteList = FavoriteListsRepository.findListById(listId, favoriteLists);
+      if (!favoriteList) {
+        throw new Error('List with id ' + listId + ' does not exist. Contact administrator.');
+      }
+
       favoriteLists.splice(favoriteLists.indexOf(favoriteList), 1);
     });
   }
@@ -117,6 +121,10 @@ export abstract class FavoriteListsRepository {
     this.modify((favoriteLists: FavoriteList[]) => {
       const items = FavoriteListsRepository.findListById(listId, favoriteLists).items;
       const favoriteItem: FavoriteItem = FavoriteListsRepository.findItemById(listId, itemId, favoriteLists);
+      if (!favoriteItem) {
+        throw new Error('Item ' + itemId + ' does not exist. Contact administrator.');
+      }
+
       items.splice(items.indexOf(favoriteItem), 1);
     });
   }
