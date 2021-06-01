@@ -9,3 +9,7 @@
 .selectable-item.selected {
   background-color: rgba(var(--primary-rgb), 0.34);
 }
+
+a {
+  color: inherit !important;
+}
