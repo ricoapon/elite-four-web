@@ -1,29 +1,13 @@
 import {FavoriteItem, FavoriteList, FavoriteListStatus} from './favorite-list-interfaces';
-import {Injectable} from '@angular/core';
-import {Observable, ReplaySubject} from 'rxjs';
 import {FavoriteListsRepository} from './favorite-lists-repository';
 
-// This class shouldn't actually be a singleton. It should be a dependency that is created using a listId.
-// I don't know how to do this, so I just rewritten this as a singleton where the initialize method overwrites the whole content.
-// This class will not be used more than once on a screen anyway. So that is probably fine.
-@Injectable({
-  providedIn: 'root'
-})
-export class FavoriteItemApi {
+/** Class for executing the algorithm for a specific list. */
+export class FavoritePickerAlgorithm {
+  /** The list on which we execute the algorithm. */
   private favoriteList: FavoriteList;
-  private favoriteListSubject: ReplaySubject<FavoriteList>;
 
-  constructor(private favoriteListsRepository: FavoriteListsRepository) {
-  }
-
-  /**
-   * Initialize the api for a certain list.
-   * @param listId The id of the list.
-   */
-  initialize(listId: number): void {
-    this.favoriteListsRepository.getFavoriteListById(listId).subscribe(list => this.favoriteList = list);
-    this.favoriteListSubject = new ReplaySubject<FavoriteList>(1);
-    this.favoriteListSubject.next(this.favoriteList);
+  constructor(private favoriteListsRepository: FavoriteListsRepository, private listId: number) {
+    this.favoriteListsRepository.getFavoriteListById(listId).subscribe(favoriteList => this.favoriteList = favoriteList);
   }
 
   private getItemsThatCanBeChosen(nrOfItemsToBeShownOnScreen: number): FavoriteItem[] {
@@ -62,11 +46,6 @@ export class FavoriteItemApi {
 
   private save(): void {
     this.favoriteListsRepository.updateFavoriteList(this.favoriteList);
-    this.favoriteListSubject.next(this.favoriteList);
-  }
-
-  getFavoriteList(): Observable<FavoriteList> {
-    return this.favoriteListSubject.asObservable();
   }
 
   getNextItems(): FavoriteItem[] {
