@@ -12,8 +12,8 @@ import {KeyboardShortcutsModule} from 'ng-keyboard-shortcuts';
 import {ModalModule} from './elitefour/modals/modal.module';
 import {ComponentsModule} from './elitefour/components/components.module';
 import {PagesModule} from './elitefour/pages/pages.module';
-import {FavoriteListsRepository} from './elitefour/backend/favorite-list-interfaces';
 import {FavoriteListsRepositoryImpl} from './elitefour/backend/favorite-list-repository-impl.service';
+import {FavoriteListsRepository} from './elitefour/backend/favorite-lists-repository';
 
 @NgModule({
   declarations: [AppComponent],

@@ -1,7 +1,8 @@
-import {FavoriteList, FavoriteListsRepository} from './favorite-list-interfaces';
+import {FavoriteList} from './favorite-list-interfaces';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {FavoriteListCloner} from './favorite-list-cloner';
 import {Injectable} from '@angular/core';
+import {FavoriteListsRepository} from './favorite-lists-repository';
 
 /**
  * Implementation of {@link FavoriteListsRepository} that uses localStorage to store the object.

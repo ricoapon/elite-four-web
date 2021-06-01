@@ -1,6 +1,7 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {FavoriteItem, FavoriteList, FavoriteListsRepository} from '../../backend/favorite-list-interfaces';
+import {FavoriteItem, FavoriteList} from '../../backend/favorite-list-interfaces';
+import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 
 @Component({
   selector: 'app-add-item-form-modal',

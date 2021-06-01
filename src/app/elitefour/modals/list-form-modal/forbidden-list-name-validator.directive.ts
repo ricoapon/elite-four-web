@@ -1,6 +1,7 @@
 import {Directive, Input} from '@angular/core';
 import {FormGroup, NG_VALIDATORS, ValidationErrors, Validator} from '@angular/forms';
-import {FavoriteList, FavoriteListsRepository} from '../../backend/favorite-list-interfaces';
+import {FavoriteList} from '../../backend/favorite-list-interfaces';
+import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 
 @Directive({
   selector: '[appForbiddenListName]',

@@ -2,8 +2,9 @@ import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChi
 import {Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {AreYouSureModalComponent, ListFormModalComponent} from '../../modals';
-import {FavoriteList, FavoriteListsRepository} from '../../backend/favorite-list-interfaces';
+import {FavoriteList} from '../../backend/favorite-list-interfaces';
 import {ShortcutInput} from 'ng-keyboard-shortcuts';
+import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 
 @Component({
   selector: 'app-list-overview',

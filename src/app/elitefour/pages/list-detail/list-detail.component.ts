@@ -1,6 +1,6 @@
 import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FavoriteItem, FavoriteList, FavoriteListsRepository, FavoriteListStatus} from '../../backend/favorite-list-interfaces';
+import {FavoriteItem, FavoriteList, FavoriteListStatus} from '../../backend/favorite-list-interfaces';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {
   AreYouSureModalComponent,
@@ -10,6 +10,7 @@ import {
   ListFormModalComponent
 } from '../../modals';
 import {ShortcutInput} from 'ng-keyboard-shortcuts';
+import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 
 @Component({
   selector: 'app-list-detail',

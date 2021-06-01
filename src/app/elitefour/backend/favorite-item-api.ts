@@ -1,6 +1,7 @@
-import {FavoriteItem, FavoriteList, FavoriteListsRepository, FavoriteListStatus} from './favorite-list-interfaces';
+import {FavoriteItem, FavoriteList, FavoriteListStatus} from './favorite-list-interfaces';
 import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject} from 'rxjs';
+import {FavoriteListsRepository} from './favorite-lists-repository';
 
 // This class shouldn't actually be a singleton. It should be a dependency that is created using a listId.
 // I don't know how to do this, so I just rewritten this as a singleton where the initialize method overwrites the whole content.
