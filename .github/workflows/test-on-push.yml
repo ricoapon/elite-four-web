@@ -10,7 +10,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install and Test
-        run: |
-          npm ci
-          npm test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+      - name: Install
+        run: npm ci
+
+      - name: Run Unit Tests
+        run: npm test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+
+      - name: Run End-to-End Tests
+        run: npm run e2e:run
