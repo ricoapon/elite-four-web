@@ -1,5 +1,8 @@
 name: Test application
-on: push
+on:
+  push:
+    branches-ignore:
+      - gh-pages
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
