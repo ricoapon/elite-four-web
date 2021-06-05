@@ -1,4 +1,4 @@
-import {FavoriteListsRepositoryImpl} from './favorite-list-repository-impl.service';
+import {FavoriteListsRepositoryImpl} from './favorite-lists-repository-impl.service';
 import {FavoriteList, FavoriteListStatus} from './favorite-list-interfaces';
 
 // The class under test uses localStorage. We mock this entire object.
