@@ -1,7 +1,7 @@
-// The class under test uses localStorage. We mock this entire object.
 import {FavoriteListsRepositoryImpl} from './favorite-list-repository-impl.service';
 import {FavoriteList, FavoriteListStatus} from './favorite-list-interfaces';
 
+// The class under test uses localStorage. We mock this entire object.
 beforeEach(() => {
   let store = {};
   spyOn(localStorage, 'getItem').and.callFake((key) => {
