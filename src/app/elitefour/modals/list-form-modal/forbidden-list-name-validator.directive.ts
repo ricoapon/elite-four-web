@@ -1,7 +1,7 @@
 import {Directive, Input} from '@angular/core';
 import {FormGroup, NG_VALIDATORS, ValidationErrors, Validator} from '@angular/forms';
-import {FavoriteListApi} from '../../backend/favorite-list-api';
 import {FavoriteList} from '../../backend/favorite-list-interfaces';
+import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 
 @Directive({
   selector: '[appForbiddenListName]',
@@ -11,8 +11,8 @@ export class ForbiddenListNameValidatorDirective implements Validator {
   @Input('appForbiddenListName') forbiddenName: string[] = [];
   favoriteLists: FavoriteList[];
 
-  constructor(private favoriteListApi: FavoriteListApi) {
-    favoriteListApi.getFavoriteLists().subscribe((list) => this.favoriteLists = list);
+  constructor(private favoriteListsRepository: FavoriteListsRepository) {
+    favoriteListsRepository.getFavoriteLists().subscribe((list) => this.favoriteLists = list);
   }
 
   validate(formGroup: FormGroup): ValidationErrors | null {

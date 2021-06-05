@@ -20,3 +20,4 @@ export enum FavoriteListStatus {
   ONGOING = 'Ongoing',
   FINISHED = 'Finished'
 }
+

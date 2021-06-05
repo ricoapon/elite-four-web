@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FavoriteListApi} from '../../backend/favorite-list-api';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {FavoriteItem, FavoriteList} from '../../backend/favorite-list-interfaces';
+import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 
 @Component({
   selector: 'app-export-modal',
@@ -26,7 +26,7 @@ import {FavoriteItem, FavoriteList} from '../../backend/favorite-list-interfaces
 })
 export class ExportModalComponent implements OnInit {
 
-  constructor(private favoriteListApi: FavoriteListApi,
+  constructor(private favoriteListsRepository: FavoriteListsRepository,
               public activeModal: NgbActiveModal) {
   }
 
@@ -54,7 +54,7 @@ export class ExportModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.favoriteListApi.getFavoriteListById(this.listId).subscribe((list) => this.favoriteList = list);
+    this.favoriteListsRepository.getFavoriteListById(this.listId).subscribe((list) => this.favoriteList = list);
   }
 
   exportOnlyFavorites(): void {

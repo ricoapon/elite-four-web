@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {FavoriteListApi} from '../../backend/favorite-list-api';
 import {FavoriteList} from '../../backend/favorite-list-interfaces';
+import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 
 @Component({
   selector: 'app-import-form-modal',
@@ -41,11 +41,11 @@ export class ImportModalComponent implements OnInit {
   error: string;
 
   constructor(public activeModal: NgbActiveModal,
-              private favoriteListApi: FavoriteListApi) {
+              private favoriteListsRepository: FavoriteListsRepository) {
   }
 
   ngOnInit(): void {
-    this.favoriteListApi.getFavoriteListById(this.listId).subscribe((list) => this.favoriteList = list);
+    this.favoriteListsRepository.getFavoriteListById(this.listId).subscribe((list) => this.favoriteList = list);
   }
 
   handleFileInput(files: FileList): void {
@@ -77,7 +77,7 @@ export class ImportModalComponent implements OnInit {
 
   importFile(): void {
     this.itemsToUpload.forEach((newItem) => {
-      this.favoriteListApi.addItemToFavoriteList(this.favoriteList.id, newItem);
+      this.favoriteListsRepository.addItemToFavoriteList(this.favoriteList.id, newItem);
     });
     this.activeModal.close();
   }

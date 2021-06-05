@@ -2,9 +2,9 @@ import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChi
 import {Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {AreYouSureModalComponent, ListFormModalComponent} from '../../modals';
-import {FavoriteListApi} from '../../backend/favorite-list-api';
 import {FavoriteList} from '../../backend/favorite-list-interfaces';
 import {ShortcutInput} from 'ng-keyboard-shortcuts';
+import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 
 @Component({
   selector: 'app-list-overview',
@@ -34,7 +34,7 @@ export class ListOverviewComponent implements OnInit, AfterViewInit {
   @ViewChild('searchTextBox') searchTextBox: ElementRef;
 
   constructor(private router: Router,
-              private favoriteListApi: FavoriteListApi,
+              private favoriteListsRepository: FavoriteListsRepository,
               private modalService: NgbModal,
               private cdRef: ChangeDetectorRef) {
     this.navigateToList = this.navigateToList.bind(this);
@@ -84,7 +84,7 @@ export class ListOverviewComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.favoriteListApi.getFavoriteLists().subscribe((favoriteLists) => {
+    this.favoriteListsRepository.getFavoriteLists().subscribe((favoriteLists) => {
       this.favoriteLists = favoriteLists;
     });
   }
@@ -97,7 +97,7 @@ export class ListOverviewComponent implements OnInit, AfterViewInit {
     const modalRef = this.modalService.open(AreYouSureModalComponent);
     modalRef.result.then((result) => {
       if (result) {
-        this.favoriteListApi.deleteFavoriteList(listId);
+        this.favoriteListsRepository.deleteFavoriteList(listId);
       }
     }, () => {
     });

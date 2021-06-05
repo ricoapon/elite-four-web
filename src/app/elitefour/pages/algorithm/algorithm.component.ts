@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FavoriteItemApi} from '../../backend/favorite-item-api';
+import {FavoritePickerAlgorithm} from '../../backend/favorite-picker-algorithm.service';
 import {FavoriteItem, FavoriteList, FavoriteListStatus} from '../../backend/favorite-list-interfaces';
+import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 
 @Component({
   selector: 'app-algorithm',
@@ -13,16 +14,17 @@ export class AlgorithmComponent implements OnInit {
   toBeChosenItems: FavoriteItem[];
   private selectedItems: FavoriteItem[];
   newFavorites: FavoriteItem[] = [];
+  private algorithm: FavoritePickerAlgorithm;
 
   constructor(private route: ActivatedRoute,
               public router: Router,
-              private favoriteItemApi: FavoriteItemApi) {
+              private favoriteListsRepository: FavoriteListsRepository) {
   }
 
   ngOnInit(): void {
     const listId = +this.route.snapshot.paramMap.get('id');
-    this.favoriteItemApi.initialize(listId);
-    this.favoriteItemApi.getFavoriteList().subscribe((list) => this.favoriteList = list);
+    this.algorithm = new FavoritePickerAlgorithm(this.favoriteListsRepository, listId);
+    this.favoriteListsRepository.getFavoriteListById(listId).subscribe((list) => this.favoriteList = list);
     this.initializeNextStep();
   }
 
@@ -32,18 +34,18 @@ export class AlgorithmComponent implements OnInit {
       this.router.navigate(['/list/' + this.favoriteList.id]);
     } else {
       this.selectedItems = [];
-      this.toBeChosenItems = this.favoriteItemApi.getNextItems();
+      this.toBeChosenItems = this.algorithm.getNextItems();
     }
   }
 
   skip(): void {
     // Skipping is the same as selecting all the items.
-    this.favoriteItemApi.selectItems(this.toBeChosenItems);
+    this.algorithm.selectItems(this.toBeChosenItems);
     this.initializeNextStep();
   }
 
   select(): void {
-    this.newFavorites = this.favoriteItemApi.selectItems(this.selectedItems);
+    this.newFavorites = this.algorithm.selectItems(this.selectedItems);
     this.initializeNextStep();
   }
 
