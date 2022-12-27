@@ -1,5 +1,5 @@
 import {Directive, Input} from '@angular/core';
-import {FormGroup, NG_VALIDATORS, ValidationErrors, Validator} from '@angular/forms';
+import {UntypedFormGroup, NG_VALIDATORS, ValidationErrors, Validator} from '@angular/forms';
 import {FavoriteList} from '../../backend/favorite-list-interfaces';
 import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 
@@ -15,14 +15,14 @@ export class ForbiddenListNameValidatorDirective implements Validator {
     favoriteListsRepository.getFavoriteLists().subscribe((list) => this.favoriteLists = list);
   }
 
-  validate(formGroup: FormGroup): ValidationErrors | null {
+  validate(formGroup: UntypedFormGroup): ValidationErrors | null {
     return !!this.favoriteLists ? this.checkForbiddenName(this.forbiddenName[0], this.forbiddenName[1])(formGroup)
       : null;
   }
 
   // tslint:disable-next-line:typedef
   private checkForbiddenName(inputListName: string, inputExceptionListName: string) {
-    return (formGroup: FormGroup) => {
+    return (formGroup: UntypedFormGroup) => {
       const listNameControl = formGroup.controls[inputListName];
       const exceptionListNameControl = formGroup.controls[inputExceptionListName];
 
