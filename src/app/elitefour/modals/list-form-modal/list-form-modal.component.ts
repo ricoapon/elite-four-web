@@ -13,8 +13,8 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
         <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
-          <label for="listName">List name</label>
+        <div class="mb-3">
+          <label class="form-label" for="listName">List name</label>
           <!--suppress HtmlUnknownAttribute -->
           <input ngbAutofocus type="text" class="form-control" id="listName" #listNameModel="ngModel"
                  [(ngModel)]="listName"
@@ -26,8 +26,8 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
             <div *ngIf="listNameModel.errors.forbiddenName">Name already exists</div>
           </div>
         </div>
-        <div class="form-group">
-          <label for="nrOfItemsToBeShownOnScreen">Maximal number of items to show on screen</label>
+        <div class="mb-3">
+          <label class="form-label" for="nrOfItemsToBeShownOnScreen">Maximal number of items to show on screen</label>
           <input type="number" class="form-control" id="nrOfItemsToBeShownOnScreen"
                  [(ngModel)]="nrOfItemsToBeShownOnScreen" name="nrOfItemsToBeShownOnScreen"
                  [ngClass]="{ 'is-invalid': f.submitted && nrOfItemsToBeShownOnScreenModel.invalid }"

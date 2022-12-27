@@ -13,7 +13,7 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
         <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
+        <div class="mb-3">
           <!--suppress HtmlUnknownAttribute -->
           <input ngbAutofocus type="text" class="form-control" id="itemName" [(ngModel)]="itemName" name="itemName"
                  #itemNameModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && itemNameModel.invalid }"

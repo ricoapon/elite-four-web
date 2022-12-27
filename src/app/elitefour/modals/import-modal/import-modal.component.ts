@@ -11,13 +11,13 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
       <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-      <div class="form-group mb-0">
+      <div class="mb-3">
         <p>Import a file where each line will be parsed as an item.</p>
         <label class="btn btn-primary">
           <!--suppress TypeScriptUnresolvedVariable -->
           Browse <input type="file" hidden (change)="handleFileInput($event.target.files)">
         </label>
-        <label class="pl-2">
+        <label class="ps-2">
           {{fileName}}
         </label>
 

@@ -17,7 +17,7 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
         <!--suppress TypeScriptUnresolvedVariable -->
         Browse <input type="file" hidden (change)="handleFileInput($event.target.files)">
       </label>
-      <label class="pl-2">
+      <label class="ps-2">
         {{fileName}}
       </label>
 
