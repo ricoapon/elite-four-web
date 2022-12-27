@@ -10,9 +10,7 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
       <div class="modal-header">
         <h4 class="modal-title" *ngIf="!isEditMode">Add a new item</h4>
         <h4 class="modal-title" *ngIf="isEditMode">Edit item</h4>
-        <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
       </div>
       <div class="modal-body">
         <div class="form-group">

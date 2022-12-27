@@ -8,9 +8,7 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
   template: `
     <div class="modal-header">
       <h4 class="modal-title">Import data</h4>
-      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
+      <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
       <p>All the data for this application gets stored inside the browser. To not lose this data or to copy this over to another computer,

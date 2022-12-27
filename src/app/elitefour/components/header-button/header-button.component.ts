@@ -3,7 +3,7 @@ import {Component, Input, OnInit} from '@angular/core';
 @Component({
   selector: 'app-content-header-button',
   template: `
-    <button class="btn ml-2" [ngClass]="btnClass" [disabled]="disabled">
+    <button class="btn ms-2" [ngClass]="btnClass" [disabled]="disabled">
       <ng-content></ng-content>
     </button>
   `,

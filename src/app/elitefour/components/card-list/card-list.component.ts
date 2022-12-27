@@ -8,15 +8,15 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
         <div class="justify-content-between d-flex align-items-center">
           <p class="p-0 m-0">{{title}}</p>
           <div class="d-flex align-items-center">
-            <div class="mr-3">
+            <div class="me-3">
               <ng-content></ng-content>
             </div>
             <button *ngIf="isDeleteUsed" (click)="delete.emit()"
-                    class="btn btn-danger ml-2"><i class="fas fa-trash-alt"></i></button>
+                    class="btn btn-danger ms-2"><i class="fas fa-trash-alt"></i></button>
             <button *ngIf="isInfoUsed" (click)="info.emit()"
-                    class="btn btn-primary ml-2"><i class="fas fa-info"></i></button>
+                    class="btn btn-primary ms-2"><i class="fas fa-info"></i></button>
             <button *ngIf="isEditUsed" (click)="edit.emit()"
-                    class="btn btn-primary ml-2"><i class="fas fa-edit"></i></button>
+                    class="btn btn-primary ms-2"><i class="fas fa-edit"></i></button>
           </div>
         </div>
       </div>
