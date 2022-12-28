@@ -5,7 +5,7 @@ import {Observable} from 'rxjs';
 
 export type Track = {
   name: string,
-  artist: string,
+  artists: string[],
   id: string,
   externalUrl: string,
 };
@@ -49,10 +49,10 @@ export class SpotifySearch {
     const tracks: Track[] = [];
     for (const track of response.tracks.items) {
       const name = track.name;
-      const artist = track.artists[0].name;
+      const artists = track.artists.map(artist => artist.name)
       const id = track.id;
       const externalUrl = track.external_urls.spotify;
-      tracks.push({name, artist, id, externalUrl});
+      tracks.push({name, artists, id, externalUrl});
     }
     return tracks;
   }
