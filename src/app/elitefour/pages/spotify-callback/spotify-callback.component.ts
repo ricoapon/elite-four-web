@@ -9,7 +9,8 @@ import {SpotifyAuthentication} from '../../backend/spotify/spotify-authenticatio
 export class SpotifyCallbackComponent implements OnInit {
   error: string = undefined;
 
-  constructor(private router: Router, private route: ActivatedRoute, private spotifyAuthentication: SpotifyAuthentication) { }
+  constructor(private router: Router, private route: ActivatedRoute, private spotifyAuthentication: SpotifyAuthentication) {
+  }
 
   ngOnInit(): void {
     // Retrieve and store information that we got back from Spotify.
@@ -20,12 +21,12 @@ export class SpotifyCallbackComponent implements OnInit {
       this.error = 'Incorrect state';
     }
 
-    this.spotifyAuthentication.requestAccessToken(code).then((result) => {
-      if (!result) {
-        this.error = 'Access token could not be retrieved';
-      } else {
+    this.spotifyAuthentication.requestAccessToken(code)
+      .then(() => {
         this.spotifyAuthentication.navigateBack(this.router);
-      }
-    });
+      })
+      .catch((e) => {
+        this.error = 'Log in failed with error message: ' + e;
+      });
   }
 }

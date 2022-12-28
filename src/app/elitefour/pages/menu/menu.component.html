@@ -31,6 +31,15 @@
           </div>
         </a>
       </li>
+      <li>
+        <a class="list-group-item list-group-item-action with-text" (click)="loginToSpotify()">
+          <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+            <i class="fab fa-spotify pe-2"></i>
+            <span *ngIf="spotifyAuthenticationState.authenticatedInfo">Logged in as {{ spotifyAuthenticationState.authenticatedInfo.userName }}</span>
+            <span *ngIf="!spotifyAuthenticationState.authenticatedInfo">Log in</span>
+          </div>
+        </a>
+      </li>
     </ul>
     <ul class="navbar-nav ms-auto">
       <li>

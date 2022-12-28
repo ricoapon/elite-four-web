@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {SpotifyStorage} from './spotify-storage';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {SpotifyAuthenticationState} from './spotify-authentication-state';
 
 export type Track = {
   name: string,
@@ -14,7 +14,7 @@ export type Track = {
 export class SpotifySearch {
   static readonly SPOTIFY_SEARCH_URL = 'https://api.spotify.com/v1/search';
 
-  constructor(private spotifyStorage: SpotifyStorage, private httpClient: HttpClient) {}
+  constructor(private spotifyAuthenticationState: SpotifyAuthenticationState, private httpClient: HttpClient) {}
 
   searchTracks(searchInput: string): Promise<Track[]> {
     const paramsString = new HttpParams({
@@ -41,7 +41,7 @@ export class SpotifySearch {
   private executeGetRequest(url: string): Observable<any> {
     return this.httpClient.get(url, {
       headers: new HttpHeaders()
-        .set('Authorization', 'Bearer ' + this.spotifyStorage.getAccessToken())
+        .set('Authorization', 'Bearer ' + this.spotifyAuthenticationState.authenticatedInfo.accessToken)
     });
   }
 
