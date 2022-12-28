@@ -77,14 +77,15 @@ export class SpotifyAuthentication {
             headers: new HttpHeaders()
               .set('Content-Type', 'application/x-www-form-urlencoded')
           }
-        ).subscribe(
-          (response) => {
-            this.processTokenResponse(response);
-            resolve(true);
-          },
-          (e) =>  {
-            console.log(e);
-            resolve(false);
+        ).subscribe({
+            next: (response) => {
+              this.processTokenResponse(response);
+              resolve(true);
+            },
+            error: (e) => {
+              console.log(e);
+              resolve(false);
+            }
           }
         );
       }
