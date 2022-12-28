@@ -34,6 +34,8 @@ export class MenuComponent implements OnInit {
   loginToSpotify(): void {
     if (!this.spotifyAuthenticationState.isLoggedIn()) {
       this.spotifyAuthentication.redirectToSpotify(this.router.url);
+    } else {
+      this.spotifyAuthentication.logout();
     }
   }
 }

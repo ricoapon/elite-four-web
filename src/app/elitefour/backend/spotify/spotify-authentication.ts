@@ -104,4 +104,8 @@ export class SpotifyAuthentication {
       }
     );
   }
+
+  logout() {
+    this.spotifyAuthenticationState.reset();
+  }
 }
