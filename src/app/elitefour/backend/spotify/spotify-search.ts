@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {SpotifyAuthenticationState} from './spotify-authentication-state';
+import {findBestMatchingTrack} from './spotify-track-matcher';
 
 export type Track = {
   name: string,
@@ -16,7 +17,7 @@ export class SpotifySearch {
 
   constructor(private spotifyAuthenticationState: SpotifyAuthenticationState, private httpClient: HttpClient) {}
 
-  searchTracks(searchInput: string): Promise<Track[]> {
+  searchTrack(searchInput: string): Promise<Track | undefined> {
     const paramsString = new HttpParams({
       fromObject: {
         type: 'track',
@@ -29,7 +30,9 @@ export class SpotifySearch {
     return new Promise((resolve, fatal) => {
       this.executeGetRequest(SpotifySearch.SPOTIFY_SEARCH_URL + '?' + paramsString).subscribe(
         (response) => {
-          resolve(this.parseResponse(response));
+          const tracks = this.parseResponse(response);
+          const track = findBestMatchingTrack(searchInput, tracks);
+          resolve(track);
         },
         (error) => {
           fatal(error);
