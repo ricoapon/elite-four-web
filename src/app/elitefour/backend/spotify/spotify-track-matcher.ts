@@ -21,10 +21,12 @@ export function findBestMatchingTrack(search: string, foundTracks: Track[]): Tra
   // Map each track to a long string that contains all the words we would like to find.
   // Note: we combine the artist names and song name in one string and there is no way to differentiate.
   // In practise, it seems that this will not be an issue.
-  const normalizedTrackString = foundTracks.map(track =>
-    normalize(track.name) + " " + track.artists.map(artist => normalize(artist)).join(" "))
-    .map(s => s.toLowerCase());
-
+  const normalizedTrackString = foundTracks.map(track => normalize(track.name) + " " + track.artists.map(artist => normalize(artist)).join(" "))
+    .map(s => s.toLowerCase())
+    // Filter out the same elements that we do for search.
+    .map(s => s.split(" ").filter(w => {
+      return !(w.length == 1 && !w.match("\\w"));
+    }).join(" "));
 
   // Start with 0.5 as a minimum. If matches do not exceed this, it will not be a matching song.
   let bestMatchingIndex = 0.5;
