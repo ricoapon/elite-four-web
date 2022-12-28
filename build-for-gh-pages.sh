@@ -7,7 +7,7 @@ gitVersion=`git describe --tags --always`
 # Write the version to the Angular file.
 echo "export const VERSION = '${gitVersion}';" > src/environments/version.ts
 
-ng build --prod
+ng build --configuration production
 
 # GitHub Pages needs extra files to make it work correctly:
 # * 404.html, so that all URLs actually route to the application.
