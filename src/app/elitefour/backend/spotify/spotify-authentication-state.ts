@@ -11,7 +11,7 @@ export type AuthenticatedInfo = {
 @Injectable({providedIn: 'root'})
 export class SpotifyAuthenticationState {
   static readonly LOCALSTORAGE_KEY_AUTHENTICATED_INFO = 'spotify-authenticated-info';
-  authenticatedInfo: AuthenticatedInfo = undefined;
+  authenticatedInfo: AuthenticatedInfo = null;
 
   constructor(private httpClient: HttpClient) {
     this.readLocalStorage();
@@ -19,14 +19,14 @@ export class SpotifyAuthenticationState {
 
   private readLocalStorage() {
     const value = localStorage.getItem(SpotifyAuthenticationState.LOCALSTORAGE_KEY_AUTHENTICATED_INFO);
-    if (value != null) {
+    if (value !== null) {
       this.authenticatedInfo = JSON.parse(value);
     }
   }
 
   private saveLocalStorage() {
-    if (this.authenticatedInfo == undefined) {
-      localStorage.setItem(SpotifyAuthenticationState.LOCALSTORAGE_KEY_AUTHENTICATED_INFO, undefined);
+    if (this.authenticatedInfo == null) {
+      localStorage.removeItem(SpotifyAuthenticationState.LOCALSTORAGE_KEY_AUTHENTICATED_INFO);
     } else {
       localStorage.setItem(SpotifyAuthenticationState.LOCALSTORAGE_KEY_AUTHENTICATED_INFO, JSON.stringify(this.authenticatedInfo));
     }
@@ -59,6 +59,11 @@ export class SpotifyAuthenticationState {
   }
 
   public isLoggedIn(): boolean {
-    return this.authenticatedInfo !== undefined;
+    return this.authenticatedInfo !== null;
+  }
+
+  public reset() {
+    this.authenticatedInfo = null;
+    this.saveLocalStorage();
   }
 }
