@@ -3,11 +3,11 @@
 }
 
 .selectable-item:hover {
-  background-color: rgba(var(--primary-rgb), 0.10);
+  background-color: rgba(var(--bs-primary-rgb), 0.10);
 }
 
 .selectable-item.selected {
-  background-color: rgba(var(--primary-rgb), 0.34);
+  background-color: rgba(var(--bs-primary-rgb), 0.34);
 }
 
 a {

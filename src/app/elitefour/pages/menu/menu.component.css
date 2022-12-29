@@ -23,23 +23,28 @@
   background-color: transparent;
   border: none;
   border-radius: 0;
+}
 
+.list-group-item.with-text {
+  width: auto;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .list-group-item-action:hover {
-  background-color: rgba(var(--primary-rgb), 0.34) !important;
+  background-color: rgba(var(--bs-primary-rgb), 0.34) !important;
 }
 
 .list-group-item.active {
-  background-color: var(--primary) !important;
+  background-color: var(--bs-primary) !important;
 }
 
 a {
-  color: var(--white) !important;
+  color: white !important;
   text-align: center;
   padding: 0;
 }
 
 .version {
-  color: var(--white) !important;
+  color: white !important;
 }

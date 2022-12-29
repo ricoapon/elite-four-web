@@ -12,7 +12,11 @@ export type FavoriteItem = {
   name: string,
   favoritePosition?: number,
   eliminatedBy: number[],
-  toBeChosen: boolean
+  toBeChosen: boolean,
+  spotify?: {
+    id: string,
+    externalUrl: string,
+  }
 };
 
 export enum FavoriteListStatus {

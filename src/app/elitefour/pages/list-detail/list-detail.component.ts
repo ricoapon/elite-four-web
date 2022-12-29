@@ -11,6 +11,9 @@ import {
 } from '../../modals';
 import {ShortcutInput} from 'ng-keyboard-shortcuts';
 import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
+import {SpotifyAuthenticationState} from '../../backend/spotify/spotify-authentication-state';
+import {SpotifySearch} from '../../backend/spotify/spotify-search';
+import {SpotifyPlaylist} from '../../backend/spotify/spotify-playlist';
 
 @Component({
   selector: 'app-list-detail',
@@ -33,7 +36,10 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
               public router: Router,
               private favoriteListsRepository: FavoriteListsRepository,
               private modalService: NgbModal,
-              private cdRef: ChangeDetectorRef) {
+              private cdRef: ChangeDetectorRef,
+              public spotifyAuthenticationState: SpotifyAuthenticationState,
+              private spotifySearch: SpotifySearch,
+              private spotifyPlaylist: SpotifyPlaylist) {
   }
 
   shortcuts: ShortcutInput[] = [];
@@ -177,5 +183,27 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
     }, () => {
     });
   }
-}
 
+  matchSpotifyItems(): void {
+    // Note that we do not want to override elements, as they could be inserted manually.
+    for (let item of this.favoriteList.items.filter(item => !item.spotify)) {
+      this.spotifySearch.searchTrack(item.name).then((track) => {
+
+        if (track != undefined) {
+          item.spotify = {
+            id: track.id,
+            externalUrl: track.externalUrl
+          }
+          this.favoriteListsRepository.updateItemForFavoriteList(this.favoriteList.id, item);
+        }
+      });
+    }
+  }
+
+  exportToSpotifyPlaylist() {
+    const sortedFilteredItems = ExportModalComponent.sortItems(this.favoriteList.items.filter(item => !!item.favoritePosition));
+    this.spotifyPlaylist.create(this.favoriteList.name, sortedFilteredItems)
+      .then((url) => window.open(url, '_blank').focus())
+      .catch((e) => alert('Failed: ' + e))
+  }
+}

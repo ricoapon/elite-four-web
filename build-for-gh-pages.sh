@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Determine the version that we implement. We always want the tag as the version. If for some reason we don't have a
-# tag, the --always will make sure that we output the commit hash. This way, we always have an output that is tracable.
+# tag, the --always will make sure that we output the commit hash. This way, we always have an output that is traceable.
 gitVersion=`git describe --tags --always`
 
 # Write the version to the Angular file.
