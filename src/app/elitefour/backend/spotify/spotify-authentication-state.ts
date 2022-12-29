@@ -22,6 +22,19 @@ export class SpotifyAuthenticationState {
     if (value !== null) {
       this.authenticatedInfo = JSON.parse(value);
     }
+    this.checkValidity();
+  }
+
+  private checkValidity() {
+    if (this.authenticatedInfo == null) {
+      return;
+    }
+
+    // If the information is expired, remove it.
+    if (this.authenticatedInfo.validUntil < new Date()) {
+      this.authenticatedInfo = null;
+      this.saveLocalStorage();
+    }
   }
 
   private saveLocalStorage() {
@@ -59,6 +72,7 @@ export class SpotifyAuthenticationState {
   }
 
   public isLoggedIn(): boolean {
+    this.checkValidity();
     return this.authenticatedInfo !== null;
   }
 
@@ -68,6 +82,7 @@ export class SpotifyAuthenticationState {
   }
 
   public getAuthenticationHeader(): HttpHeaders {
+    this.checkValidity();
     return new HttpHeaders().set('Authorization', 'Bearer ' + this.authenticatedInfo.accessToken);
   }
 }
