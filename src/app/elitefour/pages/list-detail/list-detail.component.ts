@@ -183,7 +183,8 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
   }
 
   matchSpotifyItems(): void {
-    for (let item of this.favoriteList.items) {
+    // Note that we do not want to override elements, as they could be inserted manually.
+    for (let item of this.favoriteList.items.filter(item => !item.spotify)) {
       this.spotifySearch.searchTrack(item.name).then((track) => {
 
         if (track != undefined) {
