@@ -66,4 +66,8 @@ export class SpotifyAuthenticationState {
     this.authenticatedInfo = null;
     this.saveLocalStorage();
   }
+
+  public getAuthenticationHeader(): HttpHeaders {
+    return new HttpHeaders().set('Authorization', 'Bearer ' + this.authenticatedInfo.accessToken);
+  }
 }

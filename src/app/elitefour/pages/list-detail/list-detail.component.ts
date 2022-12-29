@@ -13,6 +13,7 @@ import {ShortcutInput} from 'ng-keyboard-shortcuts';
 import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 import {SpotifyAuthenticationState} from '../../backend/spotify/spotify-authentication-state';
 import {SpotifySearch} from '../../backend/spotify/spotify-search';
+import {SpotifyPlaylist} from '../../backend/spotify/spotify-playlist';
 
 @Component({
   selector: 'app-list-detail',
@@ -37,7 +38,8 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
               private modalService: NgbModal,
               private cdRef: ChangeDetectorRef,
               public spotifyAuthenticationState: SpotifyAuthenticationState,
-              private spotifySearch: SpotifySearch) {
+              private spotifySearch: SpotifySearch,
+              private spotifyPlaylist: SpotifyPlaylist) {
   }
 
   shortcuts: ShortcutInput[] = [];
@@ -196,5 +198,12 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
         }
       });
     }
+  }
+
+  exportToSpotifyPlaylist() {
+    const sortedFilteredItems = ExportModalComponent.sortItems(this.favoriteList.items.filter(item => !!item.favoritePosition));
+    this.spotifyPlaylist.create(this.favoriteList.name, sortedFilteredItems)
+      .then((url) => window.open(url, '_blank').focus())
+      .catch((e) => alert('Failed: ' + e))
   }
 }
