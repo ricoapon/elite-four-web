@@ -31,6 +31,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
   showSearchTextBox = false;
   searchItemName = '';
   @ViewChild('searchTextBox') searchTextBox: ElementRef;
+  showSpotifyUnmatchedOnly = false;
 
   constructor(private route: ActivatedRoute,
               public router: Router,
@@ -143,10 +144,14 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
   }
 
   sortAndFilter(favoriteItems: FavoriteItem[]): FavoriteItem[] {
-    const sortedItems = ExportModalComponent.sortItems(favoriteItems);
+    let sortedItems = ExportModalComponent.sortItems(favoriteItems);
+
+    if (this.showSpotifyUnmatchedOnly) {
+      sortedItems = sortedItems.filter((item) => !item.spotify);
+    }
 
     if (this.showSearchTextBox) {
-      return sortedItems.filter((item) => item.name.indexOf(this.searchItemName) >= 0);
+      sortedItems = sortedItems.filter((item) => item.name.indexOf(this.searchItemName) >= 0);
     }
 
     return sortedItems;
@@ -193,7 +198,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
           item.spotify = {
             id: track.id,
             externalUrl: track.externalUrl
-          }
+          };
           this.favoriteListsRepository.updateItemForFavoriteList(this.favoriteList.id, item);
         }
       });
@@ -204,6 +209,10 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
     const sortedFilteredItems = ExportModalComponent.sortItems(this.favoriteList.items.filter(item => !!item.favoritePosition));
     this.spotifyPlaylist.create(this.favoriteList.name, sortedFilteredItems)
       .then((url) => window.open(url, '_blank').focus())
-      .catch((e) => alert('Failed: ' + e))
+      .catch((e) => alert('Failed: ' + e));
+  }
+
+  changeCheckbox(event: any) {
+    this.showSpotifyUnmatchedOnly = event.currentTarget.checked;
   }
 }

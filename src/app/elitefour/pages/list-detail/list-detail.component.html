@@ -17,12 +17,12 @@
         <div class="content-header-wrapper justify-content-between d-flex align-items-center">
           <p class="p-0 m-0">
             Total number of items<br/>
-            Number of favorites picked<br />
+            Number of favorites picked<br/>
             Algorithm max number of items
           </p>
           <p class="p-0 m-0 text-end">
             {{favoriteList.items.length}}<br/>
-            {{this.determineNumberOfFavoriteItemsPicked()}}<br />
+            {{this.determineNumberOfFavoriteItemsPicked()}}<br/>
             {{favoriteList.nrOfItemsToBeShownOnScreen}}
           </p>
         </div>
@@ -55,12 +55,35 @@
     <input type="text" class="form-control" style="display: inline!important; width: 200px;"
            *ngIf="showSearchTextBox" [(ngModel)]="searchItemName"
            (keydown.esc)="onPressEscape()" #searchTextBox>
-    <app-content-header-button *ngIf="spotifyAuthenticationState.isLoggedIn() && favoriteList.status == CREATED" btnClass="btn-success" (click)="matchSpotifyItems()">Match with spotify</app-content-header-button>
-    <app-content-header-button *ngIf="spotifyAuthenticationState.isLoggedIn() && favoriteList.status != CREATED" btnClass="btn-success" (click)="exportToSpotifyPlaylist()">Export to playlist</app-content-header-button>
-    <app-content-header-button *ngIf="favoriteList.status == CREATED" btnClass="btn-danger" (click)="removeAllItems()">Remove all items</app-content-header-button>
-    <app-content-header-button *ngIf="favoriteList.status == CREATED" (click)="this.openItemModal(undefined)"><u>N</u>ew item</app-content-header-button>
-    <app-content-header-button *ngIf="favoriteList.status == CREATED" (click)="openImportModal()">Import</app-content-header-button>
-    <app-content-header-button *ngIf="favoriteList.status != CREATED" btnClass="btn-danger" (click)="resetAlgorithm()">Reset algorithm</app-content-header-button>
+
+    <div *ngIf="spotifyAuthenticationState.isLoggedIn()" ngbDropdown class="d-inline-block">
+      <button type="button" class="btn btn-success" id="dropdownSpotify" ngbDropdownToggle>
+        Spotify actions
+      </button>
+      <div ngbDropdownMenu aria-labelledby="dropdownSpotify">
+        <button *ngIf="favoriteList.status == CREATED" ngbDropdownItem (click)="matchSpotifyItems()">Match with spotify</button>
+        <div ngbDropdownItem>
+          <input type="checkbox" id="showSpotifyUnmatchedOnly" name="showSpotifyUnmatchedOnly" class="me-2" (change)="changeCheckbox($event)">
+          <label for="showSpotifyUnmatchedOnly">Only show unmatched items</label>
+        </div>
+        <button *ngIf="favoriteList.status != CREATED" ngbDropdownItem (click)="exportToSpotifyPlaylist()">
+          Export to playlist
+        </button>
+      </div>
+    </div>
+
+
+    <app-content-header-button *ngIf="favoriteList.status == CREATED" btnClass="btn-danger" (click)="removeAllItems()">
+      Remove all items
+    </app-content-header-button>
+    <app-content-header-button *ngIf="favoriteList.status == CREATED" (click)="this.openItemModal(undefined)"><u>N</u>ew
+      item
+    </app-content-header-button>
+    <app-content-header-button *ngIf="favoriteList.status == CREATED" (click)="openImportModal()">Import
+    </app-content-header-button>
+    <app-content-header-button *ngIf="favoriteList.status != CREATED" btnClass="btn-danger" (click)="resetAlgorithm()">
+      Reset algorithm
+    </app-content-header-button>
     <app-content-header-button (click)="openExportModal()">Export</app-content-header-button>
   </div>
 
@@ -79,5 +102,4 @@
     <span *ngIf="item.spotify" class="pe-2"><a target="_blank" [href]="item.spotify.externalUrl">Spotify</a></span>
     <span class="badge bg-primary rounded-pill">{{item.favoritePosition}}</span>
   </app-card-list>
-
 </div>
