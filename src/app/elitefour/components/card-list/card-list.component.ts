@@ -8,7 +8,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
         <div class="justify-content-between d-flex align-items-center">
           <p class="p-0 m-0">{{title}}</p>
           <div class="d-flex align-items-center">
-            <div class="me-3">
+            <div>
               <ng-content></ng-content>
             </div>
             <button *ngIf="isDeleteUsed" (click)="delete.emit()"
