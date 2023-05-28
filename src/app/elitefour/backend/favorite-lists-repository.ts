@@ -90,7 +90,7 @@ export abstract class FavoriteListsRepository {
     });
   }
 
-  addItemToFavoriteList(listId: number, itemName: string): void {
+  addItemToFavoriteList(listId: number, itemName: string, spotify: any = undefined): void {
     this.modify((favoriteLists: FavoriteList[]) => {
       const favoriteList: FavoriteList = FavoriteListsRepository.findListById(listId, favoriteLists);
       const itemExists: boolean = !!favoriteList.items.find(item => item.name === itemName);
@@ -99,7 +99,7 @@ export abstract class FavoriteListsRepository {
       }
 
       favoriteList.items.push({
-        id: FavoriteListsRepository.generateItemId(favoriteList), name: itemName, eliminatedBy: [], toBeChosen: false
+        id: FavoriteListsRepository.generateItemId(favoriteList), name: itemName, eliminatedBy: [], toBeChosen: false, spotify: spotify
       });
     });
   }

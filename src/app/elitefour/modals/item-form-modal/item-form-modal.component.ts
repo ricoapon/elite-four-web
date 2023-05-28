@@ -105,18 +105,18 @@ export class ItemFormModalComponent implements OnInit {
       return false;
     }
 
+    let spotify = null;
+    if (this.spotifyUrl !== '') {
+      const id = ItemFormModalComponent.SPOTIFY_REGEXP.exec(this.spotifyUrl)[1]
+
+      spotify = {
+        id,
+        externalUrl: this.spotifyUrl
+      }
+    }
+
     try {
       if (this.isEditMode) {
-        let spotify = null;
-        if (this.spotifyUrl !== '') {
-          const id = ItemFormModalComponent.SPOTIFY_REGEXP.exec(this.spotifyUrl)[1]
-          spotify = {
-            id,
-            externalUrl: this.spotifyUrl
-          }
-        }
-
-        // Create a new item so that in case the update goes wrong we didn't update the incoming item (which is shown on the screen).
         this.favoriteListsRepository.updateItemForFavoriteList(this.listId, {
           id: this.favoriteItem.id,
           name: this.itemName,
@@ -125,7 +125,7 @@ export class ItemFormModalComponent implements OnInit {
           spotify
         });
       } else {
-        this.favoriteListsRepository.addItemToFavoriteList(this.listId, this.itemName);
+        this.favoriteListsRepository.addItemToFavoriteList(this.listId, this.itemName, spotify);
       }
     } catch (error) {
       console.error(error);
