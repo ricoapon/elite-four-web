@@ -212,7 +212,15 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
   }
 
   exportToSpotifyPlaylist() {
-    const sortedFilteredItems = ExportModalComponent.sortItems(this.favoriteList.items.filter(item => !!item.favoritePosition));
+    const sortedFilteredItems = ExportModalComponent.sortItems(this.favoriteList.items
+      .filter(item => !!item.favoritePosition)
+      .filter(item => !!item.spotify));
+
+    if (sortedFilteredItems.length == 0) {
+      alert('The list contains 0 sorted items, so no Spotify playlist can be created.')
+      return
+    }
+
     this.spotifyPlaylist.create(this.favoriteList.name, sortedFilteredItems)
       .then((url) => window.open(url, '_blank').focus())
       .catch((e) => alert('Failed: ' + e));
