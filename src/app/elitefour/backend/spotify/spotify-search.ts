@@ -18,12 +18,25 @@ export class SpotifySearch {
   constructor(private spotifyAuthenticationState: SpotifyAuthenticationState, private httpClient: HttpClient) {}
 
   searchTrack(searchInput: string): Promise<Track | undefined> {
+    // The search input can be anything. Some characters are difficult. We filter those out.
+    const cleanSearchInput = searchInput
+      .split(" ")
+      // Some elements of the string are not really words. Characters like '-' are often used as separator.
+      .filter(w => {
+        return !(w.length == 1 && !w.match("\\w"));
+      })
+      .join(" ")
+      .replace('(', '')
+      .replace(')', '')
+      .replace('’', "'")
+      .replace('–', "-")
+
     const paramsString = new HttpParams({
       fromObject: {
         type: 'track',
         // We expect the search input to be complete, so we will only need a few results.
         limit: '3',
-        q: searchInput,
+        q: cleanSearchInput,
       }
     }).toString();
 
@@ -31,7 +44,7 @@ export class SpotifySearch {
       this.executeGetRequest(SpotifySearch.SPOTIFY_SEARCH_URL + '?' + paramsString).subscribe(
         (response) => {
           const tracks = this.parseResponse(response);
-          const track = findBestMatchingTrack(searchInput, tracks);
+          const track = findBestMatchingTrack(cleanSearchInput, tracks);
           resolve(track);
         },
         (error) => {
