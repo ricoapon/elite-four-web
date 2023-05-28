@@ -223,7 +223,6 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
 
     this.spotifyPlaylist.create(this.favoriteList.name, sortedFilteredItems)
       .then((url) => window.open(url, '_blank').focus())
-      .catch((e) => alert('Failed: ' + e));
   }
 
   changeCheckbox(event: any) {
