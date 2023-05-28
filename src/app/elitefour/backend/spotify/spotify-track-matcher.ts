@@ -44,6 +44,25 @@ export function findBestMatchingTrack(search: string, foundTracks: Track[]): Tra
     }
   }
 
+  // The algorithm struggles with additional words like "radio edit". These occur quite frequently.
+  // If we found no match, try again, but ignoring these words. This makes it more likely a match will occur.
+  if (bestMatchingIndexIndex == undefined) {
+    for (let i = 0; i < normalizedTrackString.length; i++) {
+      const trackString = normalizedTrackString[i]
+        .replace(' radio edit', '')
+      const matchingIndex = determineMatchingIndex(normalizedSearchWords, trackString);
+
+      console.log(matchingIndex, normalizedSearchWords, trackString)
+
+      // Note that we use ">" instead of ">=". The first occurring songs in the list are most likely to match.
+      // So if any equality in matches occur, the first occurring song of those will be returned.
+      if (matchingIndex > bestMatchingIndex) {
+        bestMatchingIndex = matchingIndex;
+        bestMatchingIndexIndex = i;
+      }
+    }
+  }
+
   return foundTracks[bestMatchingIndexIndex];
 }
 

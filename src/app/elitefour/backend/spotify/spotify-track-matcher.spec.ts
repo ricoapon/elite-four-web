@@ -145,4 +145,23 @@ describe('SpotifyTrackMatcher#findBestMatchingTrack', () => {
     // Then
     expect(selectedTrack).toBeUndefined();
   })
+
+  it('return radio edit if no matches would occur with the radio edit', () => {
+    // Given
+    const search = 'Avicii - Levels';
+    const foundTracks = [
+      {
+        name: 'Levels Radio Edit',
+        artists: ['Avicii'],
+        id: 'correct',
+        externalUrl: '',
+      },
+    ];
+
+    // When
+    const selectedTrack = findBestMatchingTrack(search, foundTracks);
+
+    // Then
+    expect(selectedTrack.id).toEqual('correct');
+  })
 });
