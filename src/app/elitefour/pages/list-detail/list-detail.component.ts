@@ -33,6 +33,9 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
   @ViewChild('searchTextBox') searchTextBox: ElementRef;
   showSpotifyUnmatchedOnly = false;
 
+  progressBarValue = 0
+  progressBarMax = 0
+
   constructor(private route: ActivatedRoute,
               public router: Router,
               private favoriteListsRepository: FavoriteListsRepository,
@@ -190,10 +193,12 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
   }
 
   matchSpotifyItems(): void {
+    const itemsToFill = this.favoriteList.items.filter(item => !item.spotify)
+    this.progressBarValue = 0
+    this.progressBarMax = itemsToFill.length
     // Note that we do not want to override elements, as they could be inserted manually.
-    for (let item of this.favoriteList.items.filter(item => !item.spotify)) {
+    for (let item of itemsToFill) {
       this.spotifySearch.searchTrack(item.name).then((track) => {
-
         if (track != undefined) {
           item.spotify = {
             id: track.id,
@@ -201,6 +206,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
           };
           this.favoriteListsRepository.updateItemForFavoriteList(this.favoriteList.id, item);
         }
+        this.progressBarValue++
       });
     }
   }
