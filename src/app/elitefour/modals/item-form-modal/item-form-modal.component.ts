@@ -16,7 +16,7 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
         <div class="mb-3">
           <label class="form-label" for="itemName">Item name</label>
           <!--suppress HtmlUnknownAttribute -->
-          <input ngbAutofocus type="text" class="form-control" id="itemName" [(ngModel)]="itemName" name="itemName"
+          <input [disabled]="!canEditName" ngbAutofocus type="text" class="form-control" id="itemName" [(ngModel)]="itemName" name="itemName"
                  #itemNameModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && itemNameModel.invalid }"
                  required (ngModelChange)="checkValidationItemName()">
           <div *ngIf="f.submitted && itemNameModel.invalid" class="invalid-feedback">
@@ -50,6 +50,7 @@ export class ItemFormModalComponent implements OnInit {
   @Input() listId: number;
   favoriteList: FavoriteList;
   @Input() favoriteItem: FavoriteItem;
+  @Input() canEditName: boolean = true
   itemName = '';
   initialItemName = '';
   spotifyUrl = '';
@@ -120,8 +121,9 @@ export class ItemFormModalComponent implements OnInit {
         this.favoriteListsRepository.updateItemForFavoriteList(this.listId, {
           id: this.favoriteItem.id,
           name: this.itemName,
-          eliminatedBy: [],
-          toBeChosen: false,
+          favoritePosition: this.favoriteItem.favoritePosition,
+          eliminatedBy: this.favoriteItem.eliminatedBy,
+          toBeChosen: this.favoriteItem.toBeChosen,
           spotify
         });
       } else {

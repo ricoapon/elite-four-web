@@ -104,6 +104,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
   openItemModal(favoriteItem: FavoriteItem): void {
     const modalRef = this.modalService.open(ItemFormModalComponent);
     modalRef.componentInstance.listId = this.favoriteList.id;
+    modalRef.componentInstance.canEditName = this.favoriteList.status == this.CREATED
 
     if (!!favoriteItem) {
       modalRef.componentInstance.favoriteItem = favoriteItem;
