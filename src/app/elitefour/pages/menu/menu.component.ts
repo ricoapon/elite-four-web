@@ -5,6 +5,7 @@ import {VERSION} from '../../../../environments/version';
 import {SpotifyAuthenticationState} from '../../backend/spotify/spotify-authentication-state';
 import {SpotifyAuthentication} from '../../backend/spotify/spotify-authentication';
 import {Router} from '@angular/router';
+import {SpotifyTokenValidation} from '../../backend/spotify/spotify-token-validation';
 
 @Component({
   selector: 'app-menu',
@@ -17,10 +18,12 @@ export class MenuComponent implements OnInit {
   constructor(private modalService: NgbModal,
               public spotifyAuthenticationState: SpotifyAuthenticationState,
               private spotifyAuthentication: SpotifyAuthentication,
-              private router: Router) {
+              private router: Router,
+              private spotifyTokenValidation: SpotifyTokenValidation) {
   }
 
   ngOnInit(): void {
+    this.spotifyTokenValidation.validate()
   }
 
   export(): void {
