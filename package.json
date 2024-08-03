@@ -23,7 +23,7 @@
     "@ng-bootstrap/ng-bootstrap": "^16.0.0",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.2.3",
-    "crypto-js": "^4.1.1",
+    "crypto-js": "^4.2.0",
     "file-saver": "^2.0.5",
     "ng-keyboard-shortcuts": "^13.0.8",
     "ngx-cookie-service": "^17.1.0",
