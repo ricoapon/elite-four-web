@@ -14,22 +14,15 @@ import {ComponentsModule} from './elitefour/components/components.module';
 import {PagesModule} from './elitefour/pages/pages.module';
 import {FavoriteListsRepositoryImpl} from './elitefour/backend/favorite-lists-repository-impl.service';
 import {FavoriteListsRepository} from './elitefour/backend/favorite-lists-repository';
-import {HttpClientModule} from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-@NgModule({
-  declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    AppRoutingModule,
-    KeyboardShortcutsModule.forRoot(),
-    ModalModule,
-    ComponentsModule,
-    PagesModule,
-    HttpClientModule
-  ],
-  providers: [{provide: FavoriteListsRepository, useClass: FavoriteListsRepositoryImpl}],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [AppComponent],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        FormsModule,
+        AppRoutingModule,
+        KeyboardShortcutsModule.forRoot(),
+        ModalModule,
+        ComponentsModule,
+        PagesModule], providers: [{ provide: FavoriteListsRepository, useClass: FavoriteListsRepositoryImpl }, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule {
 }
