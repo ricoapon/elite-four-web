@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  app_base_url: 'http://localhost:4200/'
+  app_base_url: 'http://127.0.0.1:4200/'
 };
 
 /*
