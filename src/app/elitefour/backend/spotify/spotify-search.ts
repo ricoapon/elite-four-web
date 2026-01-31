@@ -18,6 +18,16 @@ export class SpotifySearch {
   constructor(private spotifyAuthenticationState: SpotifyAuthenticationState, private httpClient: HttpClient) {}
 
   searchTrack(searchInput: string): Promise<Track | undefined> {
+    // Spotify search works better if you list the song name before the artist.
+    searchInput = searchInput.replace('–', "-")
+    // Only use split technique if the dash occurs once. Artist names could contain it and
+    // I don't want to mess up those.
+    if (searchInput.includes("-") && (searchInput.split('-').length - 1) === 1) {
+      let index = searchInput.indexOf("-")
+      // Note that this also removes the dash, which is as expected.
+      searchInput = searchInput.substring(index + 1) + " " + searchInput.substring(0, index)
+    }
+
     // The search input can be anything. Some characters are difficult. We filter those out.
     const cleanSearchInput = searchInput
       .split(" ")
@@ -29,7 +39,6 @@ export class SpotifySearch {
       .replace('(', '')
       .replace(')', '')
       .replace('’', "'")
-      .replace('–', "-")
 
     const paramsString = new HttpParams({
       fromObject: {
