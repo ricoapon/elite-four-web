@@ -14,6 +14,7 @@ import {SpotifyTokenValidation} from '../../backend/spotify/spotify-token-valida
 })
 export class MenuComponent implements OnInit {
   public version = VERSION;
+  public isNavbarCollapsed = true;
 
   constructor(private modalService: NgbModal,
               public spotifyAuthenticationState: SpotifyAuthenticationState,
