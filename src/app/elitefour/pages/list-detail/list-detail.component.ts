@@ -35,6 +35,8 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
 
   progressBarValue = 0
   progressBarMax = 0
+  quickAddText = '';
+  quickAddError = '';
 
   constructor(private route: ActivatedRoute,
               public router: Router,
@@ -148,7 +150,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
   }
 
   sortAndFilter(favoriteItems: FavoriteItem[]): FavoriteItem[] {
-    let sortedItems = ExportModalComponent.sortItems(favoriteItems);
+    let sortedItems = ExportModalComponent.sortItems([...favoriteItems]);
 
     if (this.showSpotifyUnmatchedOnly) {
       sortedItems = sortedItems.filter((item) => !item.spotify);
@@ -159,6 +161,45 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
     }
 
     return sortedItems;
+  }
+
+  parseQuickAddItems(): string[] {
+    return this.quickAddText
+      .replace(/\r/g, '')
+      .split('\n')
+      .map((name) => name.trim())
+      .filter((name) => name.length > 0);
+  }
+
+  quickAddItemCount(): number {
+    return this.parseQuickAddItems().length;
+  }
+
+  addQuickItems(): void {
+    this.quickAddError = '';
+    const quickAddItems = this.parseQuickAddItems();
+    if (quickAddItems.length === 0) {
+      return;
+    }
+
+    const duplicateInputItem = quickAddItems.find((item, index) => quickAddItems.indexOf(item) !== index);
+    if (duplicateInputItem) {
+      this.quickAddError = '"' + duplicateInputItem + '" appears more than once in this batch.';
+      return;
+    }
+
+    const existingItem = quickAddItems.find((item) => this.favoriteList.items.some((existing) => existing.name === item));
+    if (existingItem) {
+      this.quickAddError = '"' + existingItem + '" already exists in this list.';
+      return;
+    }
+
+    try {
+      quickAddItems.forEach((item) => this.favoriteListsRepository.addItemToFavoriteList(this.favoriteList.id, item));
+      this.quickAddText = '';
+    } catch (error) {
+      this.quickAddError = error.message;
+    }
   }
 
   resetAlgorithm(): void {
