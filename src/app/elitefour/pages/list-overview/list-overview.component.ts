@@ -2,35 +2,19 @@ import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChi
 import {Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {AreYouSureModalComponent, ListFormModalComponent} from '../../modals';
-import {FavoriteList} from '../../backend/favorite-list-interfaces';
+import {FavoriteList, FavoriteListStatus} from '../../backend/favorite-list-interfaces';
 import {ShortcutInput} from 'ng-keyboard-shortcuts';
 import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 
 @Component({
   selector: 'app-list-overview',
-  template: `
-    <app-content-header title="Lists">
-      <div class="form-inline">
-        <input type="text" class="form-control" style="display: inline!important; width: 200px;"
-               *ngIf="showSearchTextBox" [(ngModel)]="searchListName"
-               (keydown.esc)="onPressEscape()" #searchTextBox>
-        <app-content-header-button class="" (click)="openAddNewListModal()"><u>N</u>ew</app-content-header-button>
-      </div>
-    </app-content-header>
-
-    <ng-keyboard-shortcuts [shortcuts]="shortcuts"></ng-keyboard-shortcuts>
-
-    <app-card-list *ngFor="let favoriteList of sortedAndFiltered(favoriteLists)"
-                   [title]="favoriteList.name"
-                   (delete)="deleteList(favoriteList.id)"
-                   (info)="navigateToList(favoriteList.id)">{{favoriteList.status}}</app-card-list>
-  `,
+  templateUrl: './list-overview.component.html',
   styles: []
 })
 export class ListOverviewComponent implements OnInit, AfterViewInit {
   favoriteLists: FavoriteList[] = [];
-  showSearchTextBox = false;
   searchListName = '';
+  listFilter: 'all' | 'active' | 'finished' = 'all';
   @ViewChild('searchTextBox') searchTextBox: ElementRef;
 
   constructor(private router: Router,
@@ -69,17 +53,14 @@ export class ListOverviewComponent implements OnInit, AfterViewInit {
   }
 
   onPressEscape(): void {
-    this.showSearchTextBox = false;
     this.searchListName = '';
   }
 
   toggleSearchTextBox(): void {
-    this.showSearchTextBox = !this.showSearchTextBox;
-    if (!this.showSearchTextBox) {
-      this.searchListName = '';
-    } else {
-      this.cdRef.detectChanges();
+    this.cdRef.detectChanges();
+    if (this.searchTextBox) {
       this.searchTextBox.nativeElement.focus();
+      this.searchTextBox.nativeElement.select();
     }
   }
 
@@ -108,18 +89,41 @@ export class ListOverviewComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/list/' + listId]);
   }
 
+  setListFilter(listFilter: 'all' | 'active' | 'finished'): void {
+    this.listFilter = listFilter;
+  }
+
   sortedAndFiltered(favoriteLists: FavoriteList[]): FavoriteList[] {
     // Newest lists must be on top.
-    const sortedList = favoriteLists.sort((a, b) => {
+    let sortedList = [...favoriteLists].sort((a, b) => {
       return new Date(b.tsCreated).getTime() - new Date(a.tsCreated).getTime();
     });
 
-    // If we have our search enabled, filter the result.
-    if (this.showSearchTextBox) {
-      return sortedList.filter((list) => list.name.indexOf(this.searchListName) >= 0);
+    if (this.listFilter === 'active') {
+      sortedList = sortedList.filter((list) => list.status !== FavoriteListStatus.FINISHED);
+    } else if (this.listFilter === 'finished') {
+      sortedList = sortedList.filter((list) => list.status === FavoriteListStatus.FINISHED);
+    }
+
+    if (this.searchListName.trim().length > 0) {
+      const searchListName = this.searchListName.toLowerCase();
+      sortedList = sortedList.filter((list) => list.name.toLowerCase().indexOf(searchListName) >= 0);
     }
 
     return sortedList;
   }
 
+  statusBadgeClass(favoriteList: FavoriteList): string {
+    if (favoriteList.status === FavoriteListStatus.FINISHED) {
+      return 'text-bg-success';
+    } else if (favoriteList.status === FavoriteListStatus.ONGOING) {
+      return 'text-bg-primary';
+    }
+
+    return 'text-bg-secondary';
+  }
+
+  determineNumberOfFavoriteItemsPicked(favoriteList: FavoriteList): number {
+    return favoriteList.items.filter((item) => !!item.favoritePosition).length;
+  }
 }
