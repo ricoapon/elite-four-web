@@ -1,29 +1,80 @@
-<app-content-header title="{{favoriteList.name}}">
-  <app-content-header-button btnClass="btn-primary" (click)="router.navigate(['/list/' + favoriteList.id]);">Return to list</app-content-header-button>
-</app-content-header>
-
-
-<div id="accordion" class="mb-4">
-  <div class="card">
-    <div class="card-body" id="headingOne">
-        New favorites selected this round:
+<ng-container *ngIf="favoriteList">
+  <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3 mb-4">
+    <div>
+      <p class="mb-1 small fw-bold text-uppercase text-primary">{{favoriteList.name}}</p>
+      <h1 class="mb-0">Pick items</h1>
+      <p class="mb-0 mt-2 text-muted">
+        Selecting multiple items means each selected item is preferred over everything left unselected.
+      </p>
     </div>
-    <div class="card-body pt-0 small" *ngIf="newFavorites.length > 0">
-      <p class="m-0 p-0" *ngFor="let newFavoriteItem of newFavorites">{{newFavoriteItem.favoritePosition}}: {{newFavoriteItem.name}}</p>
+    <div class="d-grid d-sm-flex flex-wrap gap-2 flex-shrink-0 justify-content-lg-end">
+      <button class="btn btn-outline-secondary" type="button" (click)="router.navigate(['/list/' + favoriteList.id]);">
+        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+        Return
+      </button>
+      <a class="btn btn-outline-secondary" routerLink="/help" fragment="picking">
+        <i class="fas fa-circle-question" aria-hidden="true"></i>
+        Picking help
+      </a>
+      <button class="btn btn-outline-secondary" type="button" (click)="skip()">Skip batch</button>
+      <button class="btn btn-primary" type="button" (click)="select()" [disabled]="selectedItems.length === 0">
+        Confirm picks
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+      </button>
     </div>
   </div>
-</div>
 
-<app-content-header title="Items">
-  <app-content-header-button btnClass="btn btn-danger" (click)="skip()">Skip</app-content-header-button>
-  <app-content-header-button btnClass="btn btn-primary" (click)="select()">Select</app-content-header-button>
-</app-content-header>
+  <div class="row g-4">
+    <div class="col-12 col-xl-8">
+      <div class="card mb-3">
+        <div class="row g-0 align-items-stretch">
+          <div class="col-12">
+            <div class="card-body">
+              <span class="small text-muted">Favorites found</span>
+              <div class="progress mt-2" aria-label="Favorites found">
+                <div class="progress-bar" [style.width]="progressPercentage() + '%'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-
-<div class="card" *ngFor="let item of toBeChosenItems">
-  <a class="selectable-item" [ngClass]="isItemSelected(item) ? 'selected' : ''" (click)="clickItem(item)">
-    <div class="card-body">
-      <p class="p-0 m-0">{{item.name}}</p>
+      <div class="row g-3" aria-label="Selectable picker items">
+        <div class="col-12 col-md-6" *ngFor="let item of toBeChosenItems">
+          <article class="card h-100 picker-choice-card"
+                 [class.border-primary]="isItemSelected(item)"
+                 [class.selected]="isItemSelected(item)"
+                 role="button" tabindex="0"
+                 (click)="clickItem(item)"
+                 (keydown.enter)="clickItem(item)"
+                 (keydown.space)="clickItem(item); $event.preventDefault()">
+            <div class="card-body py-4">
+              <div class="form-check d-flex align-items-center gap-3 mb-0">
+                <input class="form-check-input flex-shrink-0" type="checkbox" [checked]="isItemSelected(item)"
+                       (click)="clickItem(item); $event.stopPropagation()">
+                <h2 class="h4 fw-bold mb-0">{{item.name}}</h2>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
     </div>
-  </a>
-</div>
+
+    <aside class="col-12 col-xl-4">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="h5">Found favorites</h2>
+          <ol class="list-unstyled d-grid gap-2 mb-0" *ngIf="newFavorites.length > 0; else noNewFavorites">
+            <li class="d-flex align-items-center gap-2" *ngFor="let newFavoriteItem of newFavorites">
+              <span class="badge text-bg-warning">{{newFavoriteItem.favoritePosition}}</span>
+              <span>{{newFavoriteItem.name}}</span>
+            </li>
+          </ol>
+          <ng-template #noNewFavorites>
+            <p class="text-muted mb-0">No new favorite was found in the previous round.</p>
+          </ng-template>
+        </div>
+      </div>
+    </aside>
+  </div>
+</ng-container>
