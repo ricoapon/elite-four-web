@@ -1,5 +1,6 @@
-import {Observable} from 'rxjs';
-import {FavoriteItem, FavoriteList, FavoriteListStatus} from './favorite-list-interfaces';
+import {map, Observable} from 'rxjs';
+import {FavoriteItem, FavoriteList, FavoriteListStatus, SpotifyTrackReference} from './favorite-list-interfaces';
+import {FavoriteListCloner} from './favorite-list-cloner';
 
 /**
  * Interface (with default methods) for storing, retrieving and searching a {@link FavoriteList} array. This entry point maintains all the
@@ -9,12 +10,22 @@ import {FavoriteItem, FavoriteList, FavoriteListStatus} from './favorite-list-in
  */
 export abstract class FavoriteListsRepository {
 
-  private static findListById(listId: number, favoriteLists: FavoriteList[]): FavoriteList {
-    return favoriteLists.find(favoriteList => favoriteList.id === listId);
+  private static requireListById(listId: number, favoriteLists: FavoriteList[]): FavoriteList {
+    const favoriteList = favoriteLists.find(candidateFavoriteList => candidateFavoriteList.id === listId);
+    if (!favoriteList) {
+      throw new Error('List with id ' + listId + ' does not exist. Contact administrator.');
+    }
+
+    return favoriteList;
   }
 
-  private static findItemById(listId: number, itemId: number, favoriteLists: FavoriteList[]): FavoriteItem {
-    return this.findListById(listId, favoriteLists).items.find(item => item.id === itemId);
+  private static requireItemById(listId: number, itemId: number, favoriteLists: FavoriteList[]): FavoriteItem {
+    const favoriteItem = this.requireListById(listId, favoriteLists).items.find(item => item.id === itemId);
+    if (!favoriteItem) {
+      throw new Error('Item ' + itemId + ' does not exist. Contact administrator.');
+    }
+
+    return favoriteItem;
   }
 
   private static generateListId(favoriteLists: FavoriteList[]): number {
@@ -23,6 +34,11 @@ export abstract class FavoriteListsRepository {
 
   private static generateItemId(favoriteList: FavoriteList): number {
     return Math.max(...favoriteList.items.map(item => item.id), 0) + 1;
+  }
+
+  static parseFavoriteLists(data: string): FavoriteList[] {
+    // Clone to ensure that Date objects are restored.
+    return FavoriteListCloner.cloneFavoriteLists(JSON.parse(data));
   }
 
   /**
@@ -45,16 +61,19 @@ export abstract class FavoriteListsRepository {
    * pushed will be a copy of the original and cannot be modified directly. Use other methods for this.
    */
   getFavoriteListById(listId: number): Observable<FavoriteList> {
-    return new Observable<FavoriteList>((observer) => {
-      this.getFavoriteLists().subscribe((favoriteLists) => {
-          observer.next(favoriteLists.find(favoriteList => favoriteList.id === listId));
-        }
-      );
-    });
+    return this.getFavoriteLists()
+      .pipe(map((favoriteLists) => favoriteLists.find(favoriteList => favoriteList.id === listId)));
   }
 
   addFavoriteList(listName: string, nrOfItemsToBeShownOnScreen: number): void {
     this.modify((favoriteLists: FavoriteList[]) => {
+      if (listName.trim().length === 0) {
+        throw new Error('List name cannot be empty');
+      }
+      if (!Number.isInteger(nrOfItemsToBeShownOnScreen) || nrOfItemsToBeShownOnScreen <= 0) {
+        throw new Error('Number of items to be shown must be a positive integer');
+      }
+
       const nameExists: boolean = !!favoriteLists.find(x => x.name === listName);
       if (nameExists) {
         throw new Error('List with the name ' + listName + ' already exists');
@@ -69,10 +88,7 @@ export abstract class FavoriteListsRepository {
 
   updateFavoriteList(favoriteList: FavoriteList): void {
     this.modify((favoriteLists: FavoriteList[]) => {
-      const favoriteListInlist: FavoriteList = favoriteLists.find(list => list.id === favoriteList.id);
-      if (!favoriteListInlist) {
-        throw new Error('List with id ' + favoriteList.id + ' does not exist. Contact administrator.');
-      }
+      const favoriteListInlist: FavoriteList = FavoriteListsRepository.requireListById(favoriteList.id, favoriteLists);
 
       const listIndex = favoriteLists.indexOf(favoriteListInlist);
       favoriteLists[listIndex] = favoriteList;
@@ -81,18 +97,19 @@ export abstract class FavoriteListsRepository {
 
   deleteFavoriteList(listId: number): void {
     this.modify((favoriteLists: FavoriteList[]) => {
-      const favoriteList = FavoriteListsRepository.findListById(listId, favoriteLists);
-      if (!favoriteList) {
-        throw new Error('List with id ' + listId + ' does not exist. Contact administrator.');
-      }
+      const favoriteList = FavoriteListsRepository.requireListById(listId, favoriteLists);
 
       favoriteLists.splice(favoriteLists.indexOf(favoriteList), 1);
     });
   }
 
-  addItemToFavoriteList(listId: number, itemName: string, spotify: any = undefined): void {
+  addItemToFavoriteList(listId: number, itemName: string, spotify?: SpotifyTrackReference): void {
     this.modify((favoriteLists: FavoriteList[]) => {
-      const favoriteList: FavoriteList = FavoriteListsRepository.findListById(listId, favoriteLists);
+      const favoriteList: FavoriteList = FavoriteListsRepository.requireListById(listId, favoriteLists);
+      if (itemName.trim().length === 0) {
+        throw new Error('Item name cannot be empty');
+      }
+
       const itemExists: boolean = !!favoriteList.items.find(item => item.name === itemName);
       if (itemExists) {
         throw new Error('Item with the name ' + itemName + ' already exists');
@@ -106,11 +123,8 @@ export abstract class FavoriteListsRepository {
 
   updateItemForFavoriteList(listId: number, updatedItem: FavoriteItem): void {
     this.modify((favoriteLists: FavoriteList[]) => {
-      const favoriteList: FavoriteList = FavoriteListsRepository.findListById(listId, favoriteLists);
-      const itemInList: FavoriteItem = favoriteList.items.find(item => item.id === updatedItem.id);
-      if (!itemInList) {
-        throw new Error('Item ' + updatedItem.id + ' does not exist. Contact administrator.');
-      }
+      const favoriteList: FavoriteList = FavoriteListsRepository.requireListById(listId, favoriteLists);
+      const itemInList: FavoriteItem = FavoriteListsRepository.requireItemById(listId, updatedItem.id, favoriteLists);
 
       const itemIndex = favoriteList.items.indexOf(itemInList);
       favoriteList.items[itemIndex] = updatedItem;
@@ -119,11 +133,8 @@ export abstract class FavoriteListsRepository {
 
   deleteItemFromFavoriteList(listId: number, itemId: number): void {
     this.modify((favoriteLists: FavoriteList[]) => {
-      const items = FavoriteListsRepository.findListById(listId, favoriteLists).items;
-      const favoriteItem: FavoriteItem = FavoriteListsRepository.findItemById(listId, itemId, favoriteLists);
-      if (!favoriteItem) {
-        throw new Error('Item ' + itemId + ' does not exist. Contact administrator.');
-      }
+      const items = FavoriteListsRepository.requireListById(listId, favoriteLists).items;
+      const favoriteItem: FavoriteItem = FavoriteListsRepository.requireItemById(listId, itemId, favoriteLists);
 
       items.splice(items.indexOf(favoriteItem), 1);
     });
@@ -131,7 +142,7 @@ export abstract class FavoriteListsRepository {
 
   removeAllItems(listId: number): void {
     this.modify((favoriteLists: FavoriteList[]) => {
-      const favoriteList: FavoriteList = FavoriteListsRepository.findListById(listId, favoriteLists);
+      const favoriteList: FavoriteList = FavoriteListsRepository.requireListById(listId, favoriteLists);
       favoriteList.items = [];
     });
   }
@@ -139,7 +150,7 @@ export abstract class FavoriteListsRepository {
 
   importFromString(data: string): boolean {
     try {
-      this._overrideAndSaveAndEmit(JSON.parse(data));
+      this._overrideAndSaveAndEmit(FavoriteListsRepository.parseFavoriteLists(data));
     } catch (e) {
       console.log(e);
       return false;

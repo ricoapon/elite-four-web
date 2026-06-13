@@ -1,4 +1,3 @@
-import {FavoriteListsRepository} from './favorite-lists-repository';
 import {FavoriteItem, FavoriteListStatus} from './favorite-list-interfaces';
 import {FavoriteListsRepositorySpec} from './spec-helper-mocks.spec';
 
@@ -43,6 +42,24 @@ describe('FavoriteListsRepository', () => {
       // When and then
       expect(() => {
         repo.addFavoriteList('some-list', 2);
+      }).toThrowError();
+    });
+
+    it('throws an error when the list name is empty', () => {
+      // Given
+      const repo = new FavoriteListsRepositorySpec();
+      // When and then
+      expect(() => {
+        repo.addFavoriteList('   ', 2);
+      }).toThrowError();
+    });
+
+    it('throws an error when the number of items to be shown is not positive', () => {
+      // Given
+      const repo = new FavoriteListsRepositorySpec();
+      // When and then
+      expect(() => {
+        repo.addFavoriteList('some-list', 0);
       }).toThrowError();
     });
   });
@@ -117,6 +134,25 @@ describe('FavoriteListsRepository', () => {
         repo.addItemToFavoriteList(1, 'some-item-name');
       }).toThrowError();
     });
+
+    it('throws an error when the list does not exist', () => {
+      // Given
+      const repo = new FavoriteListsRepositorySpec();
+      // When and then
+      expect(() => {
+        repo.addItemToFavoriteList(1, 'some-item-name');
+      }).toThrowError();
+    });
+
+    it('throws an error when the item name is empty', () => {
+      // Given
+      const repo = new FavoriteListsRepositorySpec();
+      repo.addFavoriteList('some-list', 1337);
+      // When and then
+      expect(() => {
+        repo.addItemToFavoriteList(1, '   ');
+      }).toThrowError();
+    });
   });
 
   describe('updateItemForFavoriteList', () => {
@@ -145,6 +181,18 @@ describe('FavoriteListsRepository', () => {
         repo.updateItemForFavoriteList(1, item);
       }).toThrowError();
     });
+
+    it('throws an error when updating an item for a missing list', () => {
+      // Given
+      const repo = new FavoriteListsRepositorySpec();
+      const item: FavoriteItem = {
+        id: 123, name: 'non-existing-name', eliminatedBy: [], toBeChosen: false
+      };
+      // When and then
+      expect(() => {
+        repo.updateItemForFavoriteList(1, item);
+      }).toThrowError();
+    });
   });
 
   describe('deleteItemFromFavoriteList', () => {
@@ -168,6 +216,15 @@ describe('FavoriteListsRepository', () => {
         repo.deleteItemFromFavoriteList(1, 1);
       }).toThrowError();
     });
+
+    it('throws an error when deleting an item from a missing list', () => {
+      // Given
+      const repo = new FavoriteListsRepositorySpec();
+      // When and then
+      expect(() => {
+        repo.deleteItemFromFavoriteList(1, 1);
+      }).toThrowError();
+    });
   });
 
   describe('removeAllItems', () => {
@@ -182,6 +239,15 @@ describe('FavoriteListsRepository', () => {
       // Then
       expect(repo.getValue()[0].items).toHaveSize(0);
     });
+
+    it('throws an error when the list does not exist', () => {
+      // Given
+      const repo = new FavoriteListsRepositorySpec();
+      // When and then
+      expect(() => {
+        repo.removeAllItems(1);
+      }).toThrowError();
+    });
   });
 
   describe('importFromString', () => {
@@ -193,6 +259,7 @@ describe('FavoriteListsRepository', () => {
       // Then
       expect(result).toEqual(true);
       expect(repo.getValue()[0].name).toEqual('some-list-name');
+      expect(repo.getValue()[0].tsCreated instanceof Date).toEqual(true);
       expect(repo.getValue()[0].items).toHaveSize(3);
     });
 
@@ -207,5 +274,21 @@ describe('FavoriteListsRepository', () => {
       // Then
       expect(result).toEqual(false);
     });
+
+    it('fails and keeps existing data when JSON has the wrong shape', () => {
+      // Disable logging for this specific test, to avoid thinking something is wrong.
+      spyOn(console, 'log');
+
+      // Given
+      const repo = new FavoriteListsRepositorySpec();
+      repo.addFavoriteList('some-list', 20);
+      // When
+      const result = repo.importFromString('{"id":1,"name":"not-an-array"}');
+      // Then
+      expect(result).toEqual(false);
+      expect(repo.getValue()).toHaveSize(1);
+      expect(repo.getValue()[0].name).toEqual('some-list');
+    });
+
   });
 });

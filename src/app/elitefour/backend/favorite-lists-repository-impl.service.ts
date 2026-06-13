@@ -18,8 +18,15 @@ export class FavoriteListsRepositoryImpl extends FavoriteListsRepository {
   constructor() {
     super();
     // If we have favoriteLists in storage, retrieve it. Otherwise, initialize with an empty list.
-    if (localStorage.getItem(FavoriteListsRepositoryImpl.LOCALSTORAGE_KEY) !== null) {
-      this.favoriteLists = JSON.parse(localStorage.getItem(FavoriteListsRepositoryImpl.LOCALSTORAGE_KEY));
+    const storedFavoriteLists = localStorage.getItem(FavoriteListsRepositoryImpl.LOCALSTORAGE_KEY);
+    if (storedFavoriteLists !== null) {
+      try {
+        this.favoriteLists = FavoriteListsRepository.parseFavoriteLists(storedFavoriteLists);
+      } catch (error) {
+        console.log('Could not load favorite lists from localStorage.', error);
+        localStorage.removeItem(FavoriteListsRepositoryImpl.LOCALSTORAGE_KEY);
+        this.favoriteLists = [];
+      }
     } else {
       this.favoriteLists = [];
       this.saveDataToLocalStorage();

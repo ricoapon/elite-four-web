@@ -10,6 +10,9 @@ beforeEach(() => {
   spyOn(localStorage, 'setItem').and.callFake((key, value) => {
     return store[key] = value;
   });
+  spyOn(localStorage, 'removeItem').and.callFake((key) => {
+    delete store[key];
+  });
   spyOn(localStorage, 'clear').and.callFake(() => {
     store = {};
   });
@@ -23,19 +26,37 @@ describe('FavoriteListsRepositoryImpl', () => {
     }]));
     // When
     const repo = new FavoriteListsRepositoryImpl();
-    let result;
+    let result: FavoriteList[];
     repo.getFavoriteLists().subscribe((favoriteLists: FavoriteList[]) => {
       result = favoriteLists;
     });
     // Then
     expect(result[0].name).toEqual('list-name');
+    expect(result[0].tsCreated instanceof Date).toEqual(true);
+  });
+
+  it('initializes with an empty list when localStorage data is invalid', () => {
+    // Disable logging for this specific test, to avoid thinking something is wrong.
+    spyOn(console, 'log');
+
+    // Given
+    localStorage.setItem(FavoriteListsRepositoryImpl.LOCALSTORAGE_KEY, '{"id":1}');
+    // When
+    const repo = new FavoriteListsRepositoryImpl();
+    let result: FavoriteList[];
+    repo.getFavoriteLists().subscribe((favoriteLists: FavoriteList[]) => {
+      result = favoriteLists;
+    });
+    // Then
+    expect(result).toEqual([]);
+    expect(localStorage.getItem(FavoriteListsRepositoryImpl.LOCALSTORAGE_KEY)).toBeNull();
   });
 
   it('emits current value when subscribing to the observable', () => {
     // Given
     const repo = new FavoriteListsRepositoryImpl();
     // When
-    let result;
+    let result: FavoriteList[];
     repo.getFavoriteLists().subscribe((favoriteLists: FavoriteList[]) => {
       result = favoriteLists;
     });
@@ -48,7 +69,7 @@ describe('FavoriteListsRepositoryImpl', () => {
     const repo = new FavoriteListsRepositoryImpl();
     repo.addFavoriteList('some-name', 20);
     // When
-    let result;
+    let result: FavoriteList[];
     repo.getFavoriteLists().subscribe((favoriteLists: FavoriteList[]) => {
       result = favoriteLists;
     });
@@ -65,7 +86,7 @@ describe('FavoriteListsRepositoryImpl', () => {
     const repo = new FavoriteListsRepositoryImpl();
     repo.addFavoriteList('some-name', 20);
     // When
-    let modifiedData;
+    let modifiedData: FavoriteList[];
     repo.getFavoriteLists().subscribe((favoriteLists: FavoriteList[]) => {
       modifiedData = favoriteLists;
     });
@@ -74,7 +95,7 @@ describe('FavoriteListsRepositoryImpl', () => {
     // that actual underlying data (which is not accessible) is not touched, we trigger the repo to emit again.
     repo.modify(() => {});
     // Then
-    let result;
+    let result: FavoriteList[];
     repo.getFavoriteLists().subscribe((favoriteLists: FavoriteList[]) => {
       result = favoriteLists;
     });
