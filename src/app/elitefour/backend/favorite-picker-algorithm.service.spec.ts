@@ -55,6 +55,22 @@ describe('FavoritePickerAlgorithm', () => {
   });
 
   describe('algorithm', () => {
+    it('throws when selecting before items have been chosen', () => {
+      expect(() => {
+        algorithm.selectItems([repo.getValue()[0].items[0]]);
+      }).toThrowError();
+    });
+
+    it('throws when a selected item was not part of the current choice', () => {
+      // Given
+      spyOn(Math, 'random').and.returnValue(0);
+      algorithm.getNextItems();
+      // When and then
+      expect(() => {
+        algorithm.selectItems([repo.getValue()[0].items[2]]);
+      }).toThrowError();
+    });
+
     it('stores eliminatedBy after selecting items', () => {
       // Given
       spyOn(Math, 'random').and.returnValue(0);
@@ -92,6 +108,16 @@ describe('FavoritePickerAlgorithm', () => {
       expect(result2[0].id).toEqual(1);
       expect(result3).toHaveSize(2);
       expect(repo.getValue()[0].status).toEqual(FavoriteListStatus.FINISHED);
+    });
+
+    it('removes all references to a newly picked favorite from eliminatedBy lists', () => {
+      // Given
+      spyOn(Math, 'random').and.returnValue(0);
+      repo.getValue()[0].items[1].eliminatedBy = [1, 1];
+      // When
+      algorithm.selectItems([algorithm.getNextItems()[0]]);
+      // Then
+      expect(repo.getValue()[0].items[1].eliminatedBy).not.toContain(1);
     });
   });
 });

@@ -1,5 +1,6 @@
 import {FavoriteItem, FavoriteList, FavoriteListStatus} from './favorite-list-interfaces';
 import {FavoriteListsRepository} from './favorite-lists-repository';
+import {take} from 'rxjs';
 
 /** Class for executing the algorithm for a specific list. */
 export class FavoritePickerAlgorithm {
@@ -7,7 +8,10 @@ export class FavoritePickerAlgorithm {
   private favoriteList: FavoriteList;
 
   constructor(private favoriteListsRepository: FavoriteListsRepository, private listId: number) {
-    this.favoriteListsRepository.getFavoriteListById(listId).subscribe(favoriteList => this.favoriteList = favoriteList);
+    // We know the Observable always has a value and we only need the initialized value.
+    this.favoriteListsRepository.getFavoriteListById(listId)
+      .pipe(take(1))
+      .subscribe(favoriteList => this.favoriteList = favoriteList);
   }
 
   private getItemsThatCanBeChosen(nrOfItemsToBeShownOnScreen: number): FavoriteItem[] {
@@ -23,15 +27,15 @@ export class FavoritePickerAlgorithm {
     return possibleItemSelection
       // Sort all items in blocks based on the number of eliminated items.
       // However, also randomize all the elements inside the blocks.
-      .sort((a, b) => {
-        const aNrOfEliminatedItems = nrOfEliminated.get(a.id);
-        const bNrOfEliminatedItems = nrOfEliminated.get(b.id);
-        if (aNrOfEliminatedItems === bNrOfEliminatedItems) {
-          return 0.5 - Math.random();
-        } else {
-          return aNrOfEliminatedItems - bNrOfEliminatedItems;
-        }
-      })
+      .map((item) => ({
+        item,
+        nrOfEliminatedItems: nrOfEliminated.get(item.id),
+        randomTieBreaker: Math.random()
+      }))
+      .sort((a, b) =>
+        a.nrOfEliminatedItems - b.nrOfEliminatedItems || a.randomTieBreaker - b.randomTieBreaker
+      )
+      .map((entry) => entry.item)
       // Now pick the total amount of needed items.
       .slice(0, nrOfItemsToBeShownOnScreen);
   }
@@ -85,9 +89,17 @@ export class FavoritePickerAlgorithm {
   selectItems(selectedFavoriteItems: FavoriteItem[]): FavoriteItem[] {
     // Retrieve all the chosen items
     const toBeChosenItems = this.getToBeChosenItems();
+    if (toBeChosenItems.length === 0) {
+      throw new Error('Cannot select items before getting the next items.');
+    }
 
     // Create a list of id's from the selected favorite items.
     const selectedFavoriteItemIds = selectedFavoriteItems.map((item) => item.id);
+    const toBeChosenItemIds = toBeChosenItems.map((item) => item.id);
+    const invalidSelectedItem = selectedFavoriteItemIds.find((id) => !toBeChosenItemIds.includes(id));
+    if (invalidSelectedItem) {
+      throw new Error('Item ' + invalidSelectedItem + ' was not part of the current choice.');
+    }
 
     toBeChosenItems.forEach((item) => {
       // If the item was not selected
@@ -95,10 +107,9 @@ export class FavoritePickerAlgorithm {
         // Mark it as eliminated by all the selected items.
         item.eliminatedBy.push(...selectedFavoriteItemIds);
       }
-
-      // Unmark all items, so a new list of chosen items can be picked.
-      toBeChosenItems.forEach(x => x.toBeChosen = false);
     });
+    // Unmark all items, so a new list of chosen items can be picked.
+    toBeChosenItems.forEach(x => x.toBeChosen = false);
 
     // Create a list of all favorites that can be picked this round.
     const pickedFavorites: FavoriteItem[] = [];
@@ -141,10 +152,7 @@ export class FavoritePickerAlgorithm {
 
     // Remove the item from all the eliminatedBy lists.
     this.favoriteList.items.forEach((item) => {
-      const indexOfFavoriteItem = item.eliminatedBy.indexOf(newFavoriteItem.id);
-      if (indexOfFavoriteItem >= 0) {
-        item.eliminatedBy.splice(indexOfFavoriteItem, 1);
-      }
+      item.eliminatedBy = item.eliminatedBy.filter((eliminatingItemId) => eliminatingItemId !== newFavoriteItem.id);
     });
 
     return newFavoriteItem;
