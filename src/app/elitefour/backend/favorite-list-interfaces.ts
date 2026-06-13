@@ -7,16 +7,18 @@ export type FavoriteList = {
   nrOfItemsToBeShownOnScreen: number
 };
 
+export type SpotifyTrackReference = {
+  id: string,
+  externalUrl: string,
+};
+
 export type FavoriteItem = {
   id: number,
   name: string,
   favoritePosition?: number,
   eliminatedBy: number[],
   toBeChosen: boolean,
-  spotify?: {
-    id: string,
-    externalUrl: string,
-  }
+  spotify?: SpotifyTrackReference,
 };
 
 export enum FavoriteListStatus {
@@ -24,4 +26,3 @@ export enum FavoriteListStatus {
   ONGOING = 'Ongoing',
   FINISHED = 'Finished'
 }
-

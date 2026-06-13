@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {FavoriteItem, FavoriteList} from '../../backend/favorite-list-interfaces';
+import {FavoriteItem, FavoriteList, SpotifyTrackReference} from '../../backend/favorite-list-interfaces';
 import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 
 @Component({
@@ -106,7 +106,7 @@ export class ItemFormModalComponent implements OnInit {
       return false;
     }
 
-    let spotify = null;
+    let spotify: SpotifyTrackReference = null;
     if (this.spotifyUrl !== '') {
       const id = ItemFormModalComponent.SPOTIFY_REGEXP.exec(this.spotifyUrl)[1]
 
