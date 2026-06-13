@@ -24,7 +24,8 @@ export class SpotifyPlaylist {
             this.addAllItems(playlistId, sortedItems)
               .then(() => resolve('https://open.spotify.com/playlist/' + playlistId))
               .catch((e) => fatal(e));
-          }
+          },
+          error: (error) => fatal(error)
         });
     });
   }
@@ -32,7 +33,11 @@ export class SpotifyPlaylist {
   private addAllItems(playlistId: string, sortedItems: FavoriteItem[]): Promise<void> {
     // Recursive method will modify input, so we create a shallow clone to safeguard the actual input.
     // Obviously we need to filter on items that actually contain Spotify information.
-    const sortedItemsCloned = Object.assign([], sortedItems.filter(item => item.spotify));
+    const sortedItemsCloned = [...sortedItems.filter(item => item.spotify)];
+    if (sortedItemsCloned.length === 0) {
+      return Promise.resolve();
+    }
+
     return this.recursiveAddAllItems(playlistId, sortedItemsCloned);
   }
 
@@ -40,6 +45,9 @@ export class SpotifyPlaylist {
     // Each Spotify request can add at most 100 items per request. These requests need to be sequential to ensure ordering.
     // We resolve this by recursively calling this method, where we only add the first 100 items of the given sortedItems.
     const sortedItemsToAdd = sortedItems.splice(0, SpotifyPlaylist.MAX_NR_OF_ITEMS_PER_REQUEST);
+    if (sortedItemsToAdd.length === 0) {
+      return Promise.resolve();
+    }
 
     // Within each partition, the songs will be added in the order we pass them in the request.
     const body = JSON.stringify({
@@ -59,7 +67,7 @@ export class SpotifyPlaylist {
             resolve()
           }
         },
-        error: () => fatal()
+        error: (error) => fatal(error)
       });
     });
   }
