@@ -11,12 +11,13 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
       <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-      <p>Items will be exported.</p>
+      <p class="text-muted mb-0">Download this list as a text file. Each item will be written on its own line.</p>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-primary" (click)="exportAll()">Export all items</button>
+      <button type="button" class="btn btn-outline-secondary" (click)="activeModal.close()">Cancel</button>
+      <button type="button" class="btn btn-outline-secondary" (click)="exportAll()">Export all items</button>
       <!--suppress HtmlUnknownAttribute -->
-      <button ngbAutofocus type="button" class="btn btn-primary" (click)="exportOnlyFavorites()">Export only favorites
+      <button ngbAutofocus type="button" class="btn btn-primary" (click)="exportOnlyFavorites()">Export favorites
       </button>
     </div>
   `,

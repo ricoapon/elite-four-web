@@ -11,11 +11,13 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
       <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-      All the data for this application gets stored inside the browser. To not lose this data or to copy this over to another computer,
-      you can download the data.
+      <p class="text-muted mb-0">
+        All the data for this application gets stored inside the browser. To not lose this data or to copy this over to another computer,
+        you can download the data.
+      <p>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="activeModal.close()">Cancel</button>
+      <button type="button" class="btn btn-outline-secondary" (click)="activeModal.close()">Cancel</button>
       <button class="btn btn-primary" (click)="export()">Export</button>
     </div>
   `,
@@ -26,14 +28,14 @@ export class ExportDataModalComponent implements OnInit {
   private favoriteLists: FavoriteList[];
 
   constructor(public activeModal: NgbActiveModal,
-              private favoriteListsRepository: FavoriteListsRepository) { }
+    private favoriteListsRepository: FavoriteListsRepository) { }
 
   ngOnInit(): void {
     this.favoriteListsRepository.getFavoriteLists().subscribe((favoriteLists) => this.favoriteLists = favoriteLists);
   }
 
   export(): void {
-    const blob = new Blob([JSON.stringify(this.favoriteLists)], {type: 'text/plain;charset=utf-8'});
+    const blob = new Blob([JSON.stringify(this.favoriteLists)], { type: 'text/plain;charset=utf-8' });
     this.FileSaver.saveAs(blob, 'EliteFour.json');
     this.activeModal.close();
   }

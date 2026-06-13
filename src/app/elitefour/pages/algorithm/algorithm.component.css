@@ -1,15 +1,17 @@
-.selectable-item {
-  text-decoration: none !important;
+.picker-choice-card {
+  cursor: pointer;
 }
 
-.selectable-item:hover {
-  background-color: rgba(var(--bs-primary-rgb), 0.10);
+.picker-choice-card.selected {
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
 }
 
-.selectable-item.selected {
-  background-color: rgba(var(--bs-primary-rgb), 0.34);
+.picker-choice-card .form-check-input {
+  height: 1.5rem;
+  width: 1.5rem;
 }
 
-a {
-  color: inherit !important;
+.picker-choice-card:focus {
+  box-shadow: var(--bs-box-shadow);
+  outline: 0;
 }

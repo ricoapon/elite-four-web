@@ -1,52 +1,44 @@
-<nav class="navbar navbar-expand navbar-dark bg-dark m-0 p-0 text-white">
-  <div class="collapse navbar-collapse content mx-auto">
-    <ul class="navbar-nav">
-      <li>
-        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-           class="list-group-item list-group-item-action">
-          <div style="height: 40px;" class="w-100 d-flex align-items-center justify-content-center">
-            <i class="fas fa-list"></i>
-          </div>
-        </a>
-      </li>
-      <li>
-        <a routerLink="help" routerLinkActive="active"
-           class="list-group-item list-group-item-action">
-          <div class="w-100 h-100 d-flex align-items-center justify-content-center">
-            <i class="fas fa-question"></i>
-          </div>
-        </a>
-      </li>
-      <li>
-        <a class="list-group-item list-group-item-action" (click)="export()">
-          <div class="w-100 h-100 d-flex align-items-center justify-content-center">
-            <i class="fas fa-download"></i>
-          </div>
-        </a>
-      </li>
-      <li>
-        <a class="list-group-item list-group-item-action" (click)="import()">
-          <div class="w-100 h-100 d-flex align-items-center justify-content-center">
-            <i class="fas fa-upload"></i>
-          </div>
-        </a>
-      </li>
-      <li>
-        <a class="list-group-item list-group-item-action with-text" (click)="loginToSpotify()">
-          <div class="w-100 h-100 d-flex align-items-center justify-content-center">
-            <i class="fab fa-spotify pe-2"></i>
-            <span *ngIf="spotifyAuthenticationState.authenticatedInfo">Logged in as {{ spotifyAuthenticationState.authenticatedInfo.userName }}</span>
-            <span *ngIf="!spotifyAuthenticationState.authenticatedInfo">Log in</span>
-          </div>
-        </a>
-      </li>
-    </ul>
-    <ul class="navbar-nav ms-auto">
-      <li>
-        <div class="list-group navbar-nav ms-auto text-end">
-          <span class="text-end version">v{{version}}</span>
+<header class="sticky-top bg-body border-bottom">
+  <nav class="navbar navbar-expand-lg navbar-light bg-body">
+    <div class="container-xl">
+      <a class="navbar-brand app-brand" routerLink="/">
+        <span class="fw-bold pe-2">Elite Four</span>
+        <span class="badge rounded-pill text-bg-light border">v{{version}}</span>
+      </a>
+      <button class="navbar-toggler" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed"
+              aria-controls="appNav" [attr.aria-expanded]="!isNavbarCollapsed" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="appNav" [ngbCollapse]="isNavbarCollapsed">
+        <ul class="navbar-nav ms-lg-4 me-auto">
+          <li class="nav-item fw-bold">
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+              Lists
+            </a>
+          </li>
+          <li class="nav-item fw-bold">
+            <a routerLink="help" routerLinkActive="active" class="nav-link">Help</a>
+          </li>
+        </ul>
+        <div class="d-flex flex-wrap gap-2 mt-3 mt-lg-0">
+          <button class="btn btn-outline-secondary btn-sm" type="button" (click)="import()">
+            <i class="fas fa-upload" aria-hidden="true"></i>
+            Import data
+          </button>
+          <button class="btn btn-outline-secondary btn-sm" type="button" (click)="export()">
+            <i class="fas fa-download" aria-hidden="true"></i>
+            Export data
+          </button>
+          <button class="btn btn-sm"
+                  [ngClass]="spotifyAuthenticationState.isLoggedIn() ? 'btn-success' : 'btn-outline-success'"
+                  type="button"
+                  (click)="loginToSpotify()">
+            <i class="fab fa-spotify" aria-hidden="true"></i>
+            <span *ngIf="spotifyAuthenticationState.authenticatedInfo"> Spotify: {{ spotifyAuthenticationState.authenticatedInfo.userName }}</span>
+            <span *ngIf="!spotifyAuthenticationState.authenticatedInfo"> Log in</span>
+          </button>
         </div>
-      </li>
-    </ul>
-  </div>
-</nav>
+      </div>
+    </div>
+  </nav>
+</header>

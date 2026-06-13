@@ -13,12 +13,12 @@ import {ComponentsModule} from '../components/components.module';
 import {KeyboardShortcutsModule} from 'ng-keyboard-shortcuts';
 import {ModalModule} from '../modals/modal.module';
 import {SpotifyCallbackComponent} from './spotify-callback/spotify-callback.component';
-import {NgbDropdownModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbCollapseModule, NgbDropdownModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [AlgorithmComponent, HelpComponent, ListDetailComponent, ListOverviewComponent, MenuComponent, PageNotFoundComponent,
     SpotifyCallbackComponent],
-  imports: [CommonModule, FormsModule, AppRoutingModule, ComponentsModule, KeyboardShortcutsModule, ModalModule, NgbDropdownModule],
+  imports: [CommonModule, FormsModule, AppRoutingModule, ComponentsModule, KeyboardShortcutsModule, ModalModule, NgbCollapseModule, NgbDropdownModule],
   exports: [
     MenuComponent
   ]

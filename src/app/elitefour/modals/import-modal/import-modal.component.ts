@@ -12,19 +12,22 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
     </div>
     <div class="modal-body">
       <div class="mb-3">
-        <p>Import a file where each line will be parsed as an item.</p>
-        <label class="btn btn-primary">
+        <p class="text-muted pb-2">Import a text file where each non-empty line becomes one item.</p>
+        <label class="btn btn-outline-secondary">
           <!--suppress TypeScriptUnresolvedVariable -->
           Browse <input type="file" hidden (change)="handleFileInput($event.target.files)">
         </label>
-        <label class="ps-2">
+        <label class="ps-2 text-muted">
           {{fileName}}
         </label>
 
-        <div class="alert alert-danger" *ngIf="!!error" style="white-space: pre-line">{{error}}</div>
+        <div class="alert alert-danger mt-2 mb-0" *ngIf="!!error">
+          <div *ngFor="let errorLine of errorLines()">{{errorLine}}</div>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
+      <button type="button" class="btn btn-outline-secondary" (click)="activeModal.close()">Cancel</button>
       <!--suppress HtmlUnknownAttribute -->
       <button ngbAutofocus type="button" class="btn btn-primary" (click)="importFile()" [disabled]="!!error || itemsToUpload.length == 0">Import</button>
     </div>
@@ -71,6 +74,10 @@ export class ImportModalComponent implements OnInit {
     });
 
     this.error = errorMessages.join('\n');
+  }
+
+  errorLines(): string[] {
+    return this.error.split('\n');
   }
 
   importFile(): void {

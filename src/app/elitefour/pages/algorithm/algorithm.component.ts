@@ -12,7 +12,7 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 export class AlgorithmComponent implements OnInit {
   favoriteList: FavoriteList;
   toBeChosenItems: FavoriteItem[];
-  private selectedItems: FavoriteItem[];
+  selectedItems: FavoriteItem[];
   newFavorites: FavoriteItem[] = [];
   private algorithm: FavoritePickerAlgorithm;
 
@@ -63,5 +63,15 @@ export class AlgorithmComponent implements OnInit {
 
   isItemSelected(item: FavoriteItem): boolean {
     return this.selectedItems.includes(item);
+  }
+
+  progressPercentage(): number {
+    if (!this.favoriteList || this.favoriteList.items.length === 0) {
+      return 0;
+    }
+
+    const nrOfFavoriteItemsPicked = this.favoriteList.items.filter((item) => !!item.favoritePosition).length;
+
+    return 100 * (nrOfFavoriteItemsPicked / this.favoriteList.items.length);
   }
 }

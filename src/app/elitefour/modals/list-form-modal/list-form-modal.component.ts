@@ -8,11 +8,12 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
   template: `
     <form (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" [appForbiddenListName]="['listName', 'initialListName']" novalidate>
       <div class="modal-header">
-        <h4 class="modal-title" *ngIf="!isEditMode">Add a new list</h4>
+        <h4 class="modal-title" *ngIf="!isEditMode">Create list</h4>
         <h4 class="modal-title" *ngIf="isEditMode">Edit list</h4>
         <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
       </div>
       <div class="modal-body">
+        <div class="alert alert-danger" *ngIf="!!error">{{error}}</div>
         <div class="mb-3">
           <label class="form-label" for="listName">List name</label>
           <!--suppress HtmlUnknownAttribute -->
@@ -36,12 +37,14 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
           <div *ngIf="nrOfItemsToBeShownOnScreenModel.invalid" class="invalid-feedback">
             <div *ngIf="nrOfItemsToBeShownOnScreenModel.errors.customMin">Should be at least 2</div>
           </div>
+          <div class="form-text" *ngIf="isNrOfItemsToBeShownOnScreensDisabled()">
+            This value cannot be changed after picking has started.
+          </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="activeModal.close('Close click')">Cancel
-        </button>
-        <button class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="activeModal.close('Close click')">Cancel</button>
+        <button class="btn btn-primary">{{isEditMode ? 'Save changes' : 'Create list'}}</button>
       </div>
     </form>
   `,

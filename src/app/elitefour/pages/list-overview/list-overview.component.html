@@ -1,0 +1,115 @@
+<ng-keyboard-shortcuts [shortcuts]="shortcuts"></ng-keyboard-shortcuts>
+
+<ng-container *ngIf="favoriteLists.length > 0; else emptyLists">
+  <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3 mb-4">
+    <div>
+      <p class="mb-1 small fw-bold text-uppercase text-primary">Workspace</p>
+      <h1 class="mb-0">Your favorite lists</h1>
+      <p class="mb-0 mt-2 text-muted">
+        Create collections, add candidates, and start a guided picking session when a list is ready.
+      </p>
+    </div>
+
+    <div class="d-grid d-sm-flex gap-2 flex-shrink-0 justify-content-lg-end">
+      <a class="btn btn-outline-secondary" routerLink="/help">
+        <i class="fas fa-circle-question" aria-hidden="true"></i>
+        How it works
+      </a>
+      <button class="btn btn-primary" type="button" (click)="openAddNewListModal()">
+        <i class="fas fa-plus" aria-hidden="true"></i>
+        New list
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-2 align-items-center mb-3">
+    <div class="col-12 col-lg-9">
+      <div class="input-group">
+        <span class="input-group-text"><i class="fas fa-search" aria-hidden="true"></i></span>
+        <input type="search" class="form-control" placeholder="Search lists" aria-label="Search lists"
+          [(ngModel)]="searchListName" (keydown.esc)="onPressEscape()" #searchTextBox>
+      </div>
+    </div>
+    <div class="col-12 col-lg-auto ms-lg-auto">
+      <div class="btn-group w-100" role="group" aria-label="List filter">
+        <button class="btn" type="button" [ngClass]="listFilter === 'all' ? 'btn-primary' : 'btn-outline-secondary'"
+          (click)="setListFilter('all')">All</button>
+        <button class="btn" type="button" [ngClass]="listFilter === 'active' ? 'btn-primary' : 'btn-outline-secondary'"
+          (click)="setListFilter('active')">Active</button>
+        <button class="btn" type="button"
+          [ngClass]="listFilter === 'finished' ? 'btn-primary' : 'btn-outline-secondary'"
+          (click)="setListFilter('finished')">Finished</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-lg-4" *ngFor="let favoriteList of sortedAndFiltered(favoriteLists)">
+      <article class="card h-100">
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex justify-content-between gap-3">
+            <div>
+              <span class="badge" [ngClass]="statusBadgeClass(favoriteList)">{{favoriteList.status}}</span>
+              <h2 class="h5 fw-bold mt-3 mb-1">{{favoriteList.name}}</h2>
+              <p class="text-muted mb-0">
+                {{favoriteList.items.length}} {{favoriteList.items.length === 1 ? 'item' : 'items'}}
+              </p>
+            </div>
+            <button class="btn btn-primary flex-shrink-0" type="button" (click)="navigateToList(favoriteList.id)"
+              aria-label="Open {{favoriteList.name}}">
+              <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="progress mt-4" aria-label="Picking progress" *ngIf="favoriteList.items.length > 0">
+            <div class="progress-bar"
+              [style.width]="100 * (determineNumberOfFavoriteItemsPicked(favoriteList) / favoriteList.items.length) + '%'">
+            </div>
+          </div>
+          <div class="d-flex flex-wrap gap-2 mt-auto pt-3">
+            <span class="badge text-bg-light border text-dark">
+              {{determineNumberOfFavoriteItemsPicked(favoriteList)}} favorites
+            </span>
+            <span class="badge text-bg-light border text-dark">{{favoriteList.nrOfItemsToBeShownOnScreen}} max
+              batch</span>
+            <span class="badge text-bg-light border text-dark">{{favoriteList.tsCreated | date: 'dd-MM-yy
+              HH:mm'}}</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="alert alert-secondary mt-4 mb-0" *ngIf="sortedAndFiltered(favoriteLists).length === 0">
+    No lists match the current search and filter.
+  </div>
+</ng-container>
+
+<ng-template #emptyLists>
+  <div class="card text-center">
+    <div class="card-body py-5">
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-7">
+          <div class="d-inline-flex align-items-center justify-content-center rounded-circle text-bg-primary p-4 mb-3">
+            <i class="fas fa-list-check fa-2x" aria-hidden="true"></i>
+          </div>
+          <p class="mb-1 small fw-bold text-uppercase text-primary">Welcome</p>
+          <h2>Start with your first list</h2>
+          <p class="text-muted mb-4">
+            Got a huge list of songs, movies, or books? Create a list and find your favorites. Compare
+            items one choice at a time and build a ranking from collections that would be impossible to sort by hand.
+          </p>
+          <div class="d-grid d-sm-flex justify-content-sm-center gap-2">
+            <button class="btn btn-primary" type="button" (click)="openAddNewListModal()">
+              <i class="fas fa-plus" aria-hidden="true"></i>
+              Create a list
+            </button>
+            <a class="btn btn-outline-secondary" routerLink="/help">
+              <i class="fas fa-circle-question" aria-hidden="true"></i>
+              Learn how it works
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

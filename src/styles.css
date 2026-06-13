@@ -1,12 +1,13 @@
-:root {
-  --primary-rgb: 0, 123, 255;
-}
-
 html, body {
   margin: 0;
   padding: 0;
 }
 
-.card-body {
-  padding: 13px 20px;
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.btn {
+  --bs-btn-font-weight: 600;
 }
