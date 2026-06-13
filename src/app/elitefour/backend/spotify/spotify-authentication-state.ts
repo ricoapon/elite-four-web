@@ -17,27 +17,38 @@ export class SpotifyAuthenticationState {
     this.readLocalStorage();
   }
 
-  private readLocalStorage() {
+  private readLocalStorage(): void {
     const value = localStorage.getItem(SpotifyAuthenticationState.LOCALSTORAGE_KEY_AUTHENTICATED_INFO);
     if (value !== null) {
-      this.authenticatedInfo = JSON.parse(value);
+      try {
+        this.authenticatedInfo = JSON.parse(value);
+        this.authenticatedInfo.validUntil = new Date(this.authenticatedInfo.validUntil);
+        if (Number.isNaN(this.authenticatedInfo.validUntil.getTime())) {
+          // noinspection ExceptionCaughtLocallyJS
+          throw new Error('Stored Spotify authentication date is invalid.');
+        }
+      } catch (error) {
+        console.log('Could not load Spotify authentication state.', error);
+        this.authenticatedInfo = null;
+        this.saveLocalStorage();
+      }
     }
     this.checkValidity();
   }
 
-  private checkValidity() {
+  private checkValidity(): void {
     if (this.authenticatedInfo == null) {
       return;
     }
 
     // If the information is expired, remove it.
-    if (this.authenticatedInfo.validUntil < new Date()) {
+    if (this.authenticatedInfo.validUntil <= new Date()) {
       this.authenticatedInfo = null;
       this.saveLocalStorage();
     }
   }
 
-  private saveLocalStorage() {
+  private saveLocalStorage(): void {
     if (this.authenticatedInfo == null) {
       localStorage.removeItem(SpotifyAuthenticationState.LOCALSTORAGE_KEY_AUTHENTICATED_INFO);
     } else {
@@ -76,13 +87,16 @@ export class SpotifyAuthenticationState {
     return this.authenticatedInfo !== null;
   }
 
-  public reset() {
+  public reset(): void {
     this.authenticatedInfo = null;
     this.saveLocalStorage();
   }
 
   public getAuthenticationHeader(): HttpHeaders {
-    this.checkValidity();
+    if (!this.isLoggedIn()) {
+      throw new Error('Cannot create Spotify authentication header when not logged in.');
+    }
+
     return new HttpHeaders().set('Authorization', 'Bearer ' + this.authenticatedInfo.accessToken);
   }
 }
