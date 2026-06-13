@@ -259,7 +259,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
       .filter(item => !!item.spotify));
 
     if (sortedFilteredItems.length == 0) {
-      alert('The list contains 0 sorted items, so no Spotify playlist can be created.')
+      alert('The list contains 0 favorite items with a Spotify link, so no Spotify playlist can be created.')
       return
     }
 
