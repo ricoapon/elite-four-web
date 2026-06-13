@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {SpotifyAuthenticationState} from './spotify-authentication-state';
 import {Observable} from 'rxjs';
 
@@ -11,7 +11,7 @@ export class SpotifyTokenValidation {
   constructor(private spotifyAuthenticationState: SpotifyAuthenticationState, private httpClient: HttpClient) {
   }
 
-  validate() {
+  validate(): void {
     if (!this.spotifyAuthenticationState.isLoggedIn()) {
       return
     }
@@ -29,8 +29,7 @@ export class SpotifyTokenValidation {
 
   private executeGetRequest(url: string): Observable<any> {
     return this.httpClient.get(url, {
-      headers: new HttpHeaders()
-        .set('Authorization', 'Bearer ' + this.spotifyAuthenticationState.authenticatedInfo.accessToken)
+      headers: this.spotifyAuthenticationState.getAuthenticationHeader()
     });
   }
 }
