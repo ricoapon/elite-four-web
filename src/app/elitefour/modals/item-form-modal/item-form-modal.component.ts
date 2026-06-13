@@ -8,7 +8,7 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
   template: `
     <form (ngSubmit)="checkValidationItemName() && checkValidationSpotifyUrl() && f.form.valid && onSubmit()" #f="ngForm">
       <div class="modal-header">
-        <h4 class="modal-title" *ngIf="!isEditMode">Add a new item</h4>
+        <h4 class="modal-title" *ngIf="!isEditMode">Add item</h4>
         <h4 class="modal-title" *ngIf="isEditMode">Edit item</h4>
         <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
       </div>
@@ -25,10 +25,11 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
           </div>
         </div>
         <div class="mb-3">
-          <label class="form-label" for="itemName">Spotify link</label>
+          <label class="form-label" for="spotifyUrl">Spotify link</label>
           <input type="text" class="form-control" id="spotifyUrl" [(ngModel)]="spotifyUrl" name="spotifyUrl"
                  #spotifyUrlModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && spotifyUrlModel.invalid }"
                  (ngModelChange)="checkValidationSpotifyUrl()">
+          <div class="form-text">Optional. Use a track URL from open.spotify.com.</div>
           <div *ngIf="f.submitted && spotifyUrlModel.invalid" class="invalid-feedback">
             <div *ngIf="spotifyUrlModel.errors.incorrectFormat">Format is incorrect. It should look like
               "https://open.spotify.com/track/...".
@@ -37,9 +38,8 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="activeModal.close('Close click')">Cancel
-        </button>
-        <button class="btn btn-primary">Submit</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="activeModal.close('Close click')">Cancel</button>
+        <button class="btn btn-primary">{{isEditMode ? 'Save changes' : 'Add item'}}</button>
       </div>
     </form>
   `,
@@ -149,5 +149,4 @@ export class ItemFormModalComponent implements OnInit {
       }
     }
   }
-
 }

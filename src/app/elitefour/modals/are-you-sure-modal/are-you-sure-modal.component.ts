@@ -6,13 +6,17 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
   template: `
     <div class="modal-header">
       <h4 class="modal-title">Are you sure?</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body" *ngIf="!!body">
       {{body}}
     </div>
+    <div class="modal-body" *ngIf="!body">
+      This action cannot be undone.
+    </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-danger" (click)="activeModal.close(false)">No</button>
-      <button class="btn btn-success" (click)="activeModal.close(true)">Yes</button>
+      <button type="button" class="btn btn-outline-secondary" (click)="activeModal.close(false)">Cancel</button>
+      <button class="btn btn-danger" (click)="activeModal.close(true)">Confirm</button>
     </div>
   `,
   styles: []

@@ -11,20 +11,23 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
       <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-      <p>All the data for this application gets stored inside the browser. To not lose this data or to copy this over to another computer,
-        you can download the data.</p>
-      <label class="btn btn-primary">
+      <p class="text-muted pb-2">
+        Import a previously exported Elite Four data file. This replaces the data stored in this browser.
+      </p>
+      <label class="btn btn-outline-secondary">
         <!--suppress TypeScriptUnresolvedVariable -->
         Browse <input type="file" hidden (change)="handleFileInput($event.target.files)">
       </label>
-      <label class="ps-2">
+      <label class="ps-2 text-muted">
         {{fileName}}
       </label>
 
-      <div class="alert alert-danger" *ngIf="!!error" style="white-space: pre-line">{{error}}</div>
+      <div class="alert alert-danger mt-2 mb-0" *ngIf="!!error">
+        <div *ngFor="let errorLine of errorLines()">{{errorLine}}</div>
+      </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="activeModal.close()">Cancel</button>
+      <button type="button" class="btn btn-outline-secondary" (click)="activeModal.close()">Cancel</button>
       <button class="btn btn-primary" (click)="import()" [disabled]="importedData === undefined">Import</button>
     </div>
   `,
@@ -49,6 +52,10 @@ export class ImportDataModalComponent implements OnInit {
     }
     this.activeModal.close();
     this.router.navigate(['/']);
+  }
+
+  errorLines(): string[] {
+    return this.error.split('\n');
   }
 
   handleFileInput(files: FileList): void {
