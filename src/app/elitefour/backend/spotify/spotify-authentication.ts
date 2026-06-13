@@ -1,6 +1,6 @@
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {environment} from '../../../../environments/environment';
-import * as crypto from 'crypto-js';
+import * as CryptoJS from 'crypto-js';
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {SpotifyAuthenticationState} from './spotify-authentication-state';
@@ -33,7 +33,7 @@ export class SpotifyAuthentication {
     this.infoBefore = {state, codeVerifier, url: currentRelativeUrl};
     localStorage.setItem(SpotifyAuthentication.LOCALSTORAGE_KEY, JSON.stringify(this.infoBefore));
 
-    const codeVerifierHash = crypto.SHA256(codeVerifier).toString(crypto.enc.Base64);
+    const codeVerifierHash = CryptoJS.SHA256(codeVerifier).toString(CryptoJS.enc.Base64);
     const codeChallenge = codeVerifierHash
       .replace(/=/g, '')
       .replace(/\+/g, '-')
@@ -56,24 +56,37 @@ export class SpotifyAuthentication {
   }
 
   isStateValid(state: string): boolean {
-    return state === this.infoBefore.state;
+    return !!this.infoBefore && state === this.infoBefore.state;
   }
 
   navigateBack(router: Router): void {
-    router.navigate([this.infoBefore.url]);
+    if (!this.infoBefore) {
+      throw new Error('Cannot navigate back after Spotify authentication without previous navigation state.');
+    }
+
+    const url = this.infoBefore.url;
+    localStorage.removeItem(SpotifyAuthentication.LOCALSTORAGE_KEY);
+    this.infoBefore = undefined;
+    router.navigate([url]);
   }
 
   private generateRandomString(length: number): string {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    const randomValues = new Uint8Array(length);
+    window.crypto.getRandomValues(randomValues);
+    for (const randomValue of randomValues) {
+      result += characters.charAt(randomValue % charactersLength);
     }
     return result;
   }
 
   requestAccessToken(code: string): Promise<void> {
+    if (!this.infoBefore) {
+      return Promise.reject(new Error('Cannot request Spotify access token without previous authentication state.'));
+    }
+
     const body = new HttpParams()
       .set('grant_type', 'authorization_code')
       .set('code', code)
@@ -106,6 +119,8 @@ export class SpotifyAuthentication {
   }
 
   logout() {
+    localStorage.removeItem(SpotifyAuthentication.LOCALSTORAGE_KEY);
+    this.infoBefore = undefined;
     this.spotifyAuthenticationState.reset();
   }
 }
