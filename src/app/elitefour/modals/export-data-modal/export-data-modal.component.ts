@@ -28,15 +28,26 @@ export class ExportDataModalComponent implements OnInit {
   private favoriteLists: FavoriteList[];
 
   constructor(public activeModal: NgbActiveModal,
-    private favoriteListsRepository: FavoriteListsRepository) { }
+              private favoriteListsRepository: FavoriteListsRepository) { }
 
   ngOnInit(): void {
     this.favoriteListsRepository.getFavoriteLists().subscribe((favoriteLists) => this.favoriteLists = favoriteLists);
   }
 
   export(): void {
-    const blob = new Blob([JSON.stringify(this.favoriteLists)], { type: 'text/plain;charset=utf-8' });
-    this.FileSaver.saveAs(blob, 'EliteFour.json');
+    const blob = new Blob([JSON.stringify(this.favoriteLists)], {type: 'text/plain;charset=utf-8'});
+    this.FileSaver.saveAs(blob, 'EliteFour-' + this.formatTimestamp(new Date()) + '.json');
     this.activeModal.close();
+  }
+
+  private formatTimestamp(date: Date): string {
+    const pad = (value: number): string => value.toString().padStart(2, '0');
+
+    return date.getFullYear() + '-' +
+      pad(date.getMonth() + 1) + '-' +
+      pad(date.getDate()) + '-' +
+      pad(date.getHours()) + '-' +
+      pad(date.getMinutes()) + '-' +
+      pad(date.getSeconds());
   }
 }

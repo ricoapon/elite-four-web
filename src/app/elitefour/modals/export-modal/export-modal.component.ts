@@ -60,17 +60,31 @@ export class ExportModalComponent implements OnInit {
     const favoriteItems = this.favoriteList.items.filter((item) => !!item.favoritePosition);
 
     const blob = new Blob([this.createItemsAsString(favoriteItems)], {type: 'text/plain;charset=utf-8'});
-    this.FileSaver.saveAs(blob, 'FavoriteItems.txt');
+    this.FileSaver.saveAs(blob, this.createFilename('FavoriteItems'));
   }
 
   exportAll(): void {
     const blob = new Blob([this.createItemsAsString(this.favoriteList.items)], {type: 'text/plain;charset=utf-8'});
-    this.FileSaver.saveAs(blob, 'AllItems.txt');
+    this.FileSaver.saveAs(blob, this.createFilename('AllItems'));
   }
 
   createItemsAsString(favoriteItems: FavoriteItem[]): string {
     return ExportModalComponent.sortItems(favoriteItems)
       .map((item) => item.name)
       .join('\r\n');
+  }
+
+  private createFilename(exportType: 'AllItems' | 'FavoriteItems'): string {
+    return this.toFilenamePart(this.favoriteList.name) + '-' + exportType + '.txt';
+  }
+
+  private toFilenamePart(value: string): string {
+    const result = value
+      .trim()
+      .replace(/[\s<>:"/\\|?*\x00-\x1F]+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^[.-]+|[.-]+$/g, '');
+
+    return result.length > 0 ? result : 'UntitledList';
   }
 }
