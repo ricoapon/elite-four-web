@@ -25,6 +25,7 @@
     "bootstrap": "^5.3.0",
     "crypto-js": "^4.2.0",
     "file-saver": "^2.0.5",
+    "fuse.js": "^7.4.2",
     "ng-keyboard-shortcuts": "^13.0.8",
     "ngx-cookie-service": "^18.0.0",
     "random-seedable": "^1.0.8",
