@@ -28,7 +28,6 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
 
   favoriteList: FavoriteList = {id: 0, name: '', status: undefined, tsCreated: new Date(), items: [], nrOfItemsToBeShownOnScreen: 20};
 
-  showSearchTextBox = false;
   searchItemName = '';
   @ViewChild('searchTextBox') searchTextBox: ElementRef;
   showSpotifyUnmatchedOnly = false;
@@ -59,36 +58,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
         command: () => this.openItemModal(undefined),
         preventDefault: true
       },
-      {
-        key: ['cmd + f'],
-        label: 'Search list',
-        description: 'Search list',
-        command: () => this.toggleSearchTextBox(),
-        preventDefault: true
-      },
-      {
-        key: ['esc'],
-        label: 'Escape',
-        description: 'Escape',
-        command: () => this.onPressEscape(),
-        preventDefault: true
-      },
     );
-  }
-
-  onPressEscape(): void {
-    this.showSearchTextBox = false;
-    this.searchItemName = '';
-  }
-
-  toggleSearchTextBox(): void {
-    this.showSearchTextBox = !this.showSearchTextBox;
-    if (!this.showSearchTextBox) {
-      this.searchItemName = '';
-    } else {
-      this.cdRef.detectChanges();
-      this.searchTextBox.nativeElement.focus();
-    }
   }
 
   ngOnInit(): void {
@@ -156,8 +126,9 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
       sortedItems = sortedItems.filter((item) => !item.spotify);
     }
 
-    if (this.showSearchTextBox) {
-      sortedItems = sortedItems.filter((item) => item.name.indexOf(this.searchItemName) >= 0);
+    const searchItemName = this.searchItemName.trim().toLowerCase();
+    if (searchItemName.length > 0) {
+      sortedItems = sortedItems.filter((item) => item.name.toLowerCase().indexOf(searchItemName) >= 0);
     }
 
     return sortedItems;
