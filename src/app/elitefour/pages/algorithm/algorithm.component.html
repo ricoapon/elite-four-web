@@ -24,44 +24,20 @@
     </div>
   </div>
 
-  <div class="row g-4">
-    <div class="col-12 col-xl-8">
-      <div class="card mb-3">
-        <div class="row g-0 align-items-stretch">
-          <div class="col-12">
-            <div class="card-body">
-              <span class="small text-muted">Favorites found</span>
-              <div class="progress mt-2" aria-label="Favorites found">
-                <div class="progress-bar" [style.width]="progressPercentage() + '%'"></div>
-              </div>
-            </div>
+  <div class="row g-3 mb-3 align-items-stretch">
+    <div class="col-12 col-lg-7">
+      <div class="card h-100">
+        <div class="card-body">
+          <span class="small text-muted">Favorites found</span>
+          <div class="progress mt-2" aria-label="Favorites found">
+            <div class="progress-bar" [style.width]="progressPercentage() + '%'"></div>
           </div>
-        </div>
-      </div>
-
-      <div class="row g-3" aria-label="Selectable picker items">
-        <div class="col-12 col-md-6" *ngFor="let item of toBeChosenItems">
-          <article class="card h-100 picker-choice-card"
-                 [class.border-primary]="isItemSelected(item)"
-                 [class.selected]="isItemSelected(item)"
-                 role="button" tabindex="0"
-                 (click)="clickItem(item)"
-                 (keydown.enter)="clickItem(item)"
-                 (keydown.space)="clickItem(item); $event.preventDefault()">
-            <div class="card-body py-4">
-              <div class="form-check d-flex align-items-center gap-3 mb-0">
-                <input class="form-check-input flex-shrink-0" type="checkbox" [checked]="isItemSelected(item)"
-                       (click)="clickItem(item); $event.stopPropagation()">
-                <h2 class="h4 fw-bold mb-0">{{item.name}}</h2>
-              </div>
-            </div>
-          </article>
         </div>
       </div>
     </div>
 
-    <aside class="col-12 col-xl-4">
-      <div class="card">
+    <aside class="col-12 col-lg-5">
+      <div class="card h-100">
         <div class="card-body">
           <h2 class="h5">Found favorites</h2>
           <ol class="list-unstyled d-grid gap-2 mb-0" *ngIf="newFavorites.length > 0; else noNewFavorites">
@@ -76,5 +52,37 @@
         </div>
       </div>
     </aside>
+  </div>
+
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-2 mb-3">
+    <div class="small text-muted">
+      {{toBeChosenItems.length}} {{toBeChosenItems.length === 1 ? 'item' : 'items'}} in this batch
+    </div>
+    <div class="picker-column-control d-none d-md-flex align-items-center gap-2">
+      <span class="small text-muted">Columns</span>
+      <div class="btn-group btn-group-sm" role="group" aria-label="Picker columns">
+        <button class="btn btn-outline-secondary" type="button" *ngFor="let option of pickerColumnOptions"
+          [class.active]="pickerColumnLayout === option.value" [attr.aria-pressed]="pickerColumnLayout === option.value"
+          [attr.aria-label]="option.ariaLabel" (click)="setPickerColumnLayout(option.value)">
+          {{option.label}}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="picker-choice-grid" [ngClass]="'picker-choice-grid--' + pickerColumnLayout"
+    aria-label="Selectable picker items">
+    <div class="card h-100 picker-choice-card" *ngFor="let item of toBeChosenItems"
+      [class.border-primary]="isItemSelected(item)" [class.selected]="isItemSelected(item)" role="button" tabindex="0"
+      (click)="clickItem(item)" (keydown.enter)="clickItem(item)"
+      (keydown.space)="clickItem(item); $event.preventDefault()">
+      <div class="card-body py-4">
+        <div class="form-check d-flex align-items-center gap-3 mb-0">
+          <input class="form-check-input flex-shrink-0" type="checkbox" [checked]="isItemSelected(item)"
+            (click)="clickItem(item); $event.stopPropagation()">
+          <h2 class="h4 fw-bold mb-0">{{item.name}}</h2>
+        </div>
+      </div>
+    </div>
   </div>
 </ng-container>

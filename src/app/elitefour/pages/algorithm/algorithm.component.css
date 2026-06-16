@@ -2,8 +2,18 @@
   cursor: pointer;
 }
 
+.picker-choice-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
 .picker-choice-card.selected {
   background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+.picker-choice-card h2 {
+  overflow-wrap: anywhere;
 }
 
 .picker-choice-card .form-check-input {
@@ -14,4 +24,34 @@
 .picker-choice-card:focus {
   box-shadow: var(--bs-box-shadow);
   outline: 0;
+}
+
+.picker-column-control .btn {
+  min-width: 2.75rem;
+}
+
+.picker-column-control .btn:first-child {
+  min-width: 4.25rem;
+}
+
+@media (min-width: 768px) {
+  .picker-choice-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  }
+
+  .picker-choice-grid--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .picker-choice-grid--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .picker-choice-grid--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .picker-choice-grid--5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 }
