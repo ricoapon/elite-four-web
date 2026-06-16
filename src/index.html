@@ -8,8 +8,11 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg" >
   <link rel="alternate icon"  type="image/x-icon" href="favicon.ico">
 
-  <!-- Font Awesome -->
-  <script defer src="https://use.fontawesome.com/releases/v7.2.0/js/all.js" crossorigin="anonymous"></script>
+  <!-- 
+  Font Awesome. Make sure to use CSS instead of JS, because the app will crash when loading a list with 1000 elements.
+  Loading too many icons will result in an OOM (that does not happen when running locally). CSS circumvents this issue.
+  -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v7.2.0/css/all.css" crossorigin="anonymous">
 </head>
 <body class="bg-light">
   <app-root></app-root>
