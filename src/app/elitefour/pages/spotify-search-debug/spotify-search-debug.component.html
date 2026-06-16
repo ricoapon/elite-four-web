@@ -1,0 +1,57 @@
+<div class="container-xl py-4">
+  <h1>Spotify search debug</h1>
+
+  <form class="d-flex gap-2 mb-4" (ngSubmit)="search()">
+    <input
+      class="form-control"
+      type="text"
+      name="searchInput"
+      [(ngModel)]="searchInput"
+      [disabled]="isSearching">
+    <button class="btn btn-primary" type="submit" [disabled]="isSearching">
+      Search
+    </button>
+  </form>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="result?.autoMatch" class="mb-3">
+    Auto match:
+    <a [href]="result.autoMatch.track.externalUrl" target="_blank">
+      {{ result.autoMatch.track.name }}
+    </a>
+    by {{ result.autoMatch.track.artists.join(', ') }}
+    (score {{ result.autoMatch.score | number:'1.3-3' }})
+  </div>
+
+  <table *ngIf="result" class="table table-sm table-striped align-middle">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Score</th>
+      <th scope="col">Track</th>
+      <th scope="col">Artists</th>
+      <th scope="col">Spotify ID</th>
+      <th scope="col">Link</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let candidate of result.candidates; let index = index">
+      <td>{{ index + 1 }}</td>
+      <td>{{ candidate.score | number:'1.3-3' }}</td>
+      <td>{{ candidate.track.name }}</td>
+      <td>{{ candidate.track.artists.join(', ') }}</td>
+      <td>{{ candidate.track.id }}</td>
+      <td>
+        <a [href]="candidate.track.externalUrl" target="_blank">Open</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="result && result.candidates.length === 0" class="text-muted">
+    No tracks returned.
+  </div>
+</div>
