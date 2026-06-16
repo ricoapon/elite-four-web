@@ -35,6 +35,10 @@ export class MenuComponent implements OnInit {
     this.modalService.open(ImportDataModalComponent);
   }
 
+  collapseNavbar(): void {
+    this.isNavbarCollapsed = true;
+  }
+
   loginToSpotify(): void {
     if (!this.spotifyAuthenticationState.isLoggedIn()) {
       this.spotifyAuthentication.redirectToSpotify(this.router.url);

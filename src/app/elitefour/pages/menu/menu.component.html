@@ -1,7 +1,7 @@
 <header class="sticky-top bg-body border-bottom">
   <nav class="navbar navbar-expand-lg navbar-light bg-body">
     <div class="container-xl">
-      <a class="navbar-brand app-brand" routerLink="/">
+      <a class="navbar-brand app-brand" routerLink="/" (click)="collapseNavbar()">
         <span class="fw-bold pe-2">Elite Four</span>
         <span class="badge rounded-pill text-bg-light border">v{{version}}</span>
       </a>
@@ -12,12 +12,13 @@
       <div class="collapse navbar-collapse" id="appNav" [ngbCollapse]="isNavbarCollapsed">
         <ul class="navbar-nav ms-lg-4 me-auto">
           <li class="nav-item fw-bold">
-            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link"
+               (click)="collapseNavbar()">
               Lists
             </a>
           </li>
           <li class="nav-item fw-bold">
-            <a routerLink="help" routerLinkActive="active" class="nav-link">Help</a>
+            <a routerLink="help" routerLinkActive="active" class="nav-link" (click)="collapseNavbar()">Help</a>
           </li>
         </ul>
         <div class="d-flex flex-wrap gap-2 mt-3 mt-lg-0">
