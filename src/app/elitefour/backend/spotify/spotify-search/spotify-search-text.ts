@@ -21,12 +21,13 @@ function normalizeSpotifyText(input: string): string {
     .toLowerCase();
 }
 
-export function tokenizeSpotifyText(input: string): string[] {
+export function tokenizeSpotifyText(input: string): string {
   return normalizeSpotifyText(input)
     .replace(/&/g, ' and ')
     .replace(/['"]/g, '')
     .replace(/[^a-z0-9]+/g, ' ')
     .split(' ')
     .map((word) => word.trim())
-    .filter((word) => word.length > 0);
+    .filter((word) => word.length > 0)
+    .join(' ');
 }

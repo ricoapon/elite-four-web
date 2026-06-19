@@ -6,7 +6,7 @@ import {normalizeSpotifySearchInput} from './spotify-search/spotify-search-text'
 import type {SpotifyMatchResult, Track} from './spotify-search/spotify-search-types';
 import {scoreSpotifyTrackCandidates} from './spotify-search/spotify-track-matcher';
 
-export type {SpotifyMatchResult, Track} from './spotify-search/spotify-search-types';
+export type {SpotifyMatchResult, SpotifyTrackCandidate, Track} from './spotify-search/spotify-search-types';
 
 const MIN_SPOTIFY_SEARCH_INPUT_LENGTH = 3;
 
