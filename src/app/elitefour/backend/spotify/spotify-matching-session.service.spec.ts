@@ -1,4 +1,4 @@
-import {SpotifyMatchingSessionService} from './spotify-matching-session.service';
+import {SPOTIFY_SEARCH_CONCURRENCY, SpotifyMatchingSessionService} from './spotify-matching-session.service';
 import {FavoriteListsRepositorySpec} from '../spec-helper-mocks.spec';
 import {SpotifyMatchResult, Track} from './spotify-search';
 
@@ -45,10 +45,10 @@ describe('SpotifyMatchingSessionService', () => {
     expect(repository.getValue()[0].items[1].spotify.id).toEqual('auto-id');
   });
 
-  it('limits Spotify matching searches to three concurrent items', async () => {
+  it('limits Spotify matching searches to the configured number of concurrent items', async () => {
     repository.addFavoriteList('some-list', 20);
-    ['Song 1', 'Song 2', 'Song 3', 'Song 4', 'Song 5']
-      .forEach((itemName) => repository.addItemToFavoriteList(1, itemName));
+    const itemNames = Array.from({length: SPOTIFY_SEARCH_CONCURRENCY + 2}, (_, index) => 'Song ' + (index + 1));
+    itemNames.forEach((itemName) => repository.addItemToFavoriteList(1, itemName));
     const deferredByName = new Map<string, Deferred<SpotifyMatchResult>>();
     searchTrackCandidates.and.callFake((itemName: string) => {
       const deferred = createDeferred<SpotifyMatchResult>();
@@ -59,26 +59,28 @@ describe('SpotifyMatchingSessionService', () => {
     service.start(repository.getValue()[0]);
     await flushPromises();
 
-    expect(searchTrackCandidates.calls.allArgs().map((args) => args[0])).toEqual(['Song 1', 'Song 2', 'Song 3']);
+    expect(searchTrackCandidates.calls.allArgs().map((args) => args[0]))
+      .toEqual(itemNames.slice(0, SPOTIFY_SEARCH_CONCURRENCY));
 
-    deferredByName.get('Song 1')!.resolve(autoMatchResult(track('Song 1', 'track-1')));
+    deferredByName.get(itemNames[0])!.resolve(autoMatchResult(track(itemNames[0], 'track-1')));
     await flushPromises();
 
-    expect(searchTrackCandidates.calls.allArgs().map((args) => args[0])).toEqual(['Song 1', 'Song 2', 'Song 3', 'Song 4']);
+    expect(searchTrackCandidates.calls.allArgs().map((args) => args[0]))
+      .toEqual(itemNames.slice(0, SPOTIFY_SEARCH_CONCURRENCY + 1));
     expect(service.state.processed).toEqual(1);
 
-    deferredByName.get('Song 2')!.resolve(autoMatchResult(track('Song 2', 'track-2')));
+    deferredByName.get(itemNames[1])!.resolve(autoMatchResult(track(itemNames[1], 'track-2')));
     await flushPromises();
 
-    expect(searchTrackCandidates.calls.allArgs().map((args) => args[0])).toEqual(['Song 1', 'Song 2', 'Song 3', 'Song 4', 'Song 5']);
+    expect(searchTrackCandidates.calls.allArgs().map((args) => args[0])).toEqual(itemNames);
 
-    deferredByName.get('Song 3')!.resolve(autoMatchResult(track('Song 3', 'track-3')));
-    deferredByName.get('Song 4')!.resolve(autoMatchResult(track('Song 4', 'track-4')));
-    deferredByName.get('Song 5')!.resolve(autoMatchResult(track('Song 5', 'track-5')));
+    itemNames.slice(2).forEach((itemName, index) => {
+      deferredByName.get(itemName)!.resolve(autoMatchResult(track(itemName, 'track-' + (index + 3))));
+    });
     await service.whenProcessingComplete();
 
-    expect(service.state.processed).toEqual(5);
-    expect(service.state.autoMatched).toEqual(5);
+    expect(service.state.processed).toEqual(itemNames.length);
+    expect(service.state.autoMatched).toEqual(itemNames.length);
   });
 
   it('filters weak candidates from review tasks', async () => {
