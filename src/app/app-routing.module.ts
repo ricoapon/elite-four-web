@@ -2,17 +2,16 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {AlgorithmComponent, HelpComponent, ListDetailComponent, ListOverviewComponent, PageNotFoundComponent} from './elitefour/pages';
 import {SpotifyCallbackComponent} from './elitefour/pages/spotify-callback/spotify-callback.component';
-import {IntegrationTestComponent} from './elitefour/pages/integration-test/integration-test.component';
-import {SpotifySearchDebugComponent} from './elitefour/pages/spotify-search-debug/spotify-search-debug.component';
+import {SpotifyTestComponent} from './elitefour/pages/spotify-test/spotify-test.component';
 
 const routes: Routes = [
   {path: '', component: ListOverviewComponent},
   {path: 'list/:id', component: ListDetailComponent},
+  {path: 'list/:id/spotify-match', component: SpotifyMatchComponent},
   {path: 'list/:id/algorithm', component: AlgorithmComponent},
   {path: 'help', component: HelpComponent},
   {path: 'spotify-callback', component: SpotifyCallbackComponent},
-  {path: 'integration-test', component: IntegrationTestComponent},
-  {path: 'spotify-search-debug', component: SpotifySearchDebugComponent},
+  {path: 'spotify-test', component: SpotifyTestComponent},
   {path: '**', component: PageNotFoundComponent}
 ];
 
