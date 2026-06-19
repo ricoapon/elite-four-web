@@ -1,9 +1,11 @@
 import {CommonModule} from '@angular/common';
 import {Component} from '@angular/core';
 import {FormsModule} from '@angular/forms';
+import pLimit from 'p-limit';
 import {SpotifySearch} from '../../backend/spotify/spotify-search';
 import type {SpotifyMatchResult, SpotifyTrackCandidate, Track} from '../../backend/spotify/spotify-search';
 import {tokenizeSpotifyText} from '../../backend/spotify/spotify-search/spotify-search-text';
+import {SPOTIFY_SEARCH_CONCURRENCY} from '../../backend/spotify/spotify-matching-session.service';
 import {SPOTIFY_TEST_ANSWERS} from './spotify-test-answers';
 import {generateSpotifyMatcherTestSnippet} from './spotify-test-snippet';
 
@@ -113,40 +115,10 @@ export class SpotifyTestComponent {
     this.integrationResults = this.createPendingIntegrationResults();
     this.stopIntegrationRequested = false;
     this.isIntegrationRunning = true;
+    const limit = pLimit(SPOTIFY_SEARCH_CONCURRENCY);
+    const runningTests = this.integrationCases.map((testCase) => limit(() => this.runIntegrationTestCase(testCase)));
 
-    for (const testCase of this.integrationCases) {
-      if (this.stopIntegrationRequested) {
-        break;
-      }
-
-      this.updateIntegrationResult(testCase.index, {
-        ...this.integrationResults[testCase.index],
-        status: 'running'
-      });
-
-      const startedAt = Date.now();
-      try {
-        const result = await this.spotifySearch.searchTrackCandidates(testCase.query);
-        const autoMatch = result.autoMatch;
-        const acceptedEquivalentTrack = this.findAcceptedEquivalentTrack(testCase, autoMatch?.track, result.candidates);
-        this.updateIntegrationResult(testCase.index, {
-          ...this.integrationResults[testCase.index],
-          status: this.determineIntegrationStatus(testCase, autoMatch?.track, acceptedEquivalentTrack),
-          foundTrack: autoMatch?.track,
-          acceptedEquivalentTrack,
-          score: autoMatch?.score,
-          candidateCount: result.candidates.length,
-          durationMs: Date.now() - startedAt
-        });
-      } catch (error) {
-        this.updateIntegrationResult(testCase.index, {
-          ...this.integrationResults[testCase.index],
-          status: 'error',
-          errorMessage: error instanceof Error ? error.message : 'Could not search Spotify.',
-          durationMs: Date.now() - startedAt
-        });
-      }
-    }
+    await Promise.all(runningTests);
 
     this.isIntegrationRunning = false;
     this.stopIntegrationRequested = false;
@@ -260,6 +232,40 @@ export class SpotifyTestComponent {
     const results = this.integrationResults.slice();
     results[index] = result;
     this.integrationResults = results;
+  }
+
+  private async runIntegrationTestCase(testCase: IntegrationTestCase): Promise<void> {
+    if (this.stopIntegrationRequested) {
+      return;
+    }
+
+    this.updateIntegrationResult(testCase.index, {
+      ...this.integrationResults[testCase.index],
+      status: 'running'
+    });
+
+    const startedAt = Date.now();
+    try {
+      const result = await this.spotifySearch.searchTrackCandidates(testCase.query);
+      const autoMatch = result.autoMatch;
+      const acceptedEquivalentTrack = this.findAcceptedEquivalentTrack(testCase, autoMatch?.track, result.candidates);
+      this.updateIntegrationResult(testCase.index, {
+        ...this.integrationResults[testCase.index],
+        status: this.determineIntegrationStatus(testCase, autoMatch?.track, acceptedEquivalentTrack),
+        foundTrack: autoMatch?.track,
+        acceptedEquivalentTrack,
+        score: autoMatch?.score,
+        candidateCount: result.candidates.length,
+        durationMs: Date.now() - startedAt
+      });
+    } catch (error) {
+      this.updateIntegrationResult(testCase.index, {
+        ...this.integrationResults[testCase.index],
+        status: 'error',
+        errorMessage: error instanceof Error ? error.message : 'Could not search Spotify.',
+        durationMs: Date.now() - startedAt
+      });
+    }
   }
 
   private determineIntegrationStatus(

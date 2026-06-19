@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import pLimit from 'p-limit';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {FavoriteItem, FavoriteList, SpotifyTrackReference} from '../favorite-list-interfaces';
 import {FavoriteListsRepository} from '../favorite-lists-repository';
@@ -37,6 +38,8 @@ const EMPTY_STATE: SpotifyMatchingSessionState = {
   isRunning: false
 };
 export const MAX_SPOTIFY_REVIEW_CANDIDATE_SCORE = 0.80;
+// Setting it higher will quickly result in HTTP 429.
+export const SPOTIFY_SEARCH_CONCURRENCY = 6;
 
 @Injectable({providedIn: 'root'})
 export class SpotifyMatchingSessionService {
@@ -133,13 +136,16 @@ export class SpotifyMatchingSessionService {
   }
 
   private async processItems(listId: number, items: FavoriteItem[], runId: number): Promise<void> {
-    for (const item of items) {
+    const limit = pLimit(SPOTIFY_SEARCH_CONCURRENCY);
+    const processingItems = items.map((item) => limit(async () => {
       if (!this.isActiveRun(listId, runId)) {
         return;
       }
 
       await this.processItem(item, listId, runId, true);
-    }
+    }));
+
+    await Promise.all(processingItems);
 
     if (this.isActiveRun(listId, runId)) {
       this.updateState({isRunning: false});

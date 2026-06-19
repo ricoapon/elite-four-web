@@ -28,6 +28,7 @@
     "fuse.js": "^7.4.2",
     "ng-keyboard-shortcuts": "^13.0.8",
     "ngx-cookie-service": "^18.0.0",
+    "p-limit": "^7.3.0",
     "random-seedable": "^1.0.8",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

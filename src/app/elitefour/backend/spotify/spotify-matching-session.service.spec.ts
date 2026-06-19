@@ -45,6 +45,42 @@ describe('SpotifyMatchingSessionService', () => {
     expect(repository.getValue()[0].items[1].spotify.id).toEqual('auto-id');
   });
 
+  it('limits Spotify matching searches to three concurrent items', async () => {
+    repository.addFavoriteList('some-list', 20);
+    ['Song 1', 'Song 2', 'Song 3', 'Song 4', 'Song 5']
+      .forEach((itemName) => repository.addItemToFavoriteList(1, itemName));
+    const deferredByName = new Map<string, Deferred<SpotifyMatchResult>>();
+    searchTrackCandidates.and.callFake((itemName: string) => {
+      const deferred = createDeferred<SpotifyMatchResult>();
+      deferredByName.set(itemName, deferred);
+      return deferred.promise;
+    });
+
+    service.start(repository.getValue()[0]);
+    await flushPromises();
+
+    expect(searchTrackCandidates.calls.allArgs().map((args) => args[0])).toEqual(['Song 1', 'Song 2', 'Song 3']);
+
+    deferredByName.get('Song 1')!.resolve(autoMatchResult(track('Song 1', 'track-1')));
+    await flushPromises();
+
+    expect(searchTrackCandidates.calls.allArgs().map((args) => args[0])).toEqual(['Song 1', 'Song 2', 'Song 3', 'Song 4']);
+    expect(service.state.processed).toEqual(1);
+
+    deferredByName.get('Song 2')!.resolve(autoMatchResult(track('Song 2', 'track-2')));
+    await flushPromises();
+
+    expect(searchTrackCandidates.calls.allArgs().map((args) => args[0])).toEqual(['Song 1', 'Song 2', 'Song 3', 'Song 4', 'Song 5']);
+
+    deferredByName.get('Song 3')!.resolve(autoMatchResult(track('Song 3', 'track-3')));
+    deferredByName.get('Song 4')!.resolve(autoMatchResult(track('Song 4', 'track-4')));
+    deferredByName.get('Song 5')!.resolve(autoMatchResult(track('Song 5', 'track-5')));
+    await service.whenProcessingComplete();
+
+    expect(service.state.processed).toEqual(5);
+    expect(service.state.autoMatched).toEqual(5);
+  });
+
   it('filters weak candidates from review tasks', async () => {
     repository.addFavoriteList('some-list', 20);
     repository.addItemToFavoriteList(1, 'Needs review');
@@ -170,6 +206,7 @@ describe('SpotifyMatchingSessionService', () => {
     );
 
     service.start(repository.getValue()[0]);
+    await flushPromises();
     service.abandonSession();
     repository.addFavoriteList('second-list', 20);
     repository.addItemToFavoriteList(2, 'New request');
@@ -203,12 +240,23 @@ describe('SpotifyMatchingSessionService', () => {
     };
   }
 
-  function createDeferred<T>(): {promise: Promise<T>, resolve: (value: T) => void} {
+  type Deferred<T> = {
+    promise: Promise<T>,
+    resolve: (value: T) => void,
+  };
+
+  function createDeferred<T>(): Deferred<T> {
     let resolve: (value: T) => void = () => {};
     const promise = new Promise<T>((promiseResolve) => {
       resolve = promiseResolve;
     });
 
     return {promise, resolve};
+  }
+
+  async function flushPromises(): Promise<void> {
+    for (let i = 0; i < 10; i++) {
+      await Promise.resolve();
+    }
   }
 });
