@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {AlgorithmComponent, HelpComponent, ListDetailComponent, ListOverviewComponent, PageNotFoundComponent} from './elitefour/pages';
 import {SpotifyCallbackComponent} from './elitefour/pages/spotify-callback/spotify-callback.component';
 import {SpotifyTestComponent} from './elitefour/pages/spotify-test/spotify-test.component';
+import {SpotifyMatchComponent} from './elitefour/pages';
 
 const routes: Routes = [
   {path: '', component: ListOverviewComponent},

@@ -1,0 +1,171 @@
+<div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3 mb-4">
+  <div>
+    <p class="mb-1 small fw-bold text-uppercase text-success">Spotify matching</p>
+    <h1 class="mb-0 fw-bold">Review matches</h1>
+    <p class="mb-0 mt-2 text-muted">
+      Spotify keeps checking songs in the background while you decide on the uncertain matches. Large lists can take
+      a while to finish.
+    </p>
+  </div>
+  <div class="d-grid d-sm-flex flex-wrap gap-2 flex-shrink-0 justify-content-lg-end">
+    <a class="btn btn-outline-secondary fw-semibold" [routerLink]="['/list', favoriteList.id]">
+      <i class="fas fa-list me-1" aria-hidden="true"></i>
+      Back to list
+    </a>
+    <button *ngIf="isComplete && favoriteList.status != 'Created'" class="btn btn-success fw-semibold" type="button"
+            (click)="exportToSpotifyPlaylist()">
+      <i class="fab fa-spotify me-1" aria-hidden="true"></i>
+      Export playlist
+    </button>
+  </div>
+</div>
+
+<div class="mb-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-2">
+    <div>
+      <span class="badge" [ngClass]="progressStatusClass">{{progressStatusLabel}}</span>
+      <span class="text-muted ms-2">
+        {{isProcessingComplete ? 'Checked' : 'Checking'}} {{state.processed}} of {{state.total}} items
+      </span>
+    </div>
+    <strong>{{progressPercentage}}%</strong>
+  </div>
+  <div class="progress" role="progressbar" [attr.aria-valuenow]="progressPercentage" aria-valuemin="0" aria-valuemax="100">
+    <div class="progress-bar bg-success" [style.width.%]="progressPercentage"></div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <span class="text-muted">Processed</span>
+        <p class="display-6 fw-bold lh-1 mb-0 mt-2">{{state.processed}} / {{state.total}}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <span class="text-muted">Auto-matched</span>
+        <p class="display-6 fw-bold lh-1 mb-0 mt-2">{{state.autoMatched}}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <span class="text-muted">Needs review</span>
+        <p class="display-6 fw-bold lh-1 mb-0 mt-2">{{state.reviewTasks.length}}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-sm-6 col-xl-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <span class="text-muted">Skipped</span>
+        <p class="display-6 fw-bold lh-1 mb-0 mt-2">{{state.skipped}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="card" *ngIf="activeTask as task; else noActiveTask">
+  <div class="card-body">
+    <div class="mb-3">
+      <p class="mb-2 small fw-bold text-uppercase text-success">Needs your choice</p>
+      <h2 class="h4 fw-bold mb-1">{{task.itemName}}</h2>
+      <p class="text-muted mb-0">Pick the Spotify track that belongs to this item, paste a track URL, or skip it for now.</p>
+    </div>
+
+    <div *ngIf="task.status === 'error'" class="alert alert-warning d-flex flex-column flex-md-row justify-content-between gap-2">
+      <span>{{task.errorMessage || 'Could not search Spotify.'}}</span>
+      <button class="btn btn-outline-secondary btn-sm fw-semibold" type="button" (click)="retryTask(task)">
+        <i class="fas fa-rotate-right me-1" aria-hidden="true"></i>
+        Retry
+      </button>
+    </div>
+
+    <div *ngIf="task.status === 'no-candidates'" class="alert alert-secondary">
+      Spotify did not return candidates for this item.
+    </div>
+
+    <div class="d-grid gap-1" [attr.aria-label]="'Spotify candidates for ' + task.itemName">
+      <label class="border rounded bg-body p-2" *ngFor="let candidate of task.candidates; trackBy: trackByCandidateId">
+        <span class="d-flex flex-column flex-md-row align-items-md-center gap-2">
+          <span class="d-inline-flex align-items-center">
+            <input class="form-check-input mt-0" type="radio" name="candidateSelection"
+                   [checked]="selectedCandidateId === candidate.track.id"
+                   (change)="selectCandidate(candidate)">
+          </span>
+          <span class="flex-grow-1">
+            <strong class="d-block">{{candidate.track.name}}</strong>
+            <span class="text-muted">{{candidate.track.artists.join(', ')}}</span>
+          </span>
+          <span class="d-flex flex-md-column align-items-md-end gap-2">
+            <span class="badge text-bg-light border text-dark">{{candidateMatchPercentage(candidate)}}%</span>
+            <a [href]="candidate.track.externalUrl" target="_blank" rel="noreferrer">Open</a>
+          </span>
+        </span>
+      </label>
+
+      <label class="border rounded bg-body p-2">
+        <span class="d-flex flex-column flex-md-row gap-2">
+          <span class="d-inline-flex align-items-start pt-1">
+            <input class="form-check-input mt-0" type="radio" name="candidateSelection"
+                   [checked]="manualSelected"
+                   (change)="selectManual()">
+          </span>
+          <span class="flex-grow-1">
+            <strong class="d-block">Use my own Spotify track URL</strong>
+            <span class="text-muted d-block mb-2">
+              Paste an open.spotify.com track link if none of the suggested tracks are right.
+            </span>
+            <span class="input-group">
+              <span class="input-group-text">
+                <i class="fab fa-spotify text-success" aria-hidden="true"></i>
+              </span>
+              <input class="form-control" id="manualSpotifyUrl" type="url" name="manualSpotifyUrl"
+                     [ngModel]="manualSpotifyUrl"
+                     (ngModelChange)="updateManualSpotifyUrl($event)"
+                     (focus)="selectManual()"
+                     placeholder="https://open.spotify.com/track/...">
+            </span>
+          </span>
+        </span>
+      </label>
+    </div>
+
+    <div class="alert alert-danger mt-3 mb-0" *ngIf="decisionError">{{decisionError}}</div>
+
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      <button class="btn btn-success fw-semibold" type="button" (click)="useSelectedTrack(task)">
+        <i class="fas fa-check me-1" aria-hidden="true"></i>
+        Use selected track
+      </button>
+      <button class="btn btn-outline-secondary fw-semibold" type="button" (click)="skipTask(task)">
+        <i class="fas fa-forward me-1" aria-hidden="true"></i>
+        Skip
+      </button>
+    </div>
+  </div>
+</section>
+
+<ng-template #noActiveTask>
+  <section class="card">
+    <div class="card-body">
+      <p class="mb-2 small fw-bold text-uppercase text-success">
+        {{isProcessingComplete ? 'No choices waiting' : 'Waiting for Spotify'}}
+      </p>
+      <h2 class="h4 fw-bold mb-1">
+        {{isProcessingComplete ? 'All songs have been processed' : 'Matching is still running'}}
+      </h2>
+      <p class="text-muted mb-0" *ngIf="isProcessingComplete">
+        Any skipped items were left unmatched for this run. You can return to the list or run matching again later.
+      </p>
+      <p class="text-muted mb-0" *ngIf="!isProcessingComplete">
+        Choices will appear here when Spotify finds candidates that need a manual decision.
+      </p>
+    </div>
+  </section>
+</ng-template>

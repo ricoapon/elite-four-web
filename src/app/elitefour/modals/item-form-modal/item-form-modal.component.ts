@@ -2,6 +2,7 @@ import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {FavoriteItem, FavoriteList, SpotifyTrackReference} from '../../backend/favorite-list-interfaces';
 import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
+import {parseSpotifyTrackUrl} from '../../backend/spotify/spotify-track-url';
 
 @Component({
   selector: 'app-add-item-form-modal',
@@ -46,7 +47,6 @@ import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
   styles: []
 })
 export class ItemFormModalComponent implements OnInit {
-  static readonly SPOTIFY_REGEXP = new RegExp('https:\\/\\/open\\.spotify\\.com\\/track\\/(\\w+)');
   @Input() listId: number;
   favoriteList: FavoriteList;
   @Input() favoriteItem: FavoriteItem;
@@ -92,7 +92,7 @@ export class ItemFormModalComponent implements OnInit {
     }
 
     // The URL should be in the correct format.
-    if (!ItemFormModalComponent.SPOTIFY_REGEXP.test(this.spotifyUrl)) {
+    if (!parseSpotifyTrackUrl(this.spotifyUrl)) {
       this.spotifyUrlModel.control.setErrors({incorrectFormat: true});
       return false;
     }
@@ -108,12 +108,12 @@ export class ItemFormModalComponent implements OnInit {
 
     let spotify: SpotifyTrackReference = null;
     if (this.spotifyUrl !== '') {
-      const id = ItemFormModalComponent.SPOTIFY_REGEXP.exec(this.spotifyUrl)[1]
-
-      spotify = {
-        id,
-        externalUrl: this.spotifyUrl
+      const parsedSpotify = parseSpotifyTrackUrl(this.spotifyUrl);
+      if (!parsedSpotify) {
+        return false;
       }
+
+      spotify = parsedSpotify;
     }
 
     try {

@@ -67,10 +67,6 @@
   </div>
 </div>
 
-<div class="progress mb-3" *ngIf="progressBarMax > 0 && progressBarValue != progressBarMax">
-  <div class="progress-bar" [style.width]="100 * (progressBarValue / progressBarMax) + '%'"></div>
-</div>
-
 <div class="row g-4 align-items-start">
   <div class="col-12" [ngClass]="favoriteList.status == CREATED ? 'col-lg-8' : 'col-lg-12'">
     <ng-container *ngIf="favoriteList.items.length > 0; else emptyItems">

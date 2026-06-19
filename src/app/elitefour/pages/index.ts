@@ -4,3 +4,4 @@ export * from './list-detail/list-detail.component';
 export * from './list-overview/list-overview.component';
 export * from './menu/menu.component';
 export * from './page-not-found/page-not-found.component';
+export * from './spotify-match/spotify-match.component';

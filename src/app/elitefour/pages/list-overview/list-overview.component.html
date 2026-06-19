@@ -27,7 +27,7 @@
       <div class="input-group">
         <span class="input-group-text"><i class="fas fa-search" aria-hidden="true"></i></span>
         <input type="search" class="form-control" placeholder="Search lists" aria-label="Search lists"
-          [(ngModel)]="searchListName" (keydown.esc)="onPressEscape()" #searchTextBox>
+          [(ngModel)]="searchListName" #searchTextBox>
       </div>
     </div>
     <div class="col-12 col-lg-auto ms-lg-auto">
@@ -71,8 +71,7 @@
             </span>
             <span class="badge text-bg-light border text-dark">{{favoriteList.nrOfItemsToBeShownOnScreen}} max
               batch</span>
-            <span class="badge text-bg-light border text-dark">{{favoriteList.tsCreated | date: 'dd-MM-yy
-              HH:mm'}}</span>
+            <span class="badge text-bg-light border text-dark">{{favoriteList.tsCreated | date: 'dd-MM-yy HH:mm'}}</span>
           </div>
         </div>
       </article>

@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FavoriteItem, FavoriteList, FavoriteListStatus} from '../../backend/favorite-list-interfaces';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -12,7 +12,6 @@ import {
 import {ShortcutInput} from 'ng-keyboard-shortcuts';
 import {FavoriteListsRepository} from '../../backend/favorite-lists-repository';
 import {SpotifyAuthenticationState} from '../../backend/spotify/spotify-authentication-state';
-import {SpotifySearch} from '../../backend/spotify/spotify-search';
 import {SpotifyPlaylist} from '../../backend/spotify/spotify-playlist';
 
 @Component({
@@ -32,8 +31,6 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
   @ViewChild('searchTextBox') searchTextBox: ElementRef;
   showSpotifyUnmatchedOnly = false;
 
-  progressBarValue = 0
-  progressBarMax = 0
   quickAddText = '';
   quickAddError = '';
 
@@ -41,9 +38,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
               public router: Router,
               private favoriteListsRepository: FavoriteListsRepository,
               private modalService: NgbModal,
-              private cdRef: ChangeDetectorRef,
               public spotifyAuthenticationState: SpotifyAuthenticationState,
-              private spotifySearch: SpotifySearch,
               private spotifyPlaylist: SpotifyPlaylist) {
   }
 
@@ -126,9 +121,9 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
       sortedItems = sortedItems.filter((item) => !item.spotify);
     }
 
-    const searchItemName = this.searchItemName.trim().toLowerCase();
-    if (searchItemName.length > 0) {
-      sortedItems = sortedItems.filter((item) => item.name.toLowerCase().indexOf(searchItemName) >= 0);
+    const normalizedSearchItemName = this.searchItemName.trim().toLowerCase();
+    if (normalizedSearchItemName.length > 0) {
+      sortedItems = sortedItems.filter((item) => item.name.toLowerCase().indexOf(normalizedSearchItemName) >= 0);
     }
 
     return sortedItems;
@@ -206,22 +201,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
   }
 
   matchSpotifyItems(): void {
-    const itemsToFill = this.favoriteList.items.filter(item => !item.spotify)
-    this.progressBarValue = 0
-    this.progressBarMax = itemsToFill.length
-    // Note that we do not want to override elements, as they could be inserted manually.
-    for (let item of itemsToFill) {
-      this.spotifySearch.searchTrack(item.name).then((track) => {
-        if (track != undefined) {
-          item.spotify = {
-            id: track.id,
-            externalUrl: track.externalUrl
-          };
-          this.favoriteListsRepository.updateItemForFavoriteList(this.favoriteList.id, item);
-        }
-        this.progressBarValue++
-      });
-    }
+    this.router.navigate(['/list/' + this.favoriteList.id + '/spotify-match']);
   }
 
   exportToSpotifyPlaylist() {
@@ -230,7 +210,7 @@ export class ListDetailComponent implements OnInit, AfterViewInit {
       .filter(item => !!item.spotify));
 
     if (sortedFilteredItems.length == 0) {
-      alert('The list contains 0 favorite items with a Spotify link, so no Spotify playlist can be created.')
+      alert('The list contains 0 sorted items, so no Spotify playlist can be created.')
       return
     }
 

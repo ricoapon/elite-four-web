@@ -19,8 +19,7 @@ export class ListOverviewComponent implements OnInit, AfterViewInit {
 
   constructor(private router: Router,
               private favoriteListsRepository: FavoriteListsRepository,
-              private modalService: NgbModal,
-              private cdRef: ChangeDetectorRef) {
+              private modalService: NgbModal) {
     this.navigateToList = this.navigateToList.bind(this);
   }
 
@@ -35,33 +34,7 @@ export class ListOverviewComponent implements OnInit, AfterViewInit {
         command: () => this.openAddNewListModal(),
         preventDefault: true
       },
-      {
-        key: ['cmd + f'],
-        label: 'Search list',
-        description: 'Search list',
-        command: () => this.toggleSearchTextBox(),
-        preventDefault: true
-      },
-      {
-        key: ['esc'],
-        label: 'Escape',
-        description: 'Escape',
-        command: () => this.onPressEscape(),
-        preventDefault: true
-      },
     );
-  }
-
-  onPressEscape(): void {
-    this.searchListName = '';
-  }
-
-  toggleSearchTextBox(): void {
-    this.cdRef.detectChanges();
-    if (this.searchTextBox) {
-      this.searchTextBox.nativeElement.focus();
-      this.searchTextBox.nativeElement.select();
-    }
   }
 
   ngOnInit(): void {
@@ -72,16 +45,6 @@ export class ListOverviewComponent implements OnInit, AfterViewInit {
 
   openAddNewListModal(): void {
     this.modalService.open(ListFormModalComponent);
-  }
-
-  deleteList(listId: number): void {
-    const modalRef = this.modalService.open(AreYouSureModalComponent);
-    modalRef.result.then((result) => {
-      if (result) {
-        this.favoriteListsRepository.deleteFavoriteList(listId);
-      }
-    }, () => {
-    });
   }
 
   navigateToList(listId: number): void {
